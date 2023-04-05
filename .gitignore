@@ -1,0 +1,35 @@
+# OS or Editor folders
+.DS_Store
+.DS_Stroe?
+._*
+.Spotlight-V100
+.Trashes
+
+# vscode
+.vscode
+
+# Dependency directories
+*/node_modules/*
+*python_modules*
+
+# dotenv environment variables file
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# images
+public/assets/products
+public/assets/campaigns
+public/assets/blogs
+*.png
+*.gif
+
+# testing to ignore
+*.pdf
+0-mytest/*
+*.drawio
