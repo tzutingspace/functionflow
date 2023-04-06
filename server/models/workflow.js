@@ -23,7 +23,7 @@ async function insertWorkflow(workflowInfo, jobsInfo) {
           jobsInfo[i].function_id,
           i,
           depends_job_id,
-          jobsInfo[i].config,
+          JSON.stringify(jobsInfo[i].config),
         ]
       );
       depends_job_id = result.insertId;
