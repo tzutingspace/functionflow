@@ -1,9 +1,11 @@
 import express, { json } from 'express';
-import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-dotenv.config();
+import dotenv from 'dotenv';
 
 import { CustomError } from './utils/customError.js';
 import { StatusCodes } from 'http-status-codes';
+import { router as createWorkflowRoute } from './routers/createWorkflow.js';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -15,6 +17,8 @@ app.use(json());
 app.get('/', async (req, res) => {
   res.json({ status: true, message: 'Our node.js app works' });
 });
+
+app.use('/api/createWorkflow', createWorkflowRoute);
 
 // Not Found
 app.use((req, res, next) => {
