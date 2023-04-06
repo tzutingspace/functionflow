@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 import { CustomError } from './utils/customError.js';
 import { StatusCodes } from 'http-status-codes';
-import { router as createWorkflowRoute } from './routers/createWorkflow.js';
+import { router as workflow } from './routers/workflow.js';
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ app.get('/', async (req, res) => {
   res.json({ status: true, message: 'Our node.js app works' });
 });
 
-app.use('/api/createWorkflow', createWorkflowRoute);
+app.use('/api/', workflow);
 
 // Not Found
 app.use((req, res, next) => {
