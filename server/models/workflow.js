@@ -5,15 +5,28 @@ async function getWorkflowById(id) {
   return rows[0];
 }
 
-async function insertWorkflow(info) {
+async function insertWorkflow(workflowInfo, jobsInfo) {
   const conn = await pool.getConnection();
   try {
-    const [result] = await conn.query(`
-      INSERT INTO workflows(user_id, workflow_status, start_time, trigger_type,
-         trigger_interval, next_execute_time, tigger_api_route, job_number, trigger_interval_minutes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-  } catch (error) {}
+    // await conn.query('START TRANSACTION');
+    const [result] = await conn.query(`INSERT INTO workflows SET ?`, [workflowInfo]);
+    const workflowId = result.insertId;
+    let depends_job_id;
+    async for (let i = 1; i <= workflowInfo.job_number; i++) {
+      console.log(jobsInfo.i);
+      const [result] = await conn.query(
+        `INSERT INTO jobs(workflow_id, job_name, function_id, job_priority, depends_job_id, config) 
+          VALUES (?, ?, (SELECT id FROM functions WHERE function_name = ?), ?, ?, ?)`,
+        [workflowId, jobsInfo.i.job_name, jobsInfo.i.job_name, i, depends_job_id, jobsInfo.i.config]
+      );
+      depends_job_id = result.insertId;
+    }
+    return depends_job_id;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await conn.release();
+  }
 }
 
 export { getWorkflowById, insertWorkflow };

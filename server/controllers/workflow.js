@@ -1,5 +1,5 @@
 import * as Workflow from '../models/workflow.js';
-import { vaildInterger } from '../utils/utli.js';
+import { vaildInterger, getNowTime, calculateTime } from '../utils/utli.js';
 import { StatusCodes } from 'http-status-codes';
 import { CustomError } from '../utils/customError.js';
 
@@ -15,5 +15,31 @@ export const getWorkflow = async (req, res, next) => {
 
 export const createWorkflow = async (req, res) => {
   console.log('@controller createWorkflow');
-  return res.json({ msg: 'test' });
+  const workflowInfo = {
+    user_id: 1,
+    workflow_status: 'active',
+    start_time: getNowTime(),
+    trigger_type: 'schedule',
+    trigger_interval: '@dialy',
+    next_execute_time: calculateTime(getNowTime(), 1440),
+    tigger_api_route: null,
+    job_number: 2,
+    trigger_interval_minutes: 1440,
+  };
+  const jobsInfo = {
+    1: {
+      job_name: 'get_weather_temp',
+      job_priority: 1,
+      config: '{{"city": "澎湖縣", "condition": "MinT, 22"}}',
+    },
+    2: {
+      job_name: 'send_message_discord',
+      job_priority: 2,
+      config:
+        '{"user_message": "天氣過於低溫，請多穿衣服，(DB)", "user_channel_ID": "1091690518016163842"}',
+    },
+  };
+
+  const result = await Workflow.insertWorkflow(workflowInfo, jobsInfo);
+  return res.json({ msg: result });
 };
