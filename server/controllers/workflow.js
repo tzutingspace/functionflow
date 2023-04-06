@@ -29,14 +29,18 @@ export const createWorkflow = async (req, res) => {
   const jobsInfo = {
     1: {
       job_name: 'get_weather_temp',
+      function_id: 1,
       job_priority: 1,
-      config: '{{"city": "澎湖縣", "condition": "MinT, 22"}}',
+      config: JSON.stringify({ city: '澎湖縣', condition: 'MinT, 22' }),
     },
     2: {
       job_name: 'send_message_discord',
       job_priority: 2,
-      config:
-        '{"user_message": "天氣過於低溫，請多穿衣服，(DB)", "user_channel_ID": "1091690518016163842"}',
+      function_id: 2,
+      config: JSON.stringify({
+        user_message: '天氣過於低溫，請多穿衣服，(express)',
+        user_channel_ID: '1091690518016163842',
+      }),
     },
   };
 
