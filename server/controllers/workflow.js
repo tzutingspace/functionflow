@@ -15,7 +15,6 @@ export const getWorkflow = async (req, res, next) => {
 
 export const createWorkflow = async (req, res, next) => {
   console.log('@controller createWorkflow');
-  console.log(req.body);
   const workflowInfo = req.body.workflowInfo;
   workflowInfo['next_execute_time'] = calculateTime(
     workflowInfo['start_time'],
