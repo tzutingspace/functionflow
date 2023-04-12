@@ -3,8 +3,8 @@ env:
   es2021: true
 extends:
   - airbnb
-  - prettier
   - plugin:node/recommended
+  - prettier
 overrides: []
 parserOptions:
   ecmaVersion: latest
@@ -12,13 +12,20 @@ parserOptions:
 plugins:
   - prettier
 rules: {
+    "prettier/prettier": "error",
     "no-unused-vars": "warn",
-    "no-console": "warn",
-    "func-names": "warn",
+    "no-plusplus": "off",
+    "no-console": "off",
+    "func-names": "off",
     "no-process-exit": "warn",
     "object-shorthand": "warn",
     "class-methods-use-this": "warn",
-    "no-restricted-syntax":"warn",
-    "no-else-return":"warn",
-    "prefer-arrow-callback":"warn"
+    "no-restricted-syntax": "warn",
+    "no-else-return": "warn",
+    "prefer-arrow-callback": "warn",
+    "camelcase": "warn",
+    "import/extensions":"off",
+    "node/no-unsupported-features/es-syntax": "off"
   }
+ignorePatterns:
+  - node_modules

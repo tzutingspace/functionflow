@@ -7,9 +7,12 @@ export function getNowTime() {
 }
 
 export function calculateTime(inputTime, internalMinutes) {
-  const interval = moment.duration(parseInt(internalMinutes), 'minutes');
+  const interval = moment.duration(parseInt(internalMinutes, 10), 'minutes');
   const executeTime = moment(inputTime);
-  const nextTime = executeTime.clone().add(interval).format('YYYY-MM-DD HH:mm:ss');
+  const nextTime = executeTime
+    .clone()
+    .add(interval)
+    .format('YYYY-MM-DD HH:mm:ss');
   return nextTime;
 }
 

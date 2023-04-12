@@ -1,8 +1,7 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-dotenv.config();
 
-const { MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE } = process.env;
+dotenv.config();
 
 const pool = mysql
   .createPool({
@@ -16,4 +15,4 @@ const pool = mysql
   })
   .promise();
 
-export { pool };
+export default pool;

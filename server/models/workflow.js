@@ -1,4 +1,4 @@
-import { pool } from '../utils/db.js';
+import pool from '../utils/db.js';
 
 async function getWorkflowById(id) {
   const [rows] = await pool.query(`SELECT * FROM workflows WHERE id = ?`, [id]);
@@ -6,15 +6,19 @@ async function getWorkflowById(id) {
 }
 
 async function insertWorkflow(workflowInfo, jobsInfo) {
+  let dependsJobId;
   const conn = await pool.getConnection();
   try {
     await conn.query('START TRANSACTION');
-    const [result] = await conn.query(`INSERT INTO workflows SET ?`, [workflowInfo]);
+    const [result] = await conn.query(`INSERT INTO workflows SET ?`, [
+      workflowInfo,
+    ]);
     const workflowId = result.insertId;
-    let depends_job_id;
     for (let i = 1; i <= workflowInfo.job_number; i++) {
-      console.log(depends_job_id, jobsInfo[i]);
-      const [result] = await conn.query(
+      console.log(dependsJobId, jobsInfo[i]);
+      // 需要序列工作, 並取得ID
+      // eslint-disable-next-line no-await-in-loop
+      const [jobResult] = await conn.query(
         `INSERT INTO jobs(workflow_id, job_name, function_id, job_priority, depends_job_id, config) 
           VALUES (?, ?, ?, ?, ?, ?)`,
         [
@@ -22,20 +26,20 @@ async function insertWorkflow(workflowInfo, jobsInfo) {
           jobsInfo[i].job_name,
           jobsInfo[i].function_id,
           i,
-          depends_job_id,
+          dependsJobId,
           JSON.stringify(jobsInfo[i].config),
         ]
       );
-      depends_job_id = result.insertId;
+      dependsJobId = jobResult.insertId;
     }
     await conn.query('COMMIT');
-    return depends_job_id;
   } catch (error) {
     await conn.query('ROLLBACK');
     console.error(error);
   } finally {
     await conn.release();
   }
+  return dependsJobId;
 }
 
 export { getWorkflowById, insertWorkflow };
