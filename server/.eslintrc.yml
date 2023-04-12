@@ -12,9 +12,9 @@ parserOptions:
 plugins:
   - prettier
 rules: {
-    "no-unused-vars": "off",
-    "no-console": "off",
-    "func-names": "off",
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "func-names": "warn",
     "no-process-exit": "warn",
     "object-shorthand": "warn",
     "class-methods-use-this": "warn",

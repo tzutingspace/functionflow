@@ -1,5 +1,5 @@
-import * as Workflow from '../models/workflow.js';
-import { vaildInterger, getNowTime, calculateTime } from '../utils/utli.js';
+import * as DBWorkflow from '../models/workflow.js';
+import { vaildInterger, calculateTime } from '../utils/utli.js';
 import { StatusCodes } from 'http-status-codes';
 import { CustomError } from '../utils/customError.js';
 
@@ -9,7 +9,7 @@ export const getWorkflow = async (req, res, next) => {
   if (!vaildInterger(id)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
-  const workflow = await Workflow.getWorkflowById(id);
+  const workflow = await DBWorkflow.getWorkflowById(id);
   return res.json({ msg: workflow });
 };
 
@@ -23,6 +23,6 @@ export const createWorkflow = async (req, res, next) => {
 
   const jobsInfo = req.body.jobsInfo;
 
-  const result = await Workflow.insertWorkflow(workflowInfo, jobsInfo);
+  const result = await DBWorkflow.insertWorkflow(workflowInfo, jobsInfo);
   return res.json({ msg: result });
 };

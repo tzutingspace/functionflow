@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { CustomError } from './utils/customError.js';
 import { StatusCodes } from 'http-status-codes';
 import { router as workflow } from './routers/workflow.js';
+import { router as funcitons } from './routers/tool.js';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get('/', async (req, res) => {
 });
 
 app.use('/api/', workflow);
+app.use('/api/', funcitons);
 
 // Not Found
 app.use((req, res, next) => {
