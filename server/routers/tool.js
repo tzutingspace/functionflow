@@ -7,4 +7,4 @@ const router = Router();
 
 router.get('/tools', wrapAsync(getTools));
 
-export default router;
+export { router };

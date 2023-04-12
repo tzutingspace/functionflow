@@ -25,7 +25,8 @@ rules: {
     "prefer-arrow-callback": "warn",
     "camelcase": "warn",
     "import/extensions":"off",
-    "node/no-unsupported-features/es-syntax": "off"
+    "node/no-unsupported-features/es-syntax": "off",
+    "import/prefer-default-export": "off"
   }
 ignorePatterns:
   - node_modules

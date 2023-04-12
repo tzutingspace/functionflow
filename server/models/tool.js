@@ -5,4 +5,4 @@ async function getTools() {
   return rows;
 }
 
-export default getTools;
+export { getTools };

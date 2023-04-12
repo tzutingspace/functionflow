@@ -1,8 +1,8 @@
 import express, { json } from 'express';
 import dotenv from 'dotenv';
 
-import { CustomError } from './utils/customError.js';
-import { StatusCodes } from 'http-status-codes';
+import StatusCodes from 'http-status-codes';
+import CustomError from './utils/customError.js';
 import { router as workflow } from './routers/workflow.js';
 import { router as funcitons } from './routers/tool.js';
 
@@ -40,4 +40,6 @@ app.use((err, req, res, next) => {
     .json({ message: customError.message, status: customError.statusCode });
 });
 
-app.listen(PORT, () => console.log(`The application is running on on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`The application is running on on port ${PORT}`)
+);

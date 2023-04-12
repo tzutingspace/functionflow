@@ -8,4 +8,4 @@ router.get('/workflow/:id', wrapAsync(getWorkflow));
 
 router.post('/workflow', wrapAsync(createWorkflow));
 
-export default router;
+export { router };

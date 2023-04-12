@@ -5,7 +5,6 @@ import * as DBTool from '../models/tool.js';
 const getTools = async (req, res) => {
   console.log('@contoller getTools');
   const tools = await DBTool.getTools();
-  console.log(tools);
   return res.json({ msg: tools });
 };
 
