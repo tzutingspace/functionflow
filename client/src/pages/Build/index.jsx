@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import Block from './components/Block';
 import './index.css';
 
-export default function Build() {
-  const [jobs, setJobs] = useState([1]);
-
-  function addwork() {
-    const count = jobs.length;
-    setJobs((prev) => [...prev, count + 1]);
-  }
+const Build = () => {
+  const [jobs, setJobs] = useState([{ name: 'Trigger', id: uuidv4 }]);
 
   return (
     <div>
       {jobs.map((item) => (
-        <Block key={item} jobsData={jobs} setJobsData={setJobs} />
+        <Block key={item.id} jobData={item} jobsData={jobs} setJobsData={setJobs} />
       ))}
       <div />
     </div>
   );
-}
+};
+
+export default Build;

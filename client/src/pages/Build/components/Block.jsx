@@ -1,45 +1,46 @@
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import JobHead from './JobHead';
 import Job from './Job';
 
-export default function Block({ jobsData, setJobsData }) {
-  console.log(jobsData);
+const Block = ({ jobData, jobsData, setJobsData }) => {
+  useEffect(() => {
+    console.log('hello');
+  });
 
-  const [a, setA] = useState(100);
-
-  function add() {
-    console.log('12321');
-    setA((prev) => {
-      console.log('111', prev);
-      return prev + 100;
+  function addWork(jobData) {
+    console.log('addwork', jobData);
+    const jobid = uuidv4();
+    const newjob = { name: `Testing Job ${jobid}`, id: jobid };
+    setJobsData((prev) => {
+      // const prevJobs = [...prev];
+      // prevJobs.splice(jobData, 0, newjob);
+      return [...prev, newjob];
     });
   }
 
-  function addwork(_this) {
-    console.log('addwork', _this);
-    const count = jobsData.length;
-    setJobsData((prev) => [...prev, count + 1]);
+  function removeWork(jobData) {
+    console.log('removeWork', jobData);
+    setJobsData((prevJobs) => prevJobs.filter((job) => job.id !== jobData.id));
   }
 
   return (
     <div>
-      <JobHead />
+      <JobHead jobData={jobData} />
       <Job />
-      {/* <button type="button" onClick={}>
-        Remove
-      </button> */}
-      <button type="button" onClick={add}>
-        Add
+      <button type="button" onClick={() => removeWork(jobData)}>
+        Remove Job
       </button>
-      {a}
       <button
         type="button"
-        onClick={(_this) => {
-          addwork(_this);
+        onClick={() => {
+          addWork(jobData);
         }}
       >
-        Click Me
+        Add Job
       </button>
     </div>
   );
-}
+};
+
+export default Block;
