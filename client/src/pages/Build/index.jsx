@@ -4,15 +4,14 @@ import Block from './components/Block';
 import './index.css';
 
 const Build = () => {
-  const [jobs, setJobs] = useState([{ name: 'Trigger', id: uuidv4 }]);
+  const [jobs, setJobs] = useState([{ name: 'Trigger', id: uuidv4() }]);
 
   return (
-    <div>
-      {jobs.map((item) => (
-        <Block key={item.id} jobData={item} jobsData={jobs} setJobsData={setJobs} />
+    <>
+      {jobs.map((item, idx) => (
+        <Block key={item.id} jobData={item} jobsData={jobs} setJobsData={setJobs} idx={idx} />
       ))}
-      <div />
-    </div>
+    </>
   );
 };
 

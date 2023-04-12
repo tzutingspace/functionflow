@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import JobHead from './JobHead';
 import Job from './Job';
 
-const Block = ({ jobData, jobsData, setJobsData }) => {
-  useEffect(() => {
-    console.log('hello');
-  });
-
+const Block = ({ jobData, jobsData, setJobsData, idx }) => {
   function addWork(jobData) {
     console.log('addwork', jobData);
     const jobid = uuidv4();
@@ -26,11 +21,16 @@ const Block = ({ jobData, jobsData, setJobsData }) => {
 
   return (
     <div>
-      <JobHead jobData={jobData} />
-      <Job />
-      <button type="button" onClick={() => removeWork(jobData)}>
-        Remove Job
-      </button>
+      {/* <JobHead jobData={jobData} /> */}
+      <Job idx={idx} jobData={jobData} />
+      {idx ? (
+        <button type="button" onClick={() => removeWork(jobData)}>
+          Remove Job
+        </button>
+      ) : (
+        <></>
+      )}
+
       <button
         type="button"
         onClick={() => {
@@ -39,6 +39,7 @@ const Block = ({ jobData, jobsData, setJobsData }) => {
       >
         Add Job
       </button>
+      <div></div>
     </div>
   );
 };
