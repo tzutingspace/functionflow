@@ -10,11 +10,12 @@ const API = {
 };
 
 // 方法二
-const getData = async (setData, url) => {
+const axiosGetData = async (setData, endpoint) => {
+  const url = `http://localhost:8080/api${endpoint}`;
   const res = await axios.get(url);
   const { data } = res.data;
   setData(data);
 };
 
 export default API;
-export { getData };
+export { axiosGetData };
