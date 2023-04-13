@@ -5,6 +5,6 @@ import getTools from '../controllers/tool.js';
 
 const router = Router();
 
-router.get('/tools', wrapAsync(getTools));
+router.get('/tools/:id?', wrapAsync(getTools));
 
 export { router };

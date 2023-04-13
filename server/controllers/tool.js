@@ -4,8 +4,11 @@ import * as DBTool from '../models/tool.js';
 
 const getTools = async (req, res) => {
   console.log('@contoller getTools');
-  const tools = await DBTool.getTools();
-  return res.json({ msg: tools });
+  const id = req.params.id === undefined ? 0 : Number(req.params.id);
+  const requriement = id === 0 ? {} : { id };
+
+  const tools = await DBTool.getTools(requriement);
+  return res.json({ data: tools });
 };
 
 export default getTools;

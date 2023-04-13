@@ -10,7 +10,7 @@ export const getWorkflow = async (req, res, next) => {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
   const workflow = await DBWorkflow.getWorkflowById(id);
-  return res.json({ msg: workflow });
+  return res.json({ data: workflow });
 };
 
 export const createWorkflow = async (req, res) => {
@@ -24,5 +24,5 @@ export const createWorkflow = async (req, res) => {
   const { jobsInfo } = req.body;
 
   const result = await DBWorkflow.insertWorkflow(workflowInfo, jobsInfo);
-  return res.json({ msg: result });
+  return res.json({ data: result });
 };
