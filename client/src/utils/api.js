@@ -13,6 +13,7 @@ const API = {
   },
   async saveJob(data) {
     const res = await axios.post(`${this.hostname}/workflow`, { data });
+    return res.data;
   },
 };
 

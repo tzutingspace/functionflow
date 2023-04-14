@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Block from './components/Block';
 import Head from './components/Head';

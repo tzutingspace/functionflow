@@ -6,13 +6,14 @@ import { axiosGetData } from '../../../utils/api';
 import Tool from './Tool';
 
 const JobTitle = ({ jobData, setJobsData }) => {
+  // 修改個別JOB名稱
   function changeJobName(e) {
+    const inputValue = e.target.value;
     setJobsData((prev) => {
       const index = prev.findIndex((job) => job.id === jobData.id);
       if (index !== -1) {
-        prev[index]['name'] = e.target.value;
+        prev[index]['name'] = inputValue;
       }
-      console.log('改變job title', prev);
       return [...prev];
     });
   }
@@ -20,11 +21,7 @@ const JobTitle = ({ jobData, setJobsData }) => {
   return (
     <>
       <label>Job Name: </label>
-      <input
-        type="text"
-        placeholder={jobData.name}
-        onChange={(e) => changeJobName(e, jobData, setJobsData)}
-      ></input>
+      <input type="text" placeholder={jobData.name} onChange={(e) => changeJobName(e)}></input>
     </>
   );
 };

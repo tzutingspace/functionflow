@@ -32,7 +32,11 @@ const Tool = ({ jobData, setJobsData, idx }) => {
       ) : (
         <></>
       )}
-      {showJobConfig ? <JobConfig id={getConfigId} /> : <></>}
+      {showJobConfig ? (
+        <JobConfig jobData={jobData} setJobsData={setJobsData} id={getConfigId} />
+      ) : (
+        <></>
+      )}
     </>
   );
 };
