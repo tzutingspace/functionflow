@@ -1,51 +1,38 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 // import API from '../../../utils/api';
 import { axiosGetData } from '../../../utils/api';
+import JobConfig from './JobConfig';
 
-const Tool = ({ idx }) => {
-  const { id } = useParams();
-  const [tools, setTool] = useState([]);
-  const checkJob = useRef(false);
+const Tool = ({ jobData, setJobsData, idx }) => {
+  const [tools, setTools] = useState([]);
+  const [showJobConfig, setShowJobConfig] = useState(false);
+  const [getConfigId, setgetConfigId] = useState();
 
-  // 方法一
-  // useEffect(() => {
-  //   const getTools = async () => {
-  //     const { data } = await API.getTools();
-  //     console.log('工具', data);
-  //     setTool(data);
-  //   };
-  //   getTools();
-  // }, [id]);
-
-  // 方法二
   useEffect(() => {
-    axiosGetData(setTool, '/tools');
+    axiosGetData(setTools, '/tools');
   }, []);
 
-  function getNum(e) {
-    console.log('testing');
-    console.log(checkJob);
-    console.log(e.target.value);
-    checkJob.current = true;
-    console.log(checkJob);
+  function reRender(e) {
+    setgetConfigId(e.target.value);
+    setShowJobConfig(true);
   }
 
   return (
     <>
-      {idx ? (
+      {idx && showJobConfig === false ? (
         tools.map((item) => (
-          <div>
+          <div key={item.id}>
             <button
               type="button"
               value={item.id}
-              onClick={(e) => getNum(e)}
+              onClick={(e) => reRender(e)}
             >{`Name: ${item.name}, Description: ${item.description}`}</button>
           </div>
         ))
       ) : (
         <></>
       )}
+      {showJobConfig ? <JobConfig id={getConfigId} /> : <></>}
     </>
   );
 };

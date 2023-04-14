@@ -5,16 +5,15 @@ import Head from './components/Head';
 import './index.css';
 
 const Build = () => {
+  const [workflowTitle, setWorkflowTitle] = useState('');
   const [jobs, setJobs] = useState([{ name: 'Trigger', id: uuidv4() }]);
 
   return (
     <>
-      <form>
-        <Head />
-        {jobs.map((item, idx) => (
-          <Block key={item.id} jobData={item} jobsData={jobs} setJobsData={setJobs} idx={idx} />
-        ))}
-      </form>
+      <Head workflowTitle={workflowTitle} setWorkflowTitle={setWorkflowTitle} />
+      {jobs.map((item, idx) => (
+        <Block key={item.id} jobData={item} setJobsData={setJobs} idx={idx} />
+      ))}
     </>
   );
 };

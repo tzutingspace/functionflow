@@ -7,6 +7,13 @@ const API = {
     const res = await axios.get(`${this.hostname}/tools`);
     return res.data;
   },
+  async getConfigs(id) {
+    const res = await axios.get(`${this.hostname}/tools/${id}`);
+    return res.data;
+  },
+  async saveJob(data) {
+    const res = await axios.post(`${this.hostname}/workflow`, { data });
+  },
 };
 
 // 方法二

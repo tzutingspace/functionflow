@@ -5,13 +5,37 @@ import { axiosGetData } from '../../../utils/api';
 
 import Tool from './Tool';
 
-const Job = ({ idx, jobData }) => {
-  const [JobTitle, setJobTitle] = useState(['Tigger']);
+const JobTitle = ({ jobData, setJobsData }) => {
+  function changeJobName(e) {
+    setJobsData((prev) => {
+      const index = prev.findIndex((job) => job.id === jobData.id);
+      if (index !== -1) {
+        prev[index]['name'] = e.target.value;
+      }
+      console.log('改變job title', prev);
+      return [...prev];
+    });
+  }
 
   return (
     <>
-      <div>{idx ? <>Job Title Name: {JobTitle[idx]}</> : <>Trigger</>}</div>
-      <Tool idx={idx} />
+      <label>Job Name: </label>
+      <input
+        type="text"
+        placeholder={jobData.name}
+        onChange={(e) => changeJobName(e, jobData, setJobsData)}
+      ></input>
+    </>
+  );
+};
+
+const Job = ({ idx, jobData, setJobsData }) => {
+  return (
+    <>
+      <div>
+        {idx ? <JobTitle jobData={jobData} setJobsData={setJobsData}></JobTitle> : <>Trigger</>}
+      </div>
+      <Tool idx={idx} jobData={jobData} setJobsData={setJobsData} />
     </>
   );
 };

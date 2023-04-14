@@ -1,46 +1,41 @@
-import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import styled from 'styled-components';
 import Job from './Job';
 
-const Block = ({ jobData, jobsData, setJobsData, idx }) => {
+const JobButton = styled.button``;
+
+const Block = ({ jobData, setJobsData, idx }) => {
   function addWork(jobData) {
-    console.log('addwork', jobData);
     const jobid = uuidv4();
     const newjob = { name: `Testing Job ${jobid}`, id: jobid };
+
     setJobsData((prev) => {
-      // const prevJobs = [...prev];
-      // prevJobs.splice(jobData, 0, newjob);
+      const index = prev.findIndex((job) => job.id === jobData.id);
+      if (index !== -1) {
+        return [...prev.slice(0, index + 1), newjob, ...prev.slice(index + 1)];
+      }
       return [...prev, newjob];
     });
   }
 
   function removeWork(jobData) {
-    console.log('removeWork', jobData);
     setJobsData((prevJobs) => prevJobs.filter((job) => job.id !== jobData.id));
   }
 
   return (
-    <div>
-      {/* <JobHead jobData={jobData} /> */}
-      <Job idx={idx} jobData={jobData} />
+    <>
+      <Job idx={idx} jobData={jobData} setJobsData={setJobsData} />
       {idx ? (
-        <button type="button" onClick={() => removeWork(jobData)}>
+        <JobButton type="button" onClick={() => removeWork(jobData)}>
           Remove Job
-        </button>
+        </JobButton>
       ) : (
         <></>
       )}
-
-      <button
-        type="button"
-        onClick={() => {
-          addWork(jobData);
-        }}
-      >
+      <JobButton type="button" onClick={() => addWork(jobData)}>
         Add Job
-      </button>
-      <div></div>
-    </div>
+      </JobButton>
+    </>
   );
 };
 

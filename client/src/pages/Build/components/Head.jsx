@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
-const Head = () => {
-  const [workflowTitle, setWorkflowTitle] = useState();
+const HeadInput = styled.input``;
 
+const Head = ({ workflowTitle, setWorkflowTitle }) => {
   return (
     <>
-      <div>
-        <label>WorkFlow 名稱：</label>
-        <input id="Workflow" type="text"></input>
-      </div>
+      <label>WorkFlow Name：</label>
+      <HeadInput
+        onChange={(e) => setWorkflowTitle(e.target.value)}
+        placeholder="請輸入WorkFlow 名稱"
+        value={workflowTitle}
+      ></HeadInput>
+      <button type="button">Deploy</button>
       <br />
+      <div>----------------------------------------------------</div>
     </>
   );
 };
