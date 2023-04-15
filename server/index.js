@@ -6,6 +6,7 @@ import cors from 'cors';
 import CustomError from './utils/customError.js';
 import { router as workflow } from './routers/workflow.js';
 import { router as funcitons } from './routers/tool.js';
+import { router as tester } from './routers/tester.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get('/', async (req, res) => {
 
 app.use('/api/', workflow);
 app.use('/api/', funcitons);
+app.use('/api/', tester);
 
 // Not Found
 app.use((req, res, next) => {
