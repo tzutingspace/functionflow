@@ -5,6 +5,36 @@ async function getWorkflowById(id) {
   return rows[0];
 }
 
+// 初始化wf
+async function initWorkflow(userId) {
+  const [result] = await pool.query(
+    `INSERT INTO workflows(user_id) VALUES (?)`,
+    [userId]
+  );
+  const workflowId = result.insertId;
+  return workflowId;
+}
+
+// update wf
+async function updateWorkflow(workflowId, necessaryInfo = {}) {
+  const condition = { sql: '', binding: [] };
+  const sqlTemp = [];
+
+  condition.binding = Object.entries(necessaryInfo).map(([key, value]) => {
+    sqlTemp.push(`${key} = ?`);
+    return value;
+  });
+  condition.sql = sqlTemp.join(', ');
+  condition.binding.push(workflowId);
+
+  const workflowUpdatw = `UPDATE workflows SET ${condition.sql} WHERE id = ?`;
+  const [result] = await pool.query(workflowUpdatw, condition.binding);
+  console.log(`變更workflow Id: ${workflowId}結果`, result.info);
+  // FIXME: return 結果要有一致性
+  return result;
+}
+
+// 完整建立(wf and job)
 async function insertWorkflow(workflowInfo, jobsInfo) {
   let dependsJobId;
   const conn = await pool.getConnection();
@@ -42,4 +72,4 @@ async function insertWorkflow(workflowInfo, jobsInfo) {
   return dependsJobId;
 }
 
-export { getWorkflowById, insertWorkflow };
+export { getWorkflowById, initWorkflow, insertWorkflow, updateWorkflow };
