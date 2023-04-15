@@ -70,7 +70,7 @@ export const deployWorkflow = async (req, res) => {
 export const createJob = async (req, res, next) => {
   console.log('@controller createJob');
   const { workflowInfo, jobsInfo } = req.body;
-  let { insertJobSeq } = req.body;
+  const { insertJobSeq } = req.body;
   const workflowId = workflowInfo.id;
 
   if (!vaildInterger(insertJobSeq)) {
@@ -80,8 +80,6 @@ export const createJob = async (req, res, next) => {
   if (!vaildInterger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
-
-  insertJobSeq = Number(insertJobSeq);
 
   const necessaryInfo = {
     name: jobsInfo[insertJobSeq].job_name,
@@ -100,8 +98,8 @@ export const updateJob = async (req, res, next) => {
   console.log('@controller updateJob');
   console.log('request Body', req.body);
   const { jobsInfo } = req.body;
-  const jobId = req.params.id;
   const { insertJobSeq } = req.body;
+  const jobId = req.params.id;
 
   if (!vaildInterger(insertJobSeq)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
@@ -114,15 +112,14 @@ export const updateJob = async (req, res, next) => {
 
   // TODO:驗證此user是否有此id的修改權限
   // TODO:過濾Job可修改資訊
-
   const necessaryInfo = {
-    name: jobsInfo[jobId].job_name,
-    function_id: jobsInfo[jobId].function_id,
-    sequence: jobsInfo[jobId].sequence,
-    config_input: jobsInfo[jobId].config_input,
+    name: jobsInfo[insertJobSeq].job_name,
+    function_id: jobsInfo[insertJobSeq].function_id,
+    sequence: jobsInfo[insertJobSeq].sequence,
+    config_input: jobsInfo[insertJobSeq].config_input,
   };
 
   // 更新資料
-  const result = await DBWorkflow.updateJob(jobsInfo, necessaryInfo);
+  const result = await DBWorkflow.updateJob(jobId, necessaryInfo);
   return res.json({ data: result });
 };
