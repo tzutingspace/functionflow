@@ -3,6 +3,7 @@ import * as DBWorkflow from '../models/workflow.js';
 import { vaildInterger, calculateTime } from '../utils/utli.js';
 import CustomError from '../utils/customError.js';
 
+// Get old Workflow
 export const getWorkflow = async (req, res, next) => {
   console.log('@controller getWorkflow');
   const { id } = req.params;
@@ -13,6 +14,7 @@ export const getWorkflow = async (req, res, next) => {
   return res.json({ data: workflow });
 };
 
+// Init a new Workflow
 export const initWorkflow = async (req, res) => {
   console.log('@controller initWorkflow');
   // FIXME: 身份驗證後需修改
@@ -21,6 +23,7 @@ export const initWorkflow = async (req, res) => {
   return res.json({ data: workflowId });
 };
 
+// Update a Workflow
 export const updateWorkflow = async (req, res, next) => {
   console.log('@controller updateWorkflow');
   console.log('request Body', req.body);
@@ -47,6 +50,7 @@ export const updateWorkflow = async (req, res, next) => {
   return res.json({ data: result });
 };
 
+// TODO: DEPLOY ALL WORKFLOW
 export const deployWorkflow = async (req, res) => {
   const { workflowInfo } = req.body;
 
@@ -58,5 +62,67 @@ export const deployWorkflow = async (req, res) => {
   const { jobsInfo } = req.body;
 
   const result = await DBWorkflow.insertWorkflow(workflowInfo, jobsInfo);
+  console.log(result);
   return res.json({ data: '開發中' });
+};
+
+// CREATE JOB
+export const createJob = async (req, res, next) => {
+  console.log('@controller createJob');
+  const { workflowInfo, jobsInfo } = req.body;
+  let { insertJobSeq } = req.body;
+  const workflowId = workflowInfo.id;
+
+  if (!vaildInterger(insertJobSeq)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  if (!vaildInterger(workflowId)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  insertJobSeq = Number(insertJobSeq);
+
+  const necessaryInfo = {
+    name: jobsInfo[insertJobSeq].job_name,
+    function_id: jobsInfo[insertJobSeq].function_id,
+    sequence: jobsInfo[insertJobSeq].sequence,
+    config_input: jobsInfo[insertJobSeq].config_input,
+  };
+
+  const result = await DBWorkflow.createJob(workflowId, necessaryInfo);
+
+  return res.json({ data: result });
+};
+
+// UPDATE JOB
+export const updateJob = async (req, res, next) => {
+  console.log('@controller updateJob');
+  console.log('request Body', req.body);
+  const { jobsInfo } = req.body;
+  const jobId = req.params.id;
+  const { insertJobSeq } = req.body;
+
+  if (!vaildInterger(insertJobSeq)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  // 驗證id是否為數字
+  if (!vaildInterger(jobId)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  // TODO:驗證此user是否有此id的修改權限
+  // TODO:過濾Job可修改資訊
+
+  const necessaryInfo = {
+    name: jobsInfo[jobId].job_name,
+    function_id: jobsInfo[jobId].function_id,
+    sequence: jobsInfo[jobId].sequence,
+    config_input: jobsInfo[jobId].config_input,
+  };
+
+  // 更新資料
+  const result = await DBWorkflow.updateJob(jobsInfo, necessaryInfo);
+  return res.json({ data: result });
 };

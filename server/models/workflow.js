@@ -27,9 +27,49 @@ async function updateWorkflow(workflowId, necessaryInfo = {}) {
   condition.sql = sqlTemp.join(', ');
   condition.binding.push(workflowId);
 
-  const workflowUpdatw = `UPDATE workflows SET ${condition.sql} WHERE id = ?`;
-  const [result] = await pool.query(workflowUpdatw, condition.binding);
+  const workflowUpdate = `UPDATE workflows SET ${condition.sql} WHERE id = ?`;
+  const [result] = await pool.query(workflowUpdate, condition.binding);
   console.log(`變更workflow Id: ${workflowId}結果`, result.info);
+  // FIXME: return 結果要有一致性
+  return result;
+}
+
+// createJob
+async function createJob(workflowId, necessaryInfo = {}) {
+  const [result] = await pool.query(
+    `INSERT INTO jobs(workflow_id, name, function_id, sequence, config_input, config_output) 
+      VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      workflowId,
+      necessaryInfo.name,
+      necessaryInfo.function_id,
+      necessaryInfo.sequence,
+      JSON.stringify(necessaryInfo.config_input),
+      // FIXME: 確認是否需要config_output; 目前與function的template一樣
+      JSON.stringify('["name":"no use"]'),
+    ]
+  );
+  console.log(`新增Job 成功 ID 為`, result.insertId);
+  return result.insertId;
+}
+
+// updateJob
+async function updateJob(jobId, necessaryInfo = {}) {
+  console.log(necessaryInfo);
+
+  const condition = { sql: '', binding: [] };
+  const sqlTemp = [];
+
+  condition.binding = Object.entries(necessaryInfo).map(([key, value]) => {
+    sqlTemp.push(`${key} = ?`);
+    return value;
+  });
+  condition.sql = sqlTemp.join(', ');
+  condition.binding.push(jobId);
+
+  const jobUpdate = `UPDATE jobs SET ${condition.sql} WHERE id = ?`;
+  const [result] = await pool.query(jobUpdate, condition.binding);
+  console.log(`變更Job Id: ${jobId}結果`, result.info);
   // FIXME: return 結果要有一致性
   return result;
 }
@@ -72,4 +112,11 @@ async function insertWorkflow(workflowInfo, jobsInfo) {
   return dependsJobId;
 }
 
-export { getWorkflowById, initWorkflow, insertWorkflow, updateWorkflow };
+export {
+  getWorkflowById,
+  initWorkflow,
+  insertWorkflow,
+  updateWorkflow,
+  createJob,
+  updateJob,
+};
