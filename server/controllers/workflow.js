@@ -50,22 +50,6 @@ export const updateWorkflow = async (req, res, next) => {
   return res.json({ data: result });
 };
 
-// TODO: DEPLOY ALL WORKFLOW
-export const deployWorkflow = async (req, res) => {
-  const { workflowInfo } = req.body;
-
-  workflowInfo.next_execute_time = calculateTime(
-    workflowInfo.start_time,
-    workflowInfo.trigger_interval_minutes
-  );
-
-  const { jobsInfo } = req.body;
-
-  const result = await DBWorkflow.insertWorkflow(workflowInfo, jobsInfo);
-  console.log(result);
-  return res.json({ data: '開發中' });
-};
-
 // CREATE JOB
 export const createJob = async (req, res, next) => {
   console.log('@controller createJob');
@@ -122,4 +106,32 @@ export const updateJob = async (req, res, next) => {
   // 更新資料
   const result = await DBWorkflow.updateJob(jobId, necessaryInfo);
   return res.json({ data: result });
+};
+
+// TODO: DEPLOY ALL WORKFLOW
+export const deployWorkflow = async (req, res) => {
+  const { workflowInfo, jobsInfo } = req.body;
+
+  workflowInfo.next_execute_time = calculateTime(
+    workflowInfo.start_time,
+    workflowInfo.trigger_interval_minutes
+  );
+
+  const necessaryInfo = {
+    name: workflowInfo.name,
+    status: workflowInfo.status,
+    start_time: workflowInfo.start_time,
+    next_execute_time: workflowInfo.next_execute_time,
+    trigger_type: workflowInfo.trigger_type,
+    trigger_interval_seconds: workflowInfo.trigger_interval_seconds,
+    job_number: workflowInfo.job_number,
+  };
+
+  const result = await DBWorkflow.deployWorkflow(
+    workflowInfo.id,
+    necessaryInfo,
+    jobsInfo
+  );
+  console.log(result);
+  return res.json({ data: '開發中' });
 };

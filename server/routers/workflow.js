@@ -6,6 +6,7 @@ import {
   updateWorkflow,
   createJob,
   updateJob,
+  deployWorkflow,
 } from '../controllers/workflow.js';
 
 const router = Router();
@@ -19,5 +20,7 @@ router.post('/workflow', wrapAsync(initWorkflow));
 router.post('/job', wrapAsync(createJob));
 
 router.put('/job/:id', wrapAsync(updateJob));
+
+router.put('/workflow/depoly/:id', wrapAsync(deployWorkflow));
 
 export { router };
