@@ -4,11 +4,19 @@ import * as DBTool from '../models/tool.js';
 
 const getTools = async (req, res) => {
   console.log('@contoller getTools');
-  const id = req.params.id === undefined ? 0 : Number(req.params.id);
-  const requriement = id === 0 ? {} : { id };
-
+  console.log(req.params);
+  const type = req.params.type === undefined ? 'all' : req.params.type;
+  const requriement = type === 'all' ? {} : { type };
   const tools = await DBTool.getTools(requriement);
   return res.json({ data: tools });
 };
 
-export default getTools;
+const searchTool = async (req, res) => {
+  console.log('@contoller getTriggers');
+  const id = req.params.id === undefined ? 1 : Number(req.params.id);
+  const requriement = { id };
+  const tool = await DBTool.getTools(requriement);
+  return res.json({ data: tool });
+};
+
+export { getTools, searchTool };
