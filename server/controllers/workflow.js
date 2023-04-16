@@ -37,13 +37,35 @@ export const updateWorkflow = async (req, res, next) => {
 
   // TODO:驗證此user是否有此id的修改權限
   // TODO:過濾workflow可修改資訊
+
+  // TODO: 換算時間
+  let triggerIntervalSeconds;
+  if (workflowInfo.trigger_type === 'scheduler') {
+    // daily
+    if (workflowInfo.function_id === 3) {
+      triggerIntervalSeconds = 86400;
+      // weekly
+    } else if (workflowInfo.function_id === 4) {
+      triggerIntervalSeconds = 86400 * 7;
+      // monthly
+    } else if (workflowInfo.function_id === 5) {
+      triggerIntervalSeconds = 86400 * 30;
+    } else {
+      triggerIntervalSeconds = null;
+      workflowInfo.status = 'Error';
+    }
+  }
+
+  // TODO: 如果是API???
+
+  // 僅留可update項目, undefined 先記錄, model會filter
   const necessaryInfo = {
     name: workflowInfo.name,
     status: workflowInfo.status,
     start_time: workflowInfo.start_time,
     next_execute_time: workflowInfo.next_execute_time,
     trigger_type: workflowInfo.trigger_type,
-    trigger_interval_seconds: workflowInfo.trigger_interval_seconds,
+    trigger_interval_seconds: triggerIntervalSeconds,
     job_number: workflowInfo.job_number,
   };
   const result = await DBWorkflow.updateWorkflow(workflowId, necessaryInfo);
@@ -64,12 +86,13 @@ export const createJob = async (req, res, next) => {
   if (!vaildInterger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
+  // FIXME: 如果create 的資料會影響下面的sequence??
 
   const necessaryInfo = {
     name: jobsInfo[insertJobSeq].job_name,
     function_id: jobsInfo[insertJobSeq].function_id,
     sequence: jobsInfo[insertJobSeq].sequence,
-    config_input: jobsInfo[insertJobSeq].config_input,
+    config_input: JSON.stringify(jobsInfo[insertJobSeq].config_input),
   };
 
   const result = await DBWorkflow.createJob(workflowId, necessaryInfo);
@@ -82,10 +105,10 @@ export const updateJob = async (req, res, next) => {
   console.log('@controller updateJob');
   console.log('request Body', req.body);
   const { jobsInfo } = req.body;
-  const { insertJobSeq } = req.body;
+  const { updateJobSeq } = req.body;
   const jobId = req.params.id;
 
-  if (!vaildInterger(insertJobSeq)) {
+  if (!vaildInterger(updateJobSeq)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
@@ -97,10 +120,10 @@ export const updateJob = async (req, res, next) => {
   // TODO:驗證此user是否有此id的修改權限
   // TODO:過濾Job可修改資訊
   const necessaryInfo = {
-    name: jobsInfo[insertJobSeq].job_name,
-    function_id: jobsInfo[insertJobSeq].function_id,
-    sequence: jobsInfo[insertJobSeq].sequence,
-    config_input: jobsInfo[insertJobSeq].config_input,
+    name: jobsInfo[updateJobSeq].job_name,
+    function_id: jobsInfo[updateJobSeq].function_id,
+    sequence: jobsInfo[updateJobSeq].sequence,
+    config_input: JSON.stringify(jobsInfo[updateJobSeq].config_input),
   };
 
   // 更新資料
@@ -108,7 +131,7 @@ export const updateJob = async (req, res, next) => {
   return res.json({ data: result });
 };
 
-// TODO: DEPLOY ALL WORKFLOW
+// DEPLOY ALL WORKFLOW
 export const deployWorkflow = async (req, res) => {
   const { workflowInfo, jobsInfo } = req.body;
 

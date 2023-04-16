@@ -25,10 +25,18 @@ export async function updateWorkflow(
   const condition = { sql: '', binding: [] };
   const sqlTemp = [];
 
-  condition.binding = Object.entries(necessaryInfo).map(([key, value]) => {
-    sqlTemp.push(`${key} = ?`);
-    return value;
-  });
+  // 來源空值不更新
+  condition.binding = Object.entries(necessaryInfo).reduce(
+    (acc, [key, value]) => {
+      if (value) {
+        sqlTemp.push(`${key} = ?`);
+        acc.push(value);
+      }
+      return acc;
+    },
+    []
+  );
+
   condition.sql = sqlTemp.join(', ');
   condition.binding.push(workflowId);
 
@@ -65,13 +73,17 @@ export async function updateJob(jobId, necessaryInfo = {}) {
   const condition = { sql: '', binding: [] };
   const sqlTemp = [];
 
-  condition.binding = Object.entries(necessaryInfo).map(([key, value]) => {
-    sqlTemp.push(`${key} = ?`);
-    if (key === 'config_input') {
-      return JSON.stringify(value);
-    }
-    return value;
-  });
+  // 來源空值不更新
+  condition.binding = Object.entries(necessaryInfo).reduce(
+    (acc, [key, value]) => {
+      if (value) {
+        sqlTemp.push(`${key} = ?`);
+        acc.push(value);
+      }
+      return acc;
+    },
+    []
+  );
   condition.sql = sqlTemp.join(', ');
   condition.binding.push(jobId);
 
