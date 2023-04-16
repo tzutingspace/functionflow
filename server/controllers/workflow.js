@@ -87,6 +87,7 @@ export const updateWorkflow = async (req, res, next) => {
 // CREATE JOB
 export const createJob = async (req, res, next) => {
   console.log('@controller createJob');
+  console.log('request Body', req.body);
   const { workflowInfo, jobsInfo } = req.body;
   const { insertJobSeq } = req.body;
   const workflowId = workflowInfo.id;
@@ -145,6 +146,8 @@ export const updateJob = async (req, res, next) => {
 
 // DEPLOY ALL WORKFLOW
 export const deployWorkflow = async (req, res, next) => {
+  console.log('@controller deployWorkflow');
+  console.log('request Body', req.body);
   const { workflowInfo, jobsInfo } = req.body;
   const workflowId = req.params.id;
 

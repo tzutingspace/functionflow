@@ -4,6 +4,8 @@ import axios from 'axios';
 const API = {
   hostname: 'http://localhost:8080/api',
 
+  // 新增或更新workflow and Job
+
   async createWorkflow() {
     const res = await axios.post(`${this.hostname}/workflow`);
     return res.data;
@@ -21,6 +23,14 @@ const API = {
     const res = await axios.put(`${this.hostname}/job/${jobId}`, jobInfo);
     return res.data;
   },
+
+  async deployWorkflow(workflowId, workflowInfo) {
+    const res = await axios.put(`${this.hostname}/workflow/depoly/${workflowId}`, workflowInfo);
+    return res.data;
+  },
+
+  // GET function 資訊
+
   async getTools(typer = '') {
     const res = await axios.get(`${this.hostname}/tools/${typer}`);
     return res.data;

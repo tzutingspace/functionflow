@@ -57,7 +57,7 @@ export async function createJob(workflowId, necessaryInfo = {}) {
       necessaryInfo.name,
       necessaryInfo.function_id,
       necessaryInfo.sequence,
-      JSON.stringify(necessaryInfo.config_input),
+      necessaryInfo.config_input,
       // FIXME: 確認是否需要config_output; 目前與function的template一樣
       JSON.stringify('["name":"no use"]'),
     ]

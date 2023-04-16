@@ -58,7 +58,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
 
       // 更新初始化(Input State) 需填入資料
       setInput(() => {
-        console.log('JOB CONFIG 初始值', tempObj);
+        console.log('JOB CONFIG 初始值', { ...tempObj });
         return { ...tempObj };
       });
     };
@@ -110,9 +110,11 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
         waitingSaveData['jobsInfo']['job_id'] = jobId['data'];
       } else {
         // 更新
+        console.log('更新job', jobsData[idx]);
         waitingSaveData['updateJobSeq'] = idx;
         const jobId = jobsData[idx]['settingInfo']['jobsInfo']['job_id'];
         await API.updateJob(jobId, waitingSaveData);
+        waitingSaveData['jobsInfo']['job_id'] = jobId;
       }
     }
 
@@ -125,7 +127,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
       }
       return [...prev];
     });
-    // console.log('最後jobsData呈現的結果', jobsData);
+    console.log('最後jobsData呈現的結果', jobsData);
   }
 
   return (
@@ -146,6 +148,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
                     let newObj = {};
                     newObj[item.name] = e.target.value;
                     setInput((prev) => {
+                      console.log('onchange', { ...prev, ...newObj });
                       return { ...prev, ...newObj };
                     });
                   }}
