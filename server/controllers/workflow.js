@@ -144,29 +144,60 @@ export const updateJob = async (req, res, next) => {
 };
 
 // DEPLOY ALL WORKFLOW
-export const deployWorkflow = async (req, res) => {
+export const deployWorkflow = async (req, res, next) => {
   const { workflowInfo, jobsInfo } = req.body;
+  const workflowId = req.params.id;
 
-  workflowInfo.next_execute_time = calculateTime(
+  // 驗證id是否為數字
+  if (!vaildInterger(workflowId)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  const id = workflowInfo.function_id;
+  const toolInfo = await DBTool.getTools({ id });
+
+  // 沒有這個funciton
+  if (!toolInfo[0]) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+  // 這個funciton 不是trigger
+  if (toolInfo[0].type !== 'trigger') {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  let triggerIntervalSeconds;
+  let triggerType = 'scheduled';
+  if (toolInfo[0].trigger_type === 'daily') {
+    triggerIntervalSeconds = 86400;
+  } else if (toolInfo[0].trigger_type === 'weekly') {
+    triggerIntervalSeconds = 86400 * 7;
+  } else if (toolInfo[0].trigger_type === 'monthly') {
+    triggerIntervalSeconds = 86400 * 30;
+  } else {
+    triggerIntervalSeconds = -1;
+    triggerType = 'API';
+  }
+  const nextExecuteTime = calculateTime(
     workflowInfo.start_time,
-    workflowInfo.trigger_interval_seconds
+    triggerIntervalSeconds
   );
 
+  // 僅留可update項目, undefined 先記錄, model會filter
   const necessaryInfo = {
     name: workflowInfo.name,
-    status: workflowInfo.status,
+    status: workflowInfo.status || 'active',
     start_time: workflowInfo.start_time,
-    next_execute_time: workflowInfo.next_execute_time,
-    trigger_type: workflowInfo.trigger_type,
-    trigger_interval_seconds: workflowInfo.trigger_interval_seconds,
+    next_execute_time: nextExecuteTime,
+    trigger_type: triggerType,
+    trigger_interval_seconds: triggerIntervalSeconds,
+    trigger_api_route: workflowInfo.trigger_api_route,
     job_number: workflowInfo.job_number,
   };
 
   const result = await DBWorkflow.deployWorkflow(
-    workflowInfo.id,
+    workflowId,
     necessaryInfo,
     jobsInfo
   );
-  console.log(result);
-  return res.json({ data: '開發中' });
+  return res.json({ data: result });
 };
