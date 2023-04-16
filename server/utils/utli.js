@@ -6,8 +6,8 @@ export function getNowTime() {
   return moment.utc().tz('Asia/Hong_Kong').format('YYYY-MM-DD HH:mm:ss');
 }
 
-export function calculateTime(inputTime, internalMinutes) {
-  const interval = moment.duration(parseInt(internalMinutes, 10), 'minutes');
+export function calculateTime(inputTime, internalSeconds) {
+  const interval = moment.duration(parseInt(internalSeconds, 10), 'seconds');
   const executeTime = moment(inputTime);
   const nextTime = executeTime
     .clone()

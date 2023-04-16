@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import * as DBWorkflow from '../models/workflow.js';
+import * as DBTool from '../models/tool.js';
 import { vaildInterger, calculateTime } from '../utils/utli.js';
 import CustomError from '../utils/customError.js';
 
@@ -36,36 +37,47 @@ export const updateWorkflow = async (req, res, next) => {
   }
 
   // TODO:驗證此user是否有此id的修改權限
-  // TODO:過濾workflow可修改資訊
+  // 過濾workflow可修改資訊
+  const id = workflowInfo.function_id;
+  const toolInfo = await DBTool.getTools({ id });
 
-  // TODO: 換算時間
-  let triggerIntervalSeconds;
-  if (workflowInfo.trigger_type === 'scheduler') {
-    // daily
-    if (workflowInfo.function_id === 3) {
-      triggerIntervalSeconds = 86400;
-      // weekly
-    } else if (workflowInfo.function_id === 4) {
-      triggerIntervalSeconds = 86400 * 7;
-      // monthly
-    } else if (workflowInfo.function_id === 5) {
-      triggerIntervalSeconds = 86400 * 30;
-    } else {
-      triggerIntervalSeconds = null;
-      workflowInfo.status = 'Error';
-    }
+  // 沒有這個funciton
+  if (!toolInfo[0]) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+  // 這個funciton 不是trigger
+  if (toolInfo[0].type !== 'trigger') {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
+  // Schedule 判斷 寫入內容
   // TODO: 如果是API???
+  let triggerIntervalSeconds;
+  let triggerType = 'scheduled';
+  if (toolInfo[0].trigger_type === 'daily') {
+    triggerIntervalSeconds = 86400;
+  } else if (toolInfo[0].trigger_type === 'weekly') {
+    triggerIntervalSeconds = 86400 * 7;
+  } else if (toolInfo[0].trigger_type === 'monthly') {
+    triggerIntervalSeconds = 86400 * 30;
+  } else {
+    triggerIntervalSeconds = -1;
+    triggerType = 'API';
+  }
+  const nextExecuteTime = calculateTime(
+    workflowInfo.start_time,
+    triggerIntervalSeconds
+  );
 
   // 僅留可update項目, undefined 先記錄, model會filter
   const necessaryInfo = {
     name: workflowInfo.name,
     status: workflowInfo.status,
     start_time: workflowInfo.start_time,
-    next_execute_time: workflowInfo.next_execute_time,
-    trigger_type: workflowInfo.trigger_type,
+    next_execute_time: nextExecuteTime,
+    trigger_type: triggerType,
     trigger_interval_seconds: triggerIntervalSeconds,
+    trigger_api_route: workflowInfo.trigger_api_route,
     job_number: workflowInfo.job_number,
   };
   const result = await DBWorkflow.updateWorkflow(workflowId, necessaryInfo);
@@ -137,7 +149,7 @@ export const deployWorkflow = async (req, res) => {
 
   workflowInfo.next_execute_time = calculateTime(
     workflowInfo.start_time,
-    workflowInfo.trigger_interval_minutes
+    workflowInfo.trigger_interval_seconds
   );
 
   const necessaryInfo = {

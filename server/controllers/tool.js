@@ -12,7 +12,7 @@ const getTools = async (req, res) => {
 };
 
 const searchTool = async (req, res) => {
-  console.log('@contoller getTriggers');
+  console.log('@contoller searchTool');
   const id = req.params.id === undefined ? 1 : Number(req.params.id);
   const requriement = { id };
   const tool = await DBTool.getTools(requriement);
