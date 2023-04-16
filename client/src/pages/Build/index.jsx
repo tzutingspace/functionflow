@@ -27,7 +27,12 @@ const Build = () => {
 
   return (
     <>
-      <Head workflowTitle={workflowTitle} setWorkflowTitle={setWorkflowTitle} />
+      <Head
+        workflowTitle={workflowTitle}
+        setWorkflowTitle={setWorkflowTitle}
+        jobsData={jobs}
+        setJobsData={setJobs}
+      />
       {jobs.map((item, idx) => (
         <Block key={item.uuid} jobData={item} jobsData={jobs} setJobsData={setJobs} idx={idx} />
       ))}

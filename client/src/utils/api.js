@@ -5,7 +5,6 @@ const API = {
   hostname: 'http://localhost:8080/api',
 
   async createWorkflow() {
-    //FIXME: 暫時用固定值
     const res = await axios.post(`${this.hostname}/workflow`);
     return res.data;
   },

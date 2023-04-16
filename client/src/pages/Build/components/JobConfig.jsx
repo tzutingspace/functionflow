@@ -21,7 +21,6 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
   const { name, description, template_input } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
-  // const [output, setOutput] = useState(); // 暫時不用利用多的state去記output
 
   // 建立JobConfig時, 去抓取資料, 並紀錄需填寫內容
   useEffect(() => {
@@ -86,15 +85,16 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
     console.log('初始waitingSaveDate', waitingSaveData);
     // 判斷是否為trigger
     if (idx === 0) {
-      console.log('處理idx=0, 表示是trigger');
+      // console.log('處理idx=0, 表示是trigger');
       waitingSaveData['id'] = jobData.id;
+      waitingSaveData['name'] = jobData.name;
       waitingSaveData['function_id'] = functionId;
       //FIXME: 處理月和周的話怎麼辦
       waitingSaveData['start_time'] = input['Start Time'] + ' ' + input['Daily'] + ':00';
-      waitingSaveData['job_number'] = jobsData.length;
+      waitingSaveData['job_number'] = jobsData.length - 1;
       await API.updateWorkflow(waitingSaveData);
     } else {
-      console.log('處理job');
+      // console.log('處理job');
       waitingSaveData['workflowInfo'] = { id: jobsData[0].id };
       waitingSaveData['jobsInfo'] = { [idx]: {} };
       waitingSaveData['jobsInfo'][idx] = {
@@ -120,12 +120,12 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
     setJobsData((prev) => {
       const index = prev.findIndex((job) => job.uuid === jobData.uuid);
       if (index !== -1) {
-        console.log('最終post資料, 寫回上層settingInfo', waitingSaveData);
+        // console.log('最終post資料, 寫回上層settingInfo', waitingSaveData);
         prev[index]['settingInfo'] = waitingSaveData;
       }
       return [...prev];
     });
-    console.log('最後jobsData呈現的結果', jobsData);
+    // console.log('最後jobsData呈現的結果', jobsData);
   }
 
   return (
@@ -210,7 +210,6 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
             </ConfigGroup>
           );
         })}
-      {/* {output && <div>{`預期結果${output}`}</div>} */}
     </>
   );
 };

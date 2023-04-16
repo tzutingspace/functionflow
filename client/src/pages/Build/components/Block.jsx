@@ -39,6 +39,8 @@ const Block = ({ jobData, jobsData, setJobsData, idx }) => {
       <JobButton type="button" onClick={() => addJob()}>
         Add Job
       </JobButton>
+      <br />
+      <br />
     </>
   );
 };
