@@ -3,27 +3,33 @@ import axios from 'axios';
 //  方法一
 const API = {
   hostname: 'http://localhost:8080/api',
-  async getTools() {
-    const res = await axios.get(`${this.hostname}/tools`);
+
+  async createWorkflow() {
+    //FIXME: 暫時用固定值
+    const res = await axios.post(`${this.hostname}/workflow`);
+    return res.data;
+  },
+  async updateWorkflow(workflowInfo) {
+    const id = workflowInfo.id;
+    const res = await axios.put(`${this.hostname}/workflow/${id}`, { workflowInfo });
+    return res.data;
+  },
+  async createJob(jobInfo) {
+    const res = await axios.post(`${this.hostname}/job`, jobInfo);
+    return res.data;
+  },
+  async updateJob(jobId, jobInfo) {
+    const res = await axios.put(`${this.hostname}/job/${jobId}`, jobInfo);
+    return res.data;
+  },
+  async getTools(typer = '') {
+    const res = await axios.get(`${this.hostname}/tools/${typer}`);
     return res.data;
   },
   async getConfigs(id) {
-    const res = await axios.get(`${this.hostname}/tools/${id}`);
+    const res = await axios.get(`${this.hostname}/tool/${id}`);
     return res.data;
   },
-  async saveJob(data) {
-    const res = await axios.post(`${this.hostname}/workflow`, { data });
-    return res.data;
-  },
-};
-
-// 方法二
-const axiosGetData = async (setData, endpoint) => {
-  const url = `http://localhost:8080/api${endpoint}`;
-  const res = await axios.get(url);
-  const { data } = res.data;
-  setData(data);
 };
 
 export default API;
-export { axiosGetData };

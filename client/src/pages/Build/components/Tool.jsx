@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
-// import API from '../../../utils/api';
-import { axiosGetData } from '../../../utils/api';
+import API from '../../../utils/api';
 import JobConfig from './JobConfig';
 
-const Tool = ({ jobData, setJobsData, idx }) => {
+const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
   const [tools, setTools] = useState([]);
   const [showJobConfig, setShowJobConfig] = useState(false);
   const [getConfigId, setgetConfigId] = useState();
 
   useEffect(() => {
-    axiosGetData(setTools, '/tools');
+    const typer = idx === 0 ? 'trigger' : '';
+    const getTools = async () => {
+      const { data } = await API.getTools(typer);
+      setTools(data);
+    };
+    getTools();
   }, []);
 
   function reRender(e) {
@@ -19,7 +23,7 @@ const Tool = ({ jobData, setJobsData, idx }) => {
 
   return (
     <>
-      {idx && showJobConfig === false ? (
+      {showJobConfig === false ? (
         tools.map((item) => (
           <div key={item.id}>
             <button
@@ -33,7 +37,13 @@ const Tool = ({ jobData, setJobsData, idx }) => {
         <></>
       )}
       {showJobConfig ? (
-        <JobConfig jobData={jobData} setJobsData={setJobsData} id={getConfigId} />
+        <JobConfig
+          jobData={jobData}
+          jobsData={jobsData}
+          setJobsData={setJobsData}
+          functionId={getConfigId}
+          idx={idx}
+        />
       ) : (
         <></>
       )}
