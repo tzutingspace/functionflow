@@ -37,5 +37,5 @@ export const manualTriggerWorkflow = async (req, res, next) => {
 
   const resultSQS = await putToSQS(JSON.stringify(result));
   // 放進sqs test run
-  return res.json({ data: resultSQS });
+  return res.json({ data: '開發中' });
 };

@@ -7,6 +7,7 @@ import API from '../../utils/api';
 const Build = () => {
   const [workflowTitle, setWorkflowTitle] = useState('');
   const [jobs, setJobs] = useState([{ name: 'Trigger', uuid: uuidv4() }]);
+  const [workflowStatus, setworkflowStatus] = useState(false);
 
   useEffect(() => {
     const createWorkflow = async () => {
@@ -31,6 +32,8 @@ const Build = () => {
         setWorkflowTitle={setWorkflowTitle}
         jobsData={jobs}
         setJobsData={setJobs}
+        workflowStatus={workflowStatus}
+        setworkflowStatus={setworkflowStatus}
       />
       {jobs.map((item, idx) => (
         <Block key={item.uuid} jobData={item} jobsData={jobs} setJobsData={setJobs} idx={idx} />

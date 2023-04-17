@@ -39,6 +39,12 @@ const API = {
     const res = await axios.get(`${this.hostname}/tool/${id}`);
     return res.data;
   },
+
+  // Trigger workflow
+  async triggerWorkflow(id) {
+    const res = await axios.get(`${this.hostname}/trigger/workflow/${id}`);
+    return res;
+  },
 };
 
 export default API;

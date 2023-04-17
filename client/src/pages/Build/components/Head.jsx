@@ -44,6 +44,20 @@ const WorkflowStatus = styled.div`
   margin-right: 16px; /* 右邊間距 */
 `;
 
+const TriggerButton = styled.div`
+  margin-left: 16px;
+  padding: 8px 20px; /* 內邊距 */
+  margin-right: 16px; /* 右邊間距 */
+  background-color: #000000;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px; /* 圓弧造型 */
+`;
+
 const DeployButton = styled.div`
   background-color: #000000;
   color: #fff;
@@ -55,7 +69,7 @@ const DeployButton = styled.div`
   border-radius: 20px; /* 圓弧造型 */
 `;
 
-const ExpandButton = styled.button`
+const ExpandButton = styled.div`
   background-color: #000000;
   color: #fff;
   font-size: 14px;
@@ -89,7 +103,14 @@ const BackButton = styled.button`
   cursor: pointer;
 `;
 
-const Head = ({ jobsData, setJobsData, workflowTitle, setWorkflowTitle }) => {
+const Head = ({
+  jobsData,
+  setJobsData,
+  workflowTitle,
+  setWorkflowTitle,
+  workflowStatus,
+  setworkflowStatus,
+}) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
@@ -129,6 +150,13 @@ const Head = ({ jobsData, setJobsData, workflowTitle, setWorkflowTitle }) => {
     console.log('deploy', deployObj);
     const result = await API.deployWorkflow(jobsData[0]['id'], deployObj);
     console.log('結果', result);
+    setworkflowStatus(true);
+  }
+
+  async function triggerWorkflow() {
+    console.log('click trigger workflow');
+    const id = jobsData[0]['id'];
+    const result = await API.triggerWorkflow(id);
   }
 
   return (
@@ -140,9 +168,16 @@ const Head = ({ jobsData, setJobsData, workflowTitle, setWorkflowTitle }) => {
           placeholder="Untitled Workflow"
           value={workflowTitle}
         ></HeadInput>
-        <WorkflowStatus>Draft</WorkflowStatus>
+        <WorkflowStatus>{workflowStatus ? 'Deploy' : 'Draft'}</WorkflowStatus>
       </WorkflowHeaderLeft>
       <WorkflowHeaderRight>
+        {workflowStatus ? (
+          <TriggerButton type="button" onClick={() => triggerWorkflow()}>
+            Trigger
+          </TriggerButton>
+        ) : (
+          <></>
+        )}
         <DeployButton type="button" onClick={() => deployWorkflow()}>
           Deploy
         </DeployButton>
