@@ -157,6 +157,9 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
       waitingSaveData['job_number'] = jobsData.length - 1;
       await API.updateWorkflow(waitingSaveData);
     } else {
+      console.log('jobConfigData', jobConfigData);
+      console.log('jobData', jobsData);
+      console.log('jobConfigData template', jobConfigData['template_output']);
       waitingSaveData['workflowInfo'] = { id: jobsData[0].id };
       // waitingSaveData['jobsInfo'] = { [idx]: {} };
       waitingSaveData['jobsInfo'] = {
@@ -164,6 +167,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
         function_id: functionId,
         sequence: idx,
         config_input: input,
+        config_output: jobConfigData['template_output'],
       };
       // 新增JOB
       if (!jobsData[idx]['settingInfo']) {
