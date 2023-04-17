@@ -3,6 +3,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import API from '../../../utils/api';
 import styled from 'styled-components';
 
+const FunctionWrapper = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+`;
+
 const FunctionName = styled.div`
   font-size: 18px;
   font-weight: bold;
@@ -44,7 +49,7 @@ const ConfigureOptoin = styled.option`
   font-size: 14px;
 `;
 const ConfigureString = styled.input`
-  width: 28%;
+  width: 60%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -80,9 +85,20 @@ const SaveButton = styled.button`
   font-size: 14px;
 `;
 
-const ReturnValueBlock = styled.div`
+const ReturnValueWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
+
+const ReturnValueTitle = styled.div`
   padding: 10px 10px 1px 3px;
   font-size: 12px;
+`;
+
+const ReturnValueSet = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const ReturnValue = styled.div`
@@ -95,11 +111,27 @@ const ReturnValueResult = styled.div`
   font-size: 12px;
 `;
 
+const ValueCopy = styled.a`
+  padding: 10px 10px 1px 10px;
+  font-size: 6px;
+  color: #7f7979;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover {
+    color: #000;
+  }
+`;
+
 const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
   const { name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
+
+  const [copied, setCopied] = useState(false); // 複製用
 
   // 建立JobConfig時, 去抓取資料, 並紀錄需填寫內容
   useEffect(() => {
@@ -214,10 +246,10 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
 
   return (
     <>
-      <div>
+      <FunctionWrapper>
         <FunctionName>{`${name}`}</FunctionName>
         <FunctionDescription>{` ${description}`}</FunctionDescription>
-      </div>
+      </FunctionWrapper>
       {template_input &&
         template_input.map((item) => {
           return (
@@ -296,17 +328,30 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
             </ConfigGroup>
           );
         })}
-      {console.log('template output', template_output)}
-      {idx ? <ReturnValueBlock>$return_value:</ReturnValueBlock> : <></>}
-      {template_output &&
-        template_output.map((item) => {
-          return (
-            <>
-              <ReturnValue key={item.name}>{`steps.${jobData.name}.${item.name}`}</ReturnValue>
-              <ReturnValueResult>{`預期結果格式: ${item.type}`}</ReturnValueResult>
-            </>
-          );
-        })}
+      <ReturnValueWrapper>
+        {template_output && template_output.length !== 0 ? (
+          <ReturnValueTitle>$return_value:</ReturnValueTitle>
+        ) : (
+          <></>
+        )}
+        {template_output &&
+          template_output.map((item) => {
+            return (
+              <>
+                <ReturnValueSet>
+                  <ReturnValue key={item.name}>{`steps.${jobData.name}.${item.name}`}</ReturnValue>
+                  <CopyToClipboard
+                    text={`{{steps.${jobData.name}.${item.name}}}`}
+                    onCopy={() => setCopied(true)}
+                  >
+                    <ValueCopy type="button">Copy</ValueCopy>
+                  </CopyToClipboard>
+                </ReturnValueSet>
+                <ReturnValueResult>{`預期結果格式: ${item.type}`}</ReturnValueResult>
+              </>
+            );
+          })}
+      </ReturnValueWrapper>
       <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>
     </>
   );
