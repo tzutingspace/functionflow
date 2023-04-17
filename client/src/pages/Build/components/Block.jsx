@@ -52,7 +52,7 @@ const Block = ({ jobData, jobsData, setJobsData, idx }) => {
   function addJob() {
     // 建立新job object
     const jobid = uuidv4();
-    const newjob = { name: `Default ${jobid.substring(0, 8)}`, uuid: jobid };
+    const newjob = { name: `Default_${jobid.substring(0, 8)}`, uuid: jobid };
 
     // 重新Set workflow Chain
     setJobsData((prev) => {

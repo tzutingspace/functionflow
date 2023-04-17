@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, Children } from 'react';
+import { useState, useEffect } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import API from '../../../utils/api';
 import styled from 'styled-components';
 
@@ -79,10 +80,25 @@ const SaveButton = styled.button`
   font-size: 14px;
 `;
 
+const ReturnValueBlock = styled.div`
+  padding: 10px 10px 1px 3px;
+  font-size: 12px;
+`;
+
+const ReturnValue = styled.div`
+  padding: 10px 10px 1px 10px;
+  font-size: 12px;
+`;
+
+const ReturnValueResult = styled.div`
+  padding: 10px;
+  font-size: 12px;
+`;
+
 const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
-  const { name, description, template_input } = jobConfigData; // 取值
+  const { name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
 
   // 建立JobConfig時, 去抓取資料, 並紀錄需填寫內容
@@ -278,6 +294,17 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
                 ></ConfigureTime>
               )}
             </ConfigGroup>
+          );
+        })}
+      {console.log('template output', template_output)}
+      {idx ? <ReturnValueBlock>$return_value:</ReturnValueBlock> : <></>}
+      {template_output &&
+        template_output.map((item) => {
+          return (
+            <>
+              <ReturnValue key={item.name}>{`steps.${jobData.name}.${item.name}`}</ReturnValue>
+              <ReturnValueResult>{`預期結果格式: ${item.type}`}</ReturnValueResult>
+            </>
           );
         })}
       <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>
