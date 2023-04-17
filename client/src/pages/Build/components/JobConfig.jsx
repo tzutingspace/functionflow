@@ -94,24 +94,23 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
       waitingSaveData['job_number'] = jobsData.length - 1;
       await API.updateWorkflow(waitingSaveData);
     } else {
-      // console.log('處理job');
       waitingSaveData['workflowInfo'] = { id: jobsData[0].id };
-      waitingSaveData['jobsInfo'] = { [idx]: {} };
-      waitingSaveData['jobsInfo'][idx] = {
+      // waitingSaveData['jobsInfo'] = { [idx]: {} };
+      waitingSaveData['jobsInfo'] = {
         job_name: jobsData[idx]['name'],
         function_id: functionId,
         sequence: idx,
         config_input: input,
       };
-      // 新增
+      // 新增JOB
       if (!jobsData[idx]['settingInfo']) {
-        waitingSaveData['insertJobSeq'] = idx;
+        // waitingSaveData['insertJobSeq'] = idx;
         const jobId = await API.createJob(waitingSaveData);
         waitingSaveData['jobsInfo']['job_id'] = jobId['data'];
+        // 更新JOB
       } else {
-        // 更新
         console.log('更新job', jobsData[idx]);
-        waitingSaveData['updateJobSeq'] = idx;
+        // waitingSaveData['updateJobSeq'] = idx;
         const jobId = jobsData[idx]['settingInfo']['jobsInfo']['job_id'];
         await API.updateJob(jobId, waitingSaveData);
         waitingSaveData['jobsInfo']['job_id'] = jobId;

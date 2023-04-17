@@ -1,3 +1,5 @@
+import styled from 'styled-components';
+
 const JobTitle = ({ jobData, setJobsData }) => {
   // 修改個別JOB名稱
   function changeJobName(e) {

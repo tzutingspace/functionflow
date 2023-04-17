@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
 import API from '../../../utils/api';
 import JobConfig from './JobConfig';
+import styled from 'styled-components';
+
+const ToolTag = styled.button`
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 8px;
+`;
 
 const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
   const [tools, setTools] = useState([]);
@@ -11,12 +23,15 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
     const typer = idx === 0 ? 'trigger' : '';
     const getTools = async () => {
       const { data } = await API.getTools(typer);
+      console.log('tool', data);
       setTools(data);
     };
     getTools();
   }, []);
 
   function reRender(e) {
+    console.log('EEEEE', e);
+    console.log('target', e.target.value);
     setgetConfigId(e.target.value);
     setShowJobConfig(true);
   }
@@ -25,13 +40,9 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
     <>
       {showJobConfig === false ? (
         tools.map((item) => (
-          <div key={item.id}>
-            <button
-              type="button"
-              value={item.id}
-              onClick={(e) => reRender(e)}
-            >{`Name: ${item.name}, Description: ${item.description}`}</button>
-          </div>
+          <ToolTag key={item.id} type="button" value={item.id} onClick={(e) => reRender(e)}>
+            {`Name: ${item.name}, Description: ${item.description}`}
+          </ToolTag>
         ))
       ) : (
         <></>
