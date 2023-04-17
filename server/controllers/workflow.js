@@ -89,7 +89,7 @@ export const createJob = async (req, res, next) => {
   console.log('@controller createJob');
   console.log('request Body', req.body);
   const { workflowInfo, jobsInfo } = req.body;
-  const { insertJobSeq } = req.body;
+  const insertJobSeq = jobsInfo.sequence;
   const workflowId = workflowInfo.id;
 
   if (!vaildInterger(insertJobSeq)) {
@@ -102,10 +102,10 @@ export const createJob = async (req, res, next) => {
   // FIXME: 如果create 的資料會影響下面的sequence??
 
   const necessaryInfo = {
-    name: jobsInfo[insertJobSeq].job_name,
-    function_id: jobsInfo[insertJobSeq].function_id,
-    sequence: jobsInfo[insertJobSeq].sequence,
-    config_input: JSON.stringify(jobsInfo[insertJobSeq].config_input),
+    name: jobsInfo.job_name,
+    function_id: jobsInfo.function_id,
+    sequence: jobsInfo.sequence,
+    config_input: JSON.stringify(jobsInfo.config_input),
   };
 
   const result = await DBWorkflow.createJob(workflowId, necessaryInfo);
@@ -118,7 +118,7 @@ export const updateJob = async (req, res, next) => {
   console.log('@controller updateJob');
   console.log('request Body', req.body);
   const { jobsInfo } = req.body;
-  const { updateJobSeq } = req.body;
+  const updateJobSeq = jobsInfo.sequence;
   const jobId = req.params.id;
 
   if (!vaildInterger(updateJobSeq)) {
@@ -133,10 +133,10 @@ export const updateJob = async (req, res, next) => {
   // TODO:驗證此user是否有此id的修改權限
   // TODO:過濾Job可修改資訊
   const necessaryInfo = {
-    name: jobsInfo[updateJobSeq].job_name,
-    function_id: jobsInfo[updateJobSeq].function_id,
-    sequence: jobsInfo[updateJobSeq].sequence,
-    config_input: JSON.stringify(jobsInfo[updateJobSeq].config_input),
+    name: jobsInfo.job_name,
+    function_id: jobsInfo.function_id,
+    sequence: jobsInfo.sequence,
+    config_input: JSON.stringify(jobsInfo.config_input),
   };
 
   // 更新資料
