@@ -106,6 +106,7 @@ export const createJob = async (req, res, next) => {
     function_id: jobsInfo.function_id,
     sequence: jobsInfo.sequence,
     config_input: JSON.stringify(jobsInfo.config_input),
+    config_output: JSON.stringify(jobsInfo.config_output),
   };
 
   const result = await DBWorkflow.createJob(workflowId, necessaryInfo);
@@ -137,6 +138,7 @@ export const updateJob = async (req, res, next) => {
     function_id: jobsInfo.function_id,
     sequence: jobsInfo.sequence,
     config_input: JSON.stringify(jobsInfo.config_input),
+    config_output: JSON.stringify(jobsInfo.config_output),
   };
 
   // 更新資料

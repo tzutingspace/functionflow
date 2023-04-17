@@ -59,7 +59,8 @@ export async function createJob(workflowId, necessaryInfo = {}) {
       necessaryInfo.sequence,
       necessaryInfo.config_input,
       // FIXME: 確認是否需要config_output; 目前與function的template一樣
-      JSON.stringify('["name":"no use"]'),
+      necessaryInfo.config_output,
+      // JSON.stringify('["name":"no use"]'),
     ]
   );
   console.log(`新增Job 成功 ID 為`, result.insertId);
@@ -127,7 +128,7 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
           dependsJobId,
           JSON.stringify(jobsInfo[i].config_input),
           // FIXME: 確認是否需要config_output; 目前與function的template一樣
-          JSON.stringify('["name":"no use"]'),
+          JSON.stringify(jobsInfo[i].config_output),
         ]
       );
       dependsJobId = jobResult.insertId;
