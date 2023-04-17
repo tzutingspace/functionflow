@@ -45,7 +45,7 @@ const WorkflowStatus = styled.div`
 `;
 
 const DeployButton = styled.div`
-  background-color: #007bff;
+  background-color: #000000;
   color: #fff;
   font-size: 14px;
   font-weight: bold;
@@ -56,13 +56,15 @@ const DeployButton = styled.div`
 `;
 
 const ExpandButton = styled.button`
-  color: #00000;
+  background-color: #000000;
+  color: #fff;
   font-size: 14px;
   font-weight: bold;
   padding: 10px 16px;
   margin-left: 16px;
   border: none;
   cursor: pointer;
+  border-radius: 20px; /* 圓弧造型 */
 `;
 
 const ExpandedContent = styled.div`

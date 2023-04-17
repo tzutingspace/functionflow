@@ -2,19 +2,82 @@ import { useState, useEffect, useRef, Children } from 'react';
 import API from '../../../utils/api';
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
+const FunctionName = styled.div`
+  font-size: 18px;
+  font-weight: bold;
 `;
 
-const ConfigGroup = styled.div``;
-const ConfigureSelect = styled.select``;
-const ConfigureOptoin = styled.option``;
-const ConfigureString = styled.input``;
-const ConfigureNumber = styled.input``;
-const ConfigureTime = styled.input``;
+const FunctionDescription = styled.div`
+  font-size: 12px;
+  margin-bottom: 10px;
+`;
+
+const InputLabel = styled.div`
+  margin-right: 10px;
+  font-size: 16px;
+`;
+
+const InputDescription = styled.div`
+  margin-right: 10px;
+  font-size: 12px;
+  margin-bottom: 3px;
+`;
+
+const ConfigGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
+const ConfigureSelect = styled.select`
+  width: 30%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+const ConfigureOptoin = styled.option`
+  width: 30%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+const ConfigureString = styled.input`
+  width: 28%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+const ConfigureNumber = styled.input`
+  width: 28%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+const ConfigureTime = styled.input`
+  width: 28%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
+const SaveButton = styled.button`
+  display: block;
+  position: absolute; /* 加入絕對定位 */
+  bottom: 20px; /* 距離底部 20px */
+  right: 20px; /* 距離右側 20px */
+  padding: 10px;
+  background-color: #0c0c0c;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+`;
 
 const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   // jobConfig紀錄
@@ -132,14 +195,15 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   return (
     <>
       <div>
-        <div>{`Funcition Name: ${name}: ${description}`}</div>
-        <button onClick={() => saveJob()}>Save Job</button>
+        <FunctionName>{`${name}`}</FunctionName>
+        <FunctionDescription>{` ${description}`}</FunctionDescription>
       </div>
       {template_input &&
         template_input.map((item) => {
           return (
             <ConfigGroup key={item.name}>
-              <div>{`${item.name}: ${item.description}`}</div>
+              <InputLabel>{`${item.name}:`}</InputLabel>
+              <InputDescription>{`${item.description}`}</InputDescription>
               {item.type === 'list' && (
                 <ConfigureSelect
                   value={input[item.name]}
@@ -212,6 +276,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
             </ConfigGroup>
           );
         })}
+      <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>
     </>
   );
 };

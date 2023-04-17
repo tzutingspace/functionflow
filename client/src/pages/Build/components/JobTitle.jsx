@@ -1,5 +1,13 @@
 import styled from 'styled-components';
 
+const JobName = styled.input`
+  width: 20%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
 const JobTitle = ({ jobData, setJobsData }) => {
   // 修改個別JOB名稱
   function changeJobName(e) {
@@ -16,7 +24,7 @@ const JobTitle = ({ jobData, setJobsData }) => {
   return (
     <>
       <label>Job Name: </label>
-      <input type="text" placeholder={jobData.name} onChange={(e) => changeJobName(e)}></input>
+      <JobName type="text" placeholder={jobData.name} onChange={(e) => changeJobName(e)}></JobName>
     </>
   );
 };

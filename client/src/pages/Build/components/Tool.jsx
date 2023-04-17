@@ -3,15 +3,38 @@ import API from '../../../utils/api';
 import JobConfig from './JobConfig';
 import styled from 'styled-components';
 
-const ToolTag = styled.button`
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 16px;
+const ToolButton = styled.button`
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #ccc;
+  line-height: 1rem;
+  max-height: 60px;
+  width: 100%;
   cursor: pointer;
-  margin-right: 8px;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  color: #333;
+  width: 100%;
+`;
+
+const TextWrapper = styled.div`
+  flex-grow: 1;
+`;
+
+const Title = styled.div`
+  font-weight: bold;
+`;
+
+const Description = styled.div`
+  font-size: 0.857em;
+  font-weight: 200;
 `;
 
 const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
@@ -29,10 +52,8 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
     getTools();
   }, []);
 
-  function reRender(e) {
-    console.log('EEEEE', e);
-    console.log('target', e.target.value);
-    setgetConfigId(e.target.value);
+  function reRender(id) {
+    setgetConfigId(id);
     setShowJobConfig(true);
   }
 
@@ -40,9 +61,16 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
     <>
       {showJobConfig === false ? (
         tools.map((item) => (
-          <ToolTag key={item.id} type="button" value={item.id} onClick={(e) => reRender(e)}>
-            {`Name: ${item.name}, Description: ${item.description}`}
-          </ToolTag>
+          <ToolButton key={item.id} type="button" value={item.id} onClick={() => reRender(item.id)}>
+            <ContentWrapper>
+              <TextWrapper>
+                <Title>{`${item.name}`}</Title>
+                <Description style={{ fontSize: '0.857em', fontWeight: '200' }}>
+                  <p>{`${item.description}`}</p>
+                </Description>
+              </TextWrapper>
+            </ContentWrapper>
+          </ToolButton>
         ))
       ) : (
         <></>
