@@ -34,8 +34,8 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   // 建立workflow instance and job instance , 並回傳job資訊
   const result = await DBinstances.createInstances(workflowInfo);
   console.log('model 回來的結果', result);
-
-  const resultSQS = await putToSQS(JSON.stringify(result));
+  // FIXME: SQS結果確認
+  await putToSQS(JSON.stringify(result));
   // 放進sqs test run
   return res.json({ data: '開發中' });
 };
