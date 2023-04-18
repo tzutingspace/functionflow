@@ -2,6 +2,7 @@ import { Router } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
 import {
   getWorkflow,
+  getWorkflowByUser,
   initWorkflow,
   updateWorkflow,
   createJob,
@@ -12,6 +13,8 @@ import {
 const router = Router();
 
 router.get('/workflow/:id', wrapAsync(getWorkflow));
+
+router.get('/workflow/user/:id', wrapAsync(getWorkflowByUser));
 
 router.put('/workflow/:id', wrapAsync(updateWorkflow));
 

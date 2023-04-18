@@ -15,6 +15,17 @@ export const getWorkflow = async (req, res, next) => {
   return res.json({ data: workflow });
 };
 
+export const getWorkflowByUser = async (req, res, next) => {
+  console.log('@controller getWorkflowByUser');
+  // FIXME: userId 要從JWT拿 ; DEMO 暫時用/:id
+  const { id } = req.params;
+  if (!vaildInterger(id)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+  const workflow = await DBWorkflow.getWorkflowByUser(id);
+  return res.json({ data: workflow });
+};
+
 // Init a new Workflow
 export const initWorkflow = async (req, res) => {
   console.log('@controller initWorkflow');

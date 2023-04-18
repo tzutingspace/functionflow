@@ -6,6 +6,17 @@ export async function getWorkflowById(id) {
   return rows[0];
 }
 
+// 取得 workflows
+
+// FIXME: DEMO修改 LIMIT
+export async function getWorkflowByUser(id) {
+  const [rows] = await pool.query(
+    `SELECT * FROM workflows WHERE user_id = ? ORDER by id DESC LIMIT 10`,
+    [id]
+  );
+  return rows;
+}
+
 // 初始化 workflow
 export async function initWorkflow(userId) {
   const [result] = await pool.query(
