@@ -6,12 +6,10 @@ export async function getWorkflowById(id) {
   return rows[0];
 }
 
-// 取得 workflows
-
-// FIXME: DEMO修改 LIMIT
+// 取得 workflows by userId
 export async function getWorkflowByUser(id) {
   const [rows] = await pool.query(
-    `SELECT * FROM workflows WHERE user_id = ? ORDER by id DESC LIMIT 10`,
+    `SELECT * FROM workflows WHERE user_id = ? ORDER by created_at DESC`,
     [id]
   );
   return rows;
