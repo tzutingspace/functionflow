@@ -40,6 +40,13 @@ const API = {
     return res.data;
   },
 
+  //FIXME: userID 要從JWT給 DEMO 暫時寫成/:id
+  async getWorkflowByUser() {
+    const id = 1;
+    const res = await axios.get(`${this.hostname}/workflow/user/${id}`);
+    return res.data;
+  },
+
   // Trigger workflow
   async triggerWorkflow(id) {
     const res = await axios.get(`${this.hostname}/trigger/workflow/${id}`);

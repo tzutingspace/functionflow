@@ -157,6 +157,8 @@ const Head = ({
     console.log('click trigger workflow');
     const id = jobsData[0]['id'];
     const result = await API.triggerWorkflow(id);
+    console.log('Trigger 結果', result);
+    alert('Trigger 已送出，請稍等結果');
   }
 
   return (

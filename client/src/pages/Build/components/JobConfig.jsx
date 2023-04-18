@@ -107,7 +107,7 @@ const ReturnValue = styled.div`
 `;
 
 const ReturnValueResult = styled.div`
-  padding: 10px;
+  padding: 0px 20px;
   font-size: 12px;
 `;
 
@@ -347,7 +347,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
                     <ValueCopy type="button">Copy</ValueCopy>
                   </CopyToClipboard>
                 </ReturnValueSet>
-                <ReturnValueResult>{`預期結果格式: ${item.type}`}</ReturnValueResult>
+                <ReturnValueResult>{`return_value_type: ${item.type}`}</ReturnValueResult>
               </>
             );
           })}
