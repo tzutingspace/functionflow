@@ -7,6 +7,7 @@ import CustomError from './utils/customError.js';
 import { router as workflow } from './routers/workflow.js';
 import { router as funcitons } from './routers/tool.js';
 import { router as trigger } from './routers/trigger.js';
+import { router as admin } from './routers/admin.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get('/', async (req, res) => {
   res.json({ status: true, message: 'Our node.js app works' });
 });
 
+app.use('/', admin);
 app.use('/api/', workflow);
 app.use('/api/', funcitons);
 app.use('/api/', trigger);
