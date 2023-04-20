@@ -2,6 +2,12 @@
 import * as DBTool from '../models/tool.js';
 // import CustomError from '../utils/customError.js';
 
+const getTriggers = async (req, res) => {
+  console.log('@controller getTriggers');
+  const triggers = await DBTool.getTriggers();
+  return res.json({ data: triggers });
+};
+
 const getTools = async (req, res) => {
   console.log('@controller getTools');
   console.log(req.params);
@@ -19,4 +25,4 @@ const searchTool = async (req, res) => {
   return res.json({ data: tool });
 };
 
-export { getTools, searchTool };
+export { getTriggers, getTools, searchTool };
