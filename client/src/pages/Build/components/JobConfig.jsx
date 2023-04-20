@@ -34,6 +34,7 @@ const ConfigGroup = styled.div`
   flex-direction: column;
   align-items: stretch;
 `;
+
 const ConfigureSelect = styled.select`
   width: 30%;
   padding: 8px;
@@ -41,6 +42,7 @@ const ConfigureSelect = styled.select`
   border-radius: 4px;
   font-size: 14px;
 `;
+
 const ConfigureOptoin = styled.option`
   width: 30%;
   padding: 8px;
@@ -48,6 +50,7 @@ const ConfigureOptoin = styled.option`
   border-radius: 4px;
   font-size: 14px;
 `;
+
 const ConfigureString = styled.input`
   width: 60%;
   padding: 8px;
@@ -55,6 +58,7 @@ const ConfigureString = styled.input`
   border-radius: 4px;
   font-size: 14px;
 `;
+
 const ConfigureNumber = styled.input`
   width: 28%;
   padding: 8px;
@@ -62,6 +66,7 @@ const ConfigureNumber = styled.input`
   border-radius: 4px;
   font-size: 14px;
 `;
+
 const ConfigureTime = styled.input`
   width: 28%;
   padding: 8px;
@@ -128,30 +133,36 @@ const ValueCopy = styled.a`
 const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
-  const { name, description, template_input, template_output } = jobConfigData; // 取值
+  const { name, external_name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
-
   const [copied, setCopied] = useState(false); // 複製用
 
   // 建立JobConfig時, 去抓取資料, 並紀錄需填寫內容
   useEffect(() => {
     // axios job configs
     const getConfigs = async () => {
-      const { data } = await API.getConfigs(functionId);
-      const JobConfig = data[0];
-      console.log('axios回來的資料', JobConfig);
-      // set job config template
-      setJobConfigData(JobConfig);
+      let tempConfig;
+      if (idx === 0) {
+        const { data } = await API.getTriggerConfigs(functionId);
+        console.log('axios回來的資料', data[0]);
+        tempConfig = data[0];
+        setJobConfigData(tempConfig);
+      } else {
+        const { data } = await API.getConfigs(functionId);
+        console.log('axios回來的資料', data[0]);
+        tempConfig = data[0];
+        setJobConfigData(tempConfig);
+      }
 
       // 初始化(Input State) 需填入資料
-
+      console.log('JobConfigData', tempConfig);
       // 判斷類別
       const tempObj = {};
-      JobConfig.template_input.forEach((item) => {
+      tempConfig.template_input.forEach((item) => {
         console.log('檢查一下 jobconfig item type', item);
         if (item.type === 'list') {
           tempObj[item.name] = item.list[0];
-        } else if (item.type === 'time') {
+        } else if (item.type === 'time' || item.type === 'interval') {
           const currentTime = new Date();
           const hours = String(currentTime.getHours()).padStart(2, '0');
           const minutes = String(currentTime.getMinutes()).padStart(2, '0');
@@ -247,14 +258,14 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
   return (
     <>
       <FunctionWrapper>
-        <FunctionName>{`${name}`}</FunctionName>
+        <FunctionName>{`${external_name}`}</FunctionName>
         <FunctionDescription>{` ${description}`}</FunctionDescription>
       </FunctionWrapper>
       {template_input &&
         template_input.map((item) => {
           return (
             <ConfigGroup key={item.name}>
-              <InputLabel>{`${item.name}:`}</InputLabel>
+              <InputLabel>{`${item.label}:`}</InputLabel>
               <InputDescription>{`${item.description}`}</InputDescription>
               {item.type === 'list' && (
                 <ConfigureSelect
@@ -290,12 +301,17 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
                 <ConfigureNumber
                   value={input[item.name]}
                   type="number"
+                  max={item.max}
+                  min={item.min}
                   onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
                     let newObj = {};
-                    newObj[item.name] = e.target.value;
-                    setInput((prev) => {
-                      return { ...prev, ...newObj };
-                    });
+                    if (!isNaN(value) && value >= item.min && value <= item.max) {
+                      newObj[item.name] = e.target.value;
+                      setInput((prev) => {
+                        return { ...prev, ...newObj };
+                      });
+                    }
                   }}
                 ></ConfigureNumber>
               )}

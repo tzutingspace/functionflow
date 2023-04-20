@@ -43,11 +43,17 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
   const [getConfigId, setgetConfigId] = useState();
 
   useEffect(() => {
-    const typer = idx === 0 ? 'trigger' : '';
     const getTools = async () => {
-      const { data } = await API.getTools(typer);
-      console.log('tool', data);
-      setTools(data);
+      console.log('idx', idx);
+      if (idx === 0) {
+        const { data } = await API.getTriggers();
+        console.log('tools', data);
+        setTools(data);
+      } else {
+        const { data } = await API.getTools();
+        console.log('tools', data);
+        setTools(data);
+      }
     };
     getTools();
   }, []);
@@ -64,7 +70,7 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
           <ToolButton key={item.id} type="button" value={item.id} onClick={() => reRender(item.id)}>
             <ContentWrapper>
               <TextWrapper>
-                <Title>{`${item.name}`}</Title>
+                <Title>{`${item.external_name}`}</Title>
                 <Description style={{ fontSize: '0.857em', fontWeight: '200' }}>
                   <p>{`${item.description}`}</p>
                 </Description>

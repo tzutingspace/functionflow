@@ -30,7 +30,14 @@ const API = {
   },
 
   // GET function 資訊
-
+  async getTriggers() {
+    const res = await axios.get(`${this.hostname}/triggers`);
+    return res.data;
+  },
+  async getTriggerConfigs(id) {
+    const res = await axios.get(`${this.hostname}/trigger/${id}`);
+    return res.data;
+  },
   async getTools(typer = '') {
     const res = await axios.get(`${this.hostname}/tools/${typer}`);
     return res.data;
