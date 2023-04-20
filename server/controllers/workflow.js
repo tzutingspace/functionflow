@@ -30,7 +30,7 @@ export const getWorkflowByUser = async (req, res, next) => {
 export const initWorkflow = async (req, res) => {
   console.log('@controller initWorkflow');
   // FIXME: 身份驗證後需修改
-  const userId = 1; // req.user
+  const userId = 3; // req.user
   const workflowId = await DBWorkflow.initWorkflow(userId);
   return res.json({ data: workflowId });
 };

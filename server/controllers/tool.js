@@ -8,6 +8,14 @@ const getTriggers = async (req, res) => {
   return res.json({ data: triggers });
 };
 
+const searchTrigger = async (req, res) => {
+  console.log('@controller searchTrigger');
+  const id = req.params.id === undefined ? 1 : Number(req.params.id);
+  const requriement = { id };
+  const tool = await DBTool.getTriggers(requriement);
+  return res.json({ data: tool });
+};
+
 const getTools = async (req, res) => {
   console.log('@controller getTools');
   console.log(req.params);
@@ -25,4 +33,4 @@ const searchTool = async (req, res) => {
   return res.json({ data: tool });
 };
 
-export { getTriggers, getTools, searchTool };
+export { getTriggers, searchTrigger, getTools, searchTool };
