@@ -23,7 +23,7 @@ app.get('/', async (req, res) => {
   res.json({ status: true, message: 'Our node.js app works' });
 });
 
-app.use('/', admin);
+app.use('/admin', admin);
 app.use('/api/', workflow);
 app.use('/api/', funcitons);
 app.use('/api/', trigger);

@@ -16,6 +16,6 @@ router.get('/trigger/:id', wrapAsync(searchTrigger));
 
 router.get('/tools/:type?', wrapAsync(getTools));
 
-router.get('/tool/:id?', wrapAsync(searchTool));
+router.get('/tool/:id', wrapAsync(searchTool));
 
 export { router };

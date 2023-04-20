@@ -5,6 +5,6 @@ import { createFunciton } from '../controllers/admin.js';
 
 const router = Router();
 
-router.post('/admin/createfunction', wrapAsync(createFunciton));
+router.post('/createfunction', wrapAsync(createFunciton));
 
 export { router };

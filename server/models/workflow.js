@@ -2,7 +2,21 @@ import pool from '../utils/db.js';
 
 // 取得 workflow
 export async function getWorkflowById(id) {
-  const [rows] = await pool.query(`SELECT * FROM workflows WHERE id = ?`, [id]);
+  const [rows] = await pool.query(
+    `
+    SELECT 
+      id,
+      name,
+      trigger_type,
+      next_execute_time,
+      schedule_interval,
+      trigger_interval_seconds
+    FROM 
+      workflows 
+    WHERE
+      id = ?`,
+    [id]
+  );
   return rows[0];
 }
 
@@ -59,17 +73,14 @@ export async function updateWorkflow(
 // create Job
 export async function createJob(workflowId, necessaryInfo = {}) {
   const [result] = await pool.query(
-    `INSERT INTO jobs(workflow_id, name, function_id, sequence, config_input, config_output) 
+    `INSERT INTO jobs(workflow_id, name, function_id, sequence, customer_input) 
       VALUES (?, ?, ?, ?, ?, ?)`,
     [
       workflowId,
       necessaryInfo.name,
       necessaryInfo.function_id,
       necessaryInfo.sequence,
-      necessaryInfo.config_input,
-      // FIXME: 確認是否需要config_output; 目前與function的template一樣
-      necessaryInfo.config_output,
-      // JSON.stringify('["name":"no use"]'),
+      necessaryInfo.customer_input,
     ]
   );
   console.log(`新增Job 成功 ID 為`, result.insertId);
@@ -127,17 +138,15 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
       // 需要序列工作, 來取得下一個工作對應的id
       // eslint-disable-next-line no-await-in-loop
       const [jobResult] = await conn.query(
-        `INSERT INTO jobs(workflow_id, name, function_id, sequence, depends_job_id, config_input, config_output) 
-          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO jobs(workflow_id, name, function_id, sequence, depends_job_id, customer_input) 
+          VALUES (?, ?, ?, ?, ?, ?)`,
         [
           workflowId,
           jobsInfo[i].job_name,
           jobsInfo[i].function_id,
           jobsInfo[i].sequence,
           dependsJobId,
-          JSON.stringify(jobsInfo[i].config_input),
-          // FIXME: 確認是否需要config_output; 目前與function的template一樣
-          JSON.stringify(jobsInfo[i].config_output),
+          JSON.stringify(jobsInfo[i].customer_input),
         ]
       );
       dependsJobId = jobResult.insertId;

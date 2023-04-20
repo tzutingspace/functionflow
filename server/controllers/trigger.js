@@ -20,22 +20,22 @@ export const manualTriggerWorkflow = async (req, res, next) => {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
-  // 更新建立 workflow 資訊
-
-  workflowInfo.next_execute_time =
-    workflowInfo.next_execute_time.toLocaleString();
-  workflowInfo.status = 'queued';
-  workflowInfo.execution_time = getNowTime();
-  workflowInfo.trigger_type = 'manual'; // 使用者手動測試
-  workflowInfo.external_trigger = 't';
+  // 建立 workflow instances
+  workflowInfo.status = 'queued'; // 準備丟進queue
+  workflowInfo.execution_time = getNowTime(); // 和lambda一樣用台灣時間
+  workflowInfo.manual_trigger = 't'; // 手動測試
+  workflowInfo.end_time = null;
 
   console.log('workflow', workflowInfo);
 
   // 建立workflow instance and job instance , 並回傳job資訊
-  const result = await DBinstances.createInstances(workflowInfo);
-  console.log('model 回來的結果', result);
+  const readyToQueueObj = await DBinstances.createInstances(workflowInfo);
+  readyToQueueObj.target_queue = 'manualTriggerQueue';
+  readyToQueueObj.socketId = '123'; // FIXME: 給id
+  console.log('建立instances回傳的結果', readyToQueueObj);
+
   // FIXME: SQS結果確認
-  await putToSQS(JSON.stringify(result));
+  // await putToSQS(JSON.stringify(readyToQueueObj));
   // 放進sqs test run
-  return res.json({ data: '開發中' });
+  return res.json({ data: readyToQueueObj });
 };
