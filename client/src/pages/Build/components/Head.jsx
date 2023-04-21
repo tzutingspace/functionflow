@@ -135,14 +135,17 @@ const Head = ({
       return acc;
     }, {});
 
+    console.log('Depoly 確認目前JobsData', jobsData);
+
     const deployObj = {
       workflowInfo: {
-        name: jobsData[0]['name'],
+        name: workflowTitle,
         status: 'active',
         start_time: jobsData[0]['settingInfo']['start_time'],
-        function_id: jobsData[0]['settingInfo']['function_id'],
-        trigger_api_route: jobsData[0]['settingInfo']['trigger_api_route'],
-        job_number: jobsData.length - 1,
+        trigger_function_id: jobsData[0]['trigger_function_id'],
+        trigger_api_route: jobsData[0]['trigger_api_route'],
+        settingInfo: jobsData[0]['settingInfo'],
+        job_qty: jobsData.length - 1,
       },
       jobsInfo: { ...jobsInfotmp },
     };
@@ -150,7 +153,7 @@ const Head = ({
     console.log('deploy', deployObj);
     const result = await API.deployWorkflow(jobsData[0]['id'], deployObj);
     console.log('結果', result);
-    setworkflowStatus(true);
+    setworkflowStatus('deploy');
   }
 
   async function triggerWorkflow() {
@@ -170,10 +173,10 @@ const Head = ({
           placeholder="Untitled Workflow"
           value={workflowTitle}
         ></HeadInput>
-        <WorkflowStatus>{workflowStatus ? 'Deploy' : 'Draft'}</WorkflowStatus>
+        <WorkflowStatus>{workflowStatus}</WorkflowStatus>
       </WorkflowHeaderLeft>
       <WorkflowHeaderRight>
-        {workflowStatus ? (
+        {workflowStatus === 'depoly' ? (
           <TriggerButton type="button" onClick={() => triggerWorkflow()}>
             Trigger
           </TriggerButton>

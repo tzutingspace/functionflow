@@ -8,19 +8,22 @@ const JobTilteStyled = styled.h2`
   margin-top: 0;
 `;
 
-const JobContent = styled.div`
-  /* 選擇區域的樣式設定 */
-  /* 可以根據需求調整選擇區域的樣式，例如背景色、邊框、內邊距等 */
-`;
+const JobContent = styled.div``;
 
-const Job = ({ idx, jobData, jobsData, setJobsData }) => {
+const Job = ({ idx, jobData, jobsData, setJobsData, workflowTitle }) => {
   return (
     <>
       <JobTilteStyled>
         {idx ? <JobTitle jobData={jobData} setJobsData={setJobsData}></JobTitle> : <>Trigger</>}
       </JobTilteStyled>
       <JobContent>
-        <Tool idx={idx} jobData={jobData} jobsData={jobsData} setJobsData={setJobsData} />
+        <Tool
+          idx={idx}
+          jobData={jobData}
+          jobsData={jobsData}
+          setJobsData={setJobsData}
+          workflowTitle={workflowTitle}
+        />
       </JobContent>
     </>
   );

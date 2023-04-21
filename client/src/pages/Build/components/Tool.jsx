@@ -37,34 +37,49 @@ const Description = styled.div`
   font-weight: 200;
 `;
 
-const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
+const Tool = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
   const [tools, setTools] = useState([]);
   const [showJobConfig, setShowJobConfig] = useState(false);
-  const [getConfigId, setgetConfigId] = useState();
 
+  // 取得目前可用的function tools
   useEffect(() => {
     const getTools = async () => {
-      console.log('idx', idx);
       if (idx === 0) {
         const { data } = await API.getTriggers();
-        console.log('tools', data);
         setTools(data);
       } else {
         const { data } = await API.getTools();
-        console.log('tools', data);
         setTools(data);
       }
     };
-    getTools();
+    // 新建立
+    if (!jobData.settingInfo) {
+      getTools();
+    } else {
+      console.log('@Tool 理論上要顯示先前data');
+      setShowJobConfig(true);
+    }
+
+    // getTools();
   }, []);
 
+  // 點選function 後, reRender 該 function 的 config
   function reRender(id) {
-    setgetConfigId(id);
+    // 將function ID 寫回上層
+    setJobsData((prev) => {
+      if (idx === 0) {
+        prev[idx]['trigger_function_id'] = id;
+      } else {
+        prev[idx]['function_id'] = id;
+      }
+      return [...prev];
+    });
     setShowJobConfig(true);
   }
 
   return (
     <>
+      {/* 尚未選擇tool */}
       {showJobConfig === false ? (
         tools.map((item) => (
           <ToolButton key={item.id} type="button" value={item.id} onClick={() => reRender(item.id)}>
@@ -81,13 +96,14 @@ const Tool = ({ jobData, jobsData, setJobsData, idx }) => {
       ) : (
         <></>
       )}
+      {/* 顯示job config */}
       {showJobConfig ? (
         <JobConfig
           jobData={jobData}
           jobsData={jobsData}
           setJobsData={setJobsData}
-          functionId={getConfigId}
           idx={idx}
+          workflowTitle={workflowTitle}
         />
       ) : (
         <></>

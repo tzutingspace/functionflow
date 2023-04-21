@@ -47,12 +47,15 @@ const AddButton = styled.button`
   z-index: 1;
 `;
 
-const Block = ({ jobData, jobsData, setJobsData, idx }) => {
+// JobData 是當前Block的資料
+// JobsData 是整個workflow的資料
+
+const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
   // 新增Job的button
   function addJob() {
     // 建立新job object
-    const jobid = uuidv4();
-    const newjob = { name: `Default_${jobid.substring(0, 8)}`, uuid: jobid };
+    const uuid = uuidv4();
+    const newjob = { name: `untitled_${uuid.substring(0, 8)}`, uuid: uuid };
 
     // 重新Set workflow Chain
     setJobsData((prev) => {
@@ -78,7 +81,13 @@ const Block = ({ jobData, jobsData, setJobsData, idx }) => {
       ) : (
         <></>
       )}
-      <Job idx={idx} jobData={jobData} jobsData={jobsData} setJobsData={setJobsData} />
+      <Job
+        idx={idx}
+        jobData={jobData}
+        jobsData={jobsData}
+        setJobsData={setJobsData}
+        workflowTitle={workflowTitle}
+      />
       <AddTaskButtonArea></AddTaskButtonArea>
       <AddButton type="button" onClick={() => addJob()}>
         Add Job

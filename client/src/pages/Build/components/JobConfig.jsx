@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import API from '../../../utils/api';
 import styled from 'styled-components';
@@ -130,36 +130,37 @@ const ValueCopy = styled.a`
   }
 `;
 
-const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
+const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
   const { name, external_name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
   const [copied, setCopied] = useState(false); // 複製用
 
-  // 建立JobConfig時, 去抓取資料, 並紀錄需填寫內容
+  // 建立JobConfig (抓取資料, 並紀錄需填寫內容)
   useEffect(() => {
     // axios job configs
     const getConfigs = async () => {
+      let functionId = jobData['function_id'];
+      if (idx === 0) {
+        functionId = jobData['trigger_function_id'];
+      }
       let tempConfig;
       if (idx === 0) {
         const { data } = await API.getTriggerConfigs(functionId);
-        console.log('axios回來的資料', data[0]);
         tempConfig = data[0];
         setJobConfigData(tempConfig);
       } else {
         const { data } = await API.getConfigs(functionId);
-        console.log('axios回來的資料', data[0]);
         tempConfig = data[0];
         setJobConfigData(tempConfig);
       }
 
       // 初始化(Input State) 需填入資料
-      console.log('JobConfigData', tempConfig);
       // 判斷類別
       const tempObj = {};
       tempConfig.template_input.forEach((item) => {
-        console.log('檢查一下 jobconfig item type', item);
+        console.log('檢查 jobconfig', item);
         if (item.type === 'list') {
           tempObj[item.name] = item.list[0];
         } else if (item.type === 'time' || item.type === 'interval') {
@@ -167,12 +168,17 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
           const hours = String(currentTime.getHours()).padStart(2, '0');
           const minutes = String(currentTime.getMinutes()).padStart(2, '0');
           tempObj[item.name] = `${hours}:${minutes}`;
-        } else if (item.type === 'date') {
+        } else if (item.type === 'datetime-local') {
           const currentTime = new Date();
           const year = String(currentTime.getFullYear()).padStart(4, '0');
           const month = String(currentTime.getMonth() + 1).padStart(2, '0');
           const date = String(currentTime.getDate()).padStart(2, '0');
-          tempObj[item.name] = `${year}-${month}-${date}`;
+          const hours = String(currentTime.getHours()).padStart(2, '0');
+          const minutes = String(currentTime.getMinutes()).padStart(2, '0');
+          tempObj[item.name] = `${year}-${month}-${date} ${hours}:${minutes}`;
+        } else if (item.type === 'number') {
+          const displayNumber = item.min < 0 ? 1 : item.min;
+          tempObj[item.name] = displayNumber;
         } else {
           tempObj[item.name] = '';
         }
@@ -180,16 +186,20 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
 
       // 更新初始化(Input State) 需填入資料
       setInput(() => {
-        console.log('JOB CONFIG 初始值', { ...tempObj });
         return { ...tempObj };
       });
     };
-    getConfigs();
+
+    // 如果沒有資料才去axios資料
+    if (!jobData.settingInfo) {
+      getConfigs();
+    } else {
+      console.log('@Job config 顯示舊data');
+    }
   }, []);
 
   // 存Job
   async function saveJob() {
-    console.log('選擇的function ID=', functionId);
     // 檢查資料是否填寫
     let isEmpty = false;
     for (const key of Object.keys(input)) {
@@ -199,34 +209,33 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
       }
     }
     if (isEmpty) {
-      alert('選項未填寫');
+      alert('您尚有選項未填寫');
       return false;
     }
 
+    // 處理 post data
     const waitingSaveData = {};
     console.log('初始waitingSaveDate', waitingSaveData);
-    // 判斷是否為trigger
     if (idx === 0) {
-      // console.log('處理idx=0, 表示是trigger');
+      console.log('處理idx=0, update workflow status');
       waitingSaveData['id'] = jobData.id;
-      waitingSaveData['name'] = jobData.name;
-      waitingSaveData['function_id'] = functionId;
-      //FIXME: 處理月和周的話怎麼辦
-      waitingSaveData['start_time'] = input['Start Time'] + ' ' + input['Daily'] + ':00';
+      waitingSaveData['name'] = workflowTitle;
+      waitingSaveData['start_time'] = input.start_time;
+      waitingSaveData['trigger_function_id'] = jobData['trigger_function_id'];
       waitingSaveData['job_number'] = jobsData.length - 1;
+      waitingSaveData['jobsInfo'] = input;
       await API.updateWorkflow(waitingSaveData);
     } else {
+      console.log('處理idx!=0, update jobs status');
       console.log('jobConfigData', jobConfigData);
       console.log('jobData', jobsData);
       console.log('jobConfigData template', jobConfigData['template_output']);
       waitingSaveData['workflowInfo'] = { id: jobsData[0].id };
-      // waitingSaveData['jobsInfo'] = { [idx]: {} };
       waitingSaveData['jobsInfo'] = {
         job_name: jobsData[idx]['name'],
-        function_id: functionId,
+        function_id: jobData['function_id'],
         sequence: idx,
-        config_input: input,
-        config_output: jobConfigData['template_output'],
+        customer_input: input,
       };
       // 新增JOB
       if (!jobsData[idx]['settingInfo']) {
@@ -245,6 +254,7 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
 
     // 改變最上層(Block Chain)資料
     setJobsData((prev) => {
+      console.log('setting jobs data');
       const index = prev.findIndex((job) => job.uuid === jobData.uuid);
       if (index !== -1) {
         // console.log('最終post資料, 寫回上層settingInfo', waitingSaveData);
@@ -328,11 +338,12 @@ const JobConfig = ({ functionId, jobData, jobsData, setJobsData, idx }) => {
                   }}
                 ></ConfigureTime>
               )}
-              {item.type === 'date' && (
+              {item.type === 'datetime-local' && (
                 <ConfigureTime
                   value={input[item.name]}
-                  type="date"
+                  type="datetime-local"
                   onChange={(e) => {
+                    console.log('時間值', e.target.value);
                     let newObj = {};
                     newObj[item.name] = e.target.value;
                     setInput((prev) => {
