@@ -64,12 +64,18 @@ export const updateWorkflow = async (req, res, next) => {
   if (triggerInfo.name === 'custom') {
     if (workflowInfo.jobsInfo.interval === 'hour') {
       triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60 * 60;
-      nextExecuteTime = date.addHours(startTime, workflowInfo.jobsInfo.every);
+      nextExecuteTime = date.addHours(
+        startTime,
+        parseInt(workflowInfo.jobsInfo.every, 10)
+      );
     } else if (workflowInfo.jobsInfo.interval === 'minute') {
       triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60;
-      nextExecuteTime = date.addMinutes(startTime, workflowInfo.jobsInfo.every);
+      console.log('minute', workflowInfo.jobsInfo.every);
+      nextExecuteTime = date.addMinutes(
+        startTime,
+        parseInt(workflowInfo.jobsInfo.every, 10)
+      );
     }
-    nextExecuteTime = startTime + triggerIntervalSeconds;
   } else if (triggerInfo.name === 'daily') {
     triggerIntervalSeconds = 86400;
     nextExecuteTime = date.addDays(startTime, 1);
@@ -87,7 +93,7 @@ export const updateWorkflow = async (req, res, next) => {
     name: workflowInfo.name,
     status: workflowInfo.status,
     start_time: workflowInfo.start_time,
-    next_execute_time: nextExecuteTime,
+    next_execute_time: date.format(nextExecuteTime, 'YYYY-MM-DD HH:mm:ss'),
     trigger_type: triggerInfo.type,
     trigger_interval_seconds: triggerIntervalSeconds,
     trigger_api_route: workflowInfo.trigger_api_route,
@@ -185,13 +191,19 @@ export const deployWorkflow = async (req, res, next) => {
   let nextExecuteTime;
   if (triggerInfo.name === 'custom') {
     if (workflowInfo.jobsInfo.interval === 'hour') {
+      console.log(workflowInfo.jobsInfo.every);
       triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60 * 60;
-      nextExecuteTime = date.addHours(startTime, workflowInfo.jobsInfo.every);
+      nextExecuteTime = date.addHours(
+        startTime,
+        parseInt(workflowInfo.jobsInfo.every, 10)
+      );
     } else if (workflowInfo.jobsInfo.interval === 'minute') {
       triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60;
-      nextExecuteTime = date.addMinutes(startTime, workflowInfo.jobsInfo.every);
+      nextExecuteTime = date.addMinutes(
+        startTime,
+        parseInt(workflowInfo.jobsInfo.every, 10)
+      );
     }
-    nextExecuteTime = startTime + triggerIntervalSeconds;
   } else if (triggerInfo.name === 'daily') {
     triggerIntervalSeconds = 86400;
     nextExecuteTime = date.addDays(startTime, 1);
@@ -209,7 +221,7 @@ export const deployWorkflow = async (req, res, next) => {
     name: workflowInfo.name,
     status: workflowInfo.status || 'active',
     start_time: workflowInfo.start_time,
-    next_execute_time: nextExecuteTime,
+    next_execute_time: date.format(nextExecuteTime, 'YYYY-MM-DD HH:mm:ss'),
     trigger_type: triggerInfo.type,
     trigger_interval_seconds: triggerIntervalSeconds,
     trigger_api_route: workflowInfo.trigger_api_route,

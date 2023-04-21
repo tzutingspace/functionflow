@@ -144,7 +144,7 @@ const Head = ({
         start_time: jobsData[0]['settingInfo']['start_time'],
         trigger_function_id: jobsData[0]['trigger_function_id'],
         trigger_api_route: jobsData[0]['trigger_api_route'],
-        settingInfo: jobsData[0]['settingInfo'],
+        jobsInfo: { ...jobsData[0]['settingInfo']['jobsInfo'] },
         job_qty: jobsData.length - 1,
       },
       jobsInfo: { ...jobsInfotmp },

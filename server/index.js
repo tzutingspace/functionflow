@@ -35,7 +35,8 @@ app.use((req, res, next) => {
 });
 
 // 處理ERROR (Error handler) Express 全域錯誤處理
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   console.error('ERROR HANDLER LOG: ', err);
   const customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,

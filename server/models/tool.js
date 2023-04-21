@@ -1,6 +1,7 @@
 import pool from '../utils/db.js';
 
 async function getTriggers(requriement = {}) {
+  console.log('@ models getTriggers', requriement);
   const condition = { sql: '', binding: [] };
   if (requriement.id != null) {
     condition.sql = 'WHERE id = ?';
