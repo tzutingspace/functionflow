@@ -74,7 +74,7 @@ export async function updateWorkflow(
 export async function createJob(workflowId, necessaryInfo = {}) {
   const [result] = await pool.query(
     `INSERT INTO jobs(workflow_id, name, function_id, sequence, customer_input) 
-      VALUES (?, ?, ?, ?, ?, ?)`,
+      VALUES (?, ?, ?, ?, ?)`,
     [
       workflowId,
       necessaryInfo.name,
@@ -134,7 +134,7 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
     });
 
     // 重新建立job
-    for (let i = 1; i <= necessaryInfo.job_number; i++) {
+    for (let i = 1; i <= necessaryInfo.job_qty; i++) {
       // 需要序列工作, 來取得下一個工作對應的id
       // eslint-disable-next-line no-await-in-loop
       const [jobResult] = await conn.query(
@@ -154,7 +154,7 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
     await conn.query('COMMIT');
   } catch (error) {
     await conn.query('ROLLBACK');
-    console.error(error);
+    console.error('Deploy 出現錯誤', error);
   } finally {
     await conn.release();
   }
