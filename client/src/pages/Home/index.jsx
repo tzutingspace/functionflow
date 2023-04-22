@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { useState, useContext } from 'react';
 import { AuthContext } from '../../contexts/authContext';
 
+import Header from '../../components/Header';
+
 const Wrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -20,6 +22,7 @@ const Home = () => {
   console.log('Home', user);
   return (
     <Wrapper>
+      <Header></Header>
       <Title>Function Flow</Title>
     </Wrapper>
   );

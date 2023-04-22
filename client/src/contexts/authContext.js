@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import api from '../utils/api';
 
 export const AuthContext = createContext({
@@ -13,8 +13,24 @@ export const AuthContext = createContext({
 export const AuthContextProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [jwtToken, setJwtToken] = useState();
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const localJwtToken = localStorage.getItem('jwtToken');
+      if (localJwtToken) {
+        setJwtToken(localJwtToken);
+        const userData = await api.getProfile(localJwtToken);
+        setUser(userData);
+        setIsLogin(true);
+      } else {
+        window.localStorage.removeItem('jwtToken');
+      }
+      setLoading(false);
+    };
+    checkAuthStatus();
+  }, []);
 
   const login = async (email, password, provider) => {
     console.log('login', email, password, provider);

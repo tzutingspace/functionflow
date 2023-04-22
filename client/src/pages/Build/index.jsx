@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { WorkflowStateProvider } from './contexts/workflowContext';
 import { WorkflowStateContext } from './contexts/workflowContext';
@@ -8,6 +9,7 @@ import Head from './components/Head';
 import API from '../../utils/api';
 
 const Build = () => {
+  const location = useLocation();
   const [workflowTitle, setWorkflowTitle] = useState('Untitled Workflow');
   const [jobs, setJobs] = useState([{ name: 'Trigger', uuid: uuidv4() }]);
 

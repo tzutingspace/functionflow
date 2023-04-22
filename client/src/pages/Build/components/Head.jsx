@@ -2,7 +2,9 @@ import { useEffect, useState, useContext } from 'react';
 import API from '../../../utils/api';
 import styled from 'styled-components';
 import io, { Socket } from 'socket.io-client';
+import { Link } from 'react-router-dom';
 import { WorkflowStateContext } from '../contexts/workflowContext';
+import logo from './logo.png';
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,9 +25,11 @@ const WorkflowHeaderRight = styled.div`
   align-items: center;
 `;
 
-const Logo = styled.a`
+const Logo = styled(Link)`
   width: 40px;
   height: 40px;
+  background-image: url(${logo});
+  background-size: contain;
   background-color: #ccc; /* 示例顏色 */
   margin-right: 16px;
 `;
@@ -96,7 +100,7 @@ const ExpandedContent = styled.div`
   align-items: center;
 `;
 
-const BackButton = styled.button`
+const BackButton = styled(Link)`
   color: #000000;
   font-size: 14px;
   font-weight: bold;
@@ -172,6 +176,7 @@ const Head = ({
     const result = await API.triggerWorkflow(id);
     console.log('Trigger 結果', result);
     alert('Trigger 已送出，請稍等結果');
+    //FIXME: 需要帶變數
     socket.emit('trigger', 'userId123');
     socket.on('triggerFinish', (data) => {
       setTriggerResult(() => {
@@ -183,7 +188,7 @@ const Head = ({
   return (
     <Wrapper>
       <WorkflowHeaderLeft>
-        <Logo></Logo>
+        <Logo to="/"></Logo>
         <HeadInput
           onChange={(e) => changeHead(e.target.value)}
           placeholder="Untitled Workflow"
@@ -207,7 +212,7 @@ const Head = ({
         </ExpandButton>
         {expanded && (
           <ExpandedContent>
-            <BackButton>Back</BackButton>
+            <BackButton to="/">Back</BackButton>
           </ExpandedContent>
         )}
         <p>{triggerResult}</p>

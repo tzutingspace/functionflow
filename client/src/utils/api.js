@@ -20,9 +20,19 @@ const API = {
         'Content-Type': 'application/json',
       },
     });
-    console.log('ewqewq', res.data.data);
     return res.data.data;
   },
+  async getProfile(jwt) {
+    console.log('getprofile', jwt);
+    const res = await axios.get(`${this.hostname}/user/profile`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    return res.data.data;
+  },
+
   // 新增或更新workflow and Job
   async createWorkflow() {
     const res = await axios.post(`${this.hostname}/workflow`);
