@@ -1,11 +1,29 @@
 import axios from 'axios';
 
-//  方法一
 const API = {
   hostname: 'http://localhost:8080/api',
 
+  // user 相關
+  async signup(data) {
+    console.log('signup', data);
+    const res = await axios.post(`${this.hostname}/user/login`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return res.data.data;
+  },
+  async login(data) {
+    console.log('login', data);
+    const res = await axios.post(`${this.hostname}/user/login`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('ewqewq', res.data.data);
+    return res.data.data;
+  },
   // 新增或更新workflow and Job
-
   async createWorkflow() {
     const res = await axios.post(`${this.hostname}/workflow`);
     return res.data;
@@ -53,7 +71,6 @@ const API = {
     const res = await axios.get(`${this.hostname}/workflow/user/${id}`);
     return res.data;
   },
-
   // Trigger workflow
   async triggerWorkflow(id) {
     const res = await axios.get(`${this.hostname}/trigger/workflow/${id}`);
