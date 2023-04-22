@@ -2,8 +2,6 @@ import moment from 'moment-timezone';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import CustomError from './customError.js';
-
 // 取得現在時間
 export function getNowTime() {
   // const dt0 = moment.utc().tz('UTC');
@@ -76,20 +74,4 @@ export function createJWT(user) {
       }
     );
   });
-}
-
-export function verifyJWT(req, res, next) {
-  console.log('@verifyJWT header', req.headers);
-  if (!req.headers.authorization) {
-    return next(new CustomError('No token', 401));
-  }
-  const token = req.headers.authorization.replace('Bearer ', '');
-  try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.token = token;
-    req.user = decoded;
-    return next();
-  } catch (err) {
-    return next(new CustomError('Wrong token', 403));
-  }
 }

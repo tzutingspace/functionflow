@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StatusCodes } from 'http-status-codes';
+// import { StatusCodes } from 'http-status-codes';
 import CustomError from '../utils/customError.js';
 
 import * as DBUser from '../models/user.js';
@@ -50,12 +50,12 @@ export const signup = async (req, res, next) => {
   const output = {
     access_token: JWT,
     access_expired: Number(process.env.ACCESS_EXPIRED),
-    createResult,
+    user: createResult,
   };
   return res.json({ data: output });
 };
 
-export const signin = async (req, res, next) => {
+export const login = async (req, res, next) => {
   console.log('@controller signin');
   console.log('@controller signin request Body: ', req.body);
   if (!req.is('application/json')) {
@@ -120,8 +120,16 @@ export const signin = async (req, res, next) => {
   const output = {
     access_token: JWT,
     access_expired: Number(process.env.ACCESS_EXPIRED),
-    outputResult,
+    user: outputResult,
   };
   console.log('@loginResult', output);
   return res.json({ data: output });
+};
+
+export const getProfile = async (req, res) => {
+  const result = req.user;
+  delete result.iat;
+  delete result.exp;
+  delete result.id;
+  res.json({ data: result });
 };
