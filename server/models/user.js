@@ -13,13 +13,13 @@ export async function getUser(email) {
 }
 
 // 註冊
-export async function createUser(name, email, password) {
+export async function createUser(name, email, password, provider) {
   const [result] = await pool.query(
     `
-    INSERT INTO users (name, email, password)
-    VALUES (?, ?, ?)
+    INSERT INTO users (name, email, password, provider)
+    VALUES (?, ?, ?, ?)
     `,
-    [name, email, password]
+    [name, email, password, provider]
   );
   console.log('@model createUser, Result:', result);
   return getUser(email);
