@@ -2,13 +2,13 @@
 import * as DBTool from '../models/tool.js';
 // import CustomError from '../utils/customError.js';
 
-const getTriggers = async (req, res) => {
+export const getTriggers = async (req, res) => {
   console.log('@controller getTriggers');
   const triggers = await DBTool.getTriggers();
   return res.json({ data: triggers });
 };
 
-const searchTrigger = async (req, res) => {
+export const searchTrigger = async (req, res) => {
   console.log('@controller searchTrigger');
   const id = req.params.id === undefined ? 1 : Number(req.params.id);
   const requriement = { id };
@@ -16,7 +16,7 @@ const searchTrigger = async (req, res) => {
   return res.json({ data: tool });
 };
 
-const getTools = async (req, res) => {
+export const getTools = async (req, res) => {
   console.log('@controller getTools');
   console.log(req.params);
   const type = req.params.type === undefined ? 'all' : req.params.type;
@@ -25,7 +25,7 @@ const getTools = async (req, res) => {
   return res.json({ data: tools });
 };
 
-const searchTool = async (req, res) => {
+export const searchTool = async (req, res) => {
   console.log('@controller searchTool');
   const id = req.params.id === undefined ? 1 : Number(req.params.id);
   const requriement = { id };
@@ -33,4 +33,4 @@ const searchTool = async (req, res) => {
   return res.json({ data: tool });
 };
 
-export { getTriggers, searchTrigger, getTools, searchTool };
+// export { getTriggers, searchTrigger, getTools, searchTool };

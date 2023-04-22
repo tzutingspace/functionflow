@@ -6,12 +6,12 @@ import dotenv from 'dotenv';
 import StatusCodes from 'http-status-codes';
 import cors from 'cors';
 
-//
 import CustomError from './utils/customError.js';
 
 // ROUTER
+import { router as user } from './routers/user.js';
 import { router as workflow } from './routers/workflow.js';
-import { router as funcitons } from './routers/tool.js';
+import { router as tool } from './routers/tool.js';
 import { router as trigger } from './routers/trigger.js';
 import { router as admin } from './routers/admin.js';
 
@@ -39,8 +39,9 @@ app.get('/', async (req, res) => {
 });
 
 app.use('/admin', admin);
+app.use('/api/user', user);
 app.use('/api/', workflow);
-app.use('/api/', funcitons);
+app.use('/api/', tool);
 app.use('/api/', trigger);
 
 io.on('connection', (socket) => {
