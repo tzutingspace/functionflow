@@ -1,5 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { WorkflowStateProvider } from './contexts/workflowContext';
+import { WorkflowStateContext } from './contexts/workflowContext';
+
 import Block from './components/Block';
 import Head from './components/Head';
 import API from '../../utils/api';
@@ -7,7 +10,9 @@ import API from '../../utils/api';
 const Build = () => {
   const [workflowTitle, setWorkflowTitle] = useState('Untitled Workflow');
   const [jobs, setJobs] = useState([{ name: 'Trigger', uuid: uuidv4() }]);
+
   const [workflowStatus, setworkflowStatus] = useState('draft');
+  const { isJobsSave, setIsJobsSave } = useContext(WorkflowStateContext);
 
   useEffect(() => {
     const createWorkflow = async () => {
@@ -17,34 +22,38 @@ const Build = () => {
 
       // 取得此workflow id
       setJobs((prev) => {
-        console.log('jobs prev', prev);
         prev[0]['id'] = workflowId;
         return [...prev];
       });
+
+      setIsJobsSave(false, 0);
     };
     createWorkflow();
   }, []);
 
   return (
     <>
-      <Head
-        workflowTitle={workflowTitle}
-        setWorkflowTitle={setWorkflowTitle}
-        jobsData={jobs}
-        setJobsData={setJobs}
-        workflowStatus={workflowStatus}
-        setworkflowStatus={setworkflowStatus}
-      />
-      {jobs.map((item, idx) => (
-        <Block
-          key={item.uuid}
+      <WorkflowStateProvider>
+        <Head
           workflowTitle={workflowTitle}
-          jobData={item}
+          setWorkflowTitle={setWorkflowTitle}
           jobsData={jobs}
           setJobsData={setJobs}
-          idx={idx}
+          workflowStatus={workflowStatus}
+          setworkflowStatus={setworkflowStatus}
         />
-      ))}
+        {jobs.map((item, idx) => (
+          <Block
+            key={item.uuid}
+            workflowTitle={workflowTitle}
+            setworkflowStatus={setworkflowStatus}
+            jobData={item}
+            jobsData={jobs}
+            setJobsData={setJobs}
+            idx={idx}
+          />
+        ))}
+      </WorkflowStateProvider>
     </>
   );
 };

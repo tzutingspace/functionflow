@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import Job from './Job';
+import { WorkflowStateContext } from '../contexts/workflowContext';
 
 const Wrapper = styled.div`
   position: relative;
@@ -51,6 +53,8 @@ const AddButton = styled.button`
 // JobsData 是整個workflow的資料
 
 const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
+  const { setIsJobsSave } = useContext(WorkflowStateContext);
+
   // 新增Job的button
   function addJob() {
     // 建立新job object
@@ -65,6 +69,8 @@ const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
       }
       return [...prev, newjob];
     });
+
+    setIsJobsSave(false, idx);
   }
 
   // 移除Job的button

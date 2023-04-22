@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import API from '../../../utils/api';
 import styled from 'styled-components';
+import io, { Socket } from 'socket.io-client';
+import { WorkflowStateContext } from '../contexts/workflowContext';
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,6 +16,7 @@ const WorkflowHeaderLeft = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const WorkflowHeaderRight = styled.div`
   position: relative;
   display: flex;
@@ -34,10 +37,9 @@ const HeadInput = styled.input`
 
 const WorkflowStatus = styled.div`
   font-size: 12px;
-  color: #777; /* 示例顏色 */
+  color: #cccccc; /* 示例顏色 */
   margin-left: 16px;
-
-  background-color: gray; /* 灰色背景顏色 */
+  background-color: #cccccc; /* 灰色背景顏色 */
   border-radius: 20px; /* 圓弧造型 */
   padding: 8px 20px; /* 內邊距 */
   color: white; /* 文字顏色 */
@@ -48,7 +50,7 @@ const TriggerButton = styled.div`
   margin-left: 16px;
   padding: 8px 20px; /* 內邊距 */
   margin-right: 16px; /* 右邊間距 */
-  background-color: #000000;
+  background-color: #6acf91;
   color: #fff;
   font-size: 14px;
   font-weight: bold;
@@ -103,6 +105,8 @@ const BackButton = styled.button`
   cursor: pointer;
 `;
 
+const socket = io.connect('http://localhost:8080');
+
 const Head = ({
   jobsData,
   setJobsData,
@@ -112,6 +116,9 @@ const Head = ({
   setworkflowStatus,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [triggerResult, setTriggerResult] = useState('');
+
+  const { isDraft, setIsDraft } = useContext(WorkflowStateContext);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -125,6 +132,8 @@ const Head = ({
     });
     // 更新 title
     setWorkflowTitle(value);
+    setworkflowStatus('draft');
+    setIsDraft(true);
   }
 
   async function deployWorkflow() {
@@ -152,8 +161,9 @@ const Head = ({
 
     console.log('deploy', deployObj);
     const result = await API.deployWorkflow(jobsData[0]['id'], deployObj);
-    console.log('結果', result);
+    console.log('deploy結果', result);
     setworkflowStatus('deploy');
+    setIsDraft(false);
   }
 
   async function triggerWorkflow() {
@@ -162,6 +172,12 @@ const Head = ({
     const result = await API.triggerWorkflow(id);
     console.log('Trigger 結果', result);
     alert('Trigger 已送出，請稍等結果');
+    socket.emit('trigger', 'userId123');
+    socket.on('triggerFinish', (data) => {
+      setTriggerResult(() => {
+        return data.message;
+      });
+    });
   }
 
   return (
@@ -173,15 +189,15 @@ const Head = ({
           placeholder="Untitled Workflow"
           value={workflowTitle}
         ></HeadInput>
-        <WorkflowStatus>{workflowStatus}</WorkflowStatus>
+        <WorkflowStatus>{isDraft ? 'draft' : 'active'}</WorkflowStatus>
       </WorkflowHeaderLeft>
       <WorkflowHeaderRight>
-        {workflowStatus === 'depoly' ? (
+        {isDraft ? (
+          <></>
+        ) : (
           <TriggerButton type="button" onClick={() => triggerWorkflow()}>
             Trigger
           </TriggerButton>
-        ) : (
-          <></>
         )}
         <DeployButton type="button" onClick={() => deployWorkflow()}>
           Deploy
@@ -194,6 +210,7 @@ const Head = ({
             <BackButton>Back</BackButton>
           </ExpandedContent>
         )}
+        <p>{triggerResult}</p>
       </WorkflowHeaderRight>
     </Wrapper>
   );

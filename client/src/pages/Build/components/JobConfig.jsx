@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import API from '../../../utils/api';
 import styled from 'styled-components';
+import { WorkflowStateContext } from '../contexts/workflowContext';
 
 const FunctionWrapper = styled.div`
   font-size: 18px;
@@ -131,6 +132,9 @@ const ValueCopy = styled.a`
 `;
 
 const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
+  // 紀錄是否save過
+  const { isJobsSave, setIsJobsSave } = useContext(WorkflowStateContext);
+
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
   const { name, external_name, description, template_input, template_output } = jobConfigData; // 取值
