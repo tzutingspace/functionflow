@@ -70,7 +70,7 @@ const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
       return [...prev, newjob];
     });
 
-    setIsJobsSave(false, idx);
+    setIsJobsSave(false, jobData);
   }
 
   // 移除Job的button

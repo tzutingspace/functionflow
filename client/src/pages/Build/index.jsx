@@ -25,8 +25,6 @@ const Build = () => {
         prev[0]['id'] = workflowId;
         return [...prev];
       });
-
-      setIsJobsSave(false, 0);
     };
     createWorkflow();
   }, []);
