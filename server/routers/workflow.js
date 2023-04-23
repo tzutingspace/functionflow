@@ -8,6 +8,7 @@ import {
   createJob,
   updateJob,
   deployWorkflow,
+  deleteWorkflows,
 } from '../controllers/workflow.js';
 
 const router = Router();
@@ -25,5 +26,7 @@ router.post('/job', wrapAsync(createJob));
 router.put('/job/:id', wrapAsync(updateJob));
 
 router.put('/workflow/depoly/:id', wrapAsync(deployWorkflow));
+
+router.delete('/workflows', wrapAsync(deleteWorkflows));
 
 export { router };

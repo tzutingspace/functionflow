@@ -104,6 +104,15 @@ export const updateWorkflow = async (req, res, next) => {
   return res.json({ data: result });
 };
 
+// DELETE Workflows
+export const deleteWorkflows = async (req, res) => {
+  console.log('@controller deployWorkflow');
+  console.log('@delete workflows', req.body);
+  const { id } = req.body;
+  const [result] = await DBWorkflow.deleteWorkflows(id);
+  return res.json({ data: result });
+};
+
 // CREATE JOB
 export const createJob = async (req, res, next) => {
   console.log('@controller createJob');

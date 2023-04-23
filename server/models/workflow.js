@@ -23,7 +23,7 @@ export async function getWorkflowById(id) {
 // 取得 workflows by userId
 export async function getWorkflowByUser(id) {
   const [rows] = await pool.query(
-    `SELECT * FROM workflows WHERE user_id = ? ORDER by created_at DESC`,
+    `SELECT * FROM workflows WHERE user_id = ? AND (status='draft' OR status='active') ORDER by created_at DESC`,
     [id]
   );
   return rows;
@@ -160,4 +160,45 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
   }
   // FIXME: return 結果要有一致性
   return workflowId;
+}
+
+export async function deleteWorkflows(workflowIds) {
+  console.log('workflows Id', workflowIds);
+
+  const conn = await pool.getConnection();
+
+  // FIXME: 是否要改成for loop?
+  workflowIds.map(async (workflowId) => {
+    try {
+      console.log('workflowId', workflowId);
+      await conn.query('START TRANSACTION');
+      // 刪除所有對應Job
+      const [jobIds] = await conn.query(
+        'SELECT id FROM jobs WHERE workflow_id = ? ORDER BY id DESC',
+        [workflowId]
+      );
+      // 因為有id FK, 需要一個一個刪
+
+      console.log('jobIds', jobIds);
+
+      jobIds.map(async ({ id }) => {
+        console.log('jobId', id);
+        await conn.query('DELETE FROM jobs WHERE id = ?', [id]);
+      });
+
+      // 刪除workflow
+      // FIXME: 是否完全刪除
+      await conn.query('UPDATE workflows SET status="delete"  WHERE id = ?', [
+        workflowId,
+      ]);
+      await conn.query('COMMIT');
+    } catch (error) {
+      await conn.query('ROLLBACK');
+      console.log('delete workflow Error', error);
+    } finally {
+      await conn.release();
+    }
+  });
+
+  return '開發中';
 }
