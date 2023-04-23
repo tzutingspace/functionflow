@@ -10,6 +10,8 @@ const { DISCORD_CLIENT_ID, DISCORD_OAUTH_SECRET, DISCORD_REDIRECT_URI } =
 export const OAuth = async (req, res) => {
   console.log('@controller OAuth');
   console.log('@OAuth query', req.query);
+
+  console.log(DISCORD_CLIENT_ID, DISCORD_OAUTH_SECRET, DISCORD_REDIRECT_URI);
   const { code } = req.query;
   const url = 'https://discord.com/api/v10/oauth2/token';
 

@@ -76,9 +76,9 @@ app.use((err, req, res, next) => {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     message: err.message || 'Internal Server Error',
   };
-  return res
-    .status(customError.statusCode)
-    .json({ message: customError.message, status: customError.statusCode });
+  return res.status(customError.statusCode).json({
+    data: { message: customError.message, status: customError.statusCode },
+  });
 });
 
 server.listen(PORT, () =>
