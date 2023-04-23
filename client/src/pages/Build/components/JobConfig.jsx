@@ -3,6 +3,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import API from '../../../utils/api';
 import styled from 'styled-components';
 import { WorkflowStateContext } from '../contexts/workflowContext';
+import Discord from '../../../components/Discord';
 
 const FunctionWrapper = styled.div`
   font-size: 18px;
@@ -15,37 +16,45 @@ const FunctionName = styled.div`
 `;
 
 const FunctionDescription = styled.div`
+  margin-left: 8px;
   font-size: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 const InputLabel = styled.div`
   margin-right: 10px;
   font-size: 16px;
+  margin-bottom: 3px;
+  margin-top: 6px;
 `;
 
 const InputDescription = styled.div`
+  margin-left: 8px;
   margin-right: 10px;
   font-size: 12px;
   margin-bottom: 3px;
 `;
 
 const ConfigGroup = styled.div`
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  width: 80%;
 `;
 
 const ConfigureSelect = styled.select`
-  width: 30%;
+  box-sizing: border-box;
+  max-width: 250px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
 `;
 
-const ConfigureOptoin = styled.option`
-  width: 30%;
+const ConfigureOption = styled.option`
+  box-sizing: border-box;
+  min-width: 200px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -53,7 +62,8 @@ const ConfigureOptoin = styled.option`
 `;
 
 const ConfigureString = styled.input`
-  width: 60%;
+  box-sizing: border-box;
+  width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -61,7 +71,9 @@ const ConfigureString = styled.input`
 `;
 
 const ConfigureNumber = styled.input`
-  width: 28%;
+  box-sizing: border-box;
+  max-width: 250px;
+  min-width: 200px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -69,7 +81,8 @@ const ConfigureNumber = styled.input`
 `;
 
 const ConfigureTime = styled.input`
-  width: 28%;
+  width: 60%;
+  min-width: 200px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -99,7 +112,7 @@ const ReturnValueWrapper = styled.div`
 
 const ReturnValueTitle = styled.div`
   padding: 10px 10px 1px 3px;
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 const ReturnValueSet = styled.div`
@@ -109,17 +122,17 @@ const ReturnValueSet = styled.div`
 
 const ReturnValue = styled.div`
   padding: 10px 10px 1px 10px;
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 const ReturnValueResult = styled.div`
   padding: 0px 20px;
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 const ValueCopy = styled.a`
   padding: 10px 10px 1px 10px;
-  font-size: 6px;
+  font-size: 3px;
   color: #7f7979;
   padding: 10px;
   border: none;
@@ -140,6 +153,9 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
   const { name, external_name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
   const [copied, setCopied] = useState(false); // 複製用
+
+  // Discord 用
+  const [channelId, setChannelId] = useState('');
 
   // 建立JobConfig (抓取資料, 並紀錄需填寫內容)
   useEffect(() => {
@@ -277,10 +293,11 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
       </FunctionWrapper>
       {template_input &&
         template_input.map((item) => {
+          console.log('template input', item);
           return (
             <ConfigGroup key={item.name}>
               <InputLabel>{`${item.label}:`}</InputLabel>
-              <InputDescription>{`${item.description}`}</InputDescription>
+              {item.description && <InputDescription>{`${item.description}`}</InputDescription>}
               {item.type === 'list' && (
                 <ConfigureSelect
                   value={input[item.name]}
@@ -294,9 +311,19 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
                   }}
                 >
                   {item.list.map((opt) => {
-                    return <ConfigureOptoin key={opt}>{opt}</ConfigureOptoin>;
+                    return <ConfigureOption key={opt}>{opt}</ConfigureOption>;
                   })}
                 </ConfigureSelect>
+              )}
+              {item.type === 'appInfo' && item.appProp === 'discord' && (
+                <>
+                  <Discord item={item} setInput={setInput}></Discord>
+                  <ConfigureString
+                    value={input[item.name]}
+                    placeholder={'Your Discord channel ID'}
+                    readOnly
+                  ></ConfigureString>
+                </>
               )}
               {item.type === 'string' && (
                 <ConfigureString
@@ -368,9 +395,9 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
         {template_output &&
           template_output.map((item) => {
             return (
-              <>
-                <ReturnValueSet>
-                  <ReturnValue key={item.name}>{`steps.${jobData.name}.${item.name}`}</ReturnValue>
+              <div key={item.name}>
+                <ReturnValueSet key={item.name}>
+                  <ReturnValue>{`return_name: ${item.name}`}</ReturnValue>
                   <CopyToClipboard
                     text={`{{steps.${jobData.name}.${item.name}}}`}
                     onCopy={() => setCopied(true)}
@@ -379,7 +406,7 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
                   </CopyToClipboard>
                 </ReturnValueSet>
                 <ReturnValueResult>{`return_value_type: ${item.type}`}</ReturnValueResult>
-              </>
+              </div>
             );
           })}
       </ReturnValueWrapper>

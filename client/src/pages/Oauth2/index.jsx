@@ -4,10 +4,8 @@ const Oauth2 = () => {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get('code');
     if (!code) {
-      console.log('取得 Discord Code Error');
-      window.opener.postMessage('Error');
+      window.opener.postMessage({ type: 'error' });
     } else {
-      console.log(`Discord OAuth2 Code: ${code}`);
       const message = { type: 'discord:auth', payload: code };
       window.opener.postMessage(message);
       window.close();

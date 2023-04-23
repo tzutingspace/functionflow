@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: #f8f8f8;
   padding: 16px;
+  margin-bottom: 20px;
 `;
 
 const WorkflowHeaderLeft = styled.div`
