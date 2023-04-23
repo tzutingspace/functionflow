@@ -20,12 +20,15 @@ export const AuthContextProvider = ({ children }) => {
     const checkAuthStatus = async () => {
       const localJwtToken = localStorage.getItem('jwtToken');
       if (localJwtToken) {
-        setJwtToken(localJwtToken);
-        const userData = await api.getProfile(localJwtToken);
-        setUser(userData);
-        setIsLogin(true);
-      } else {
-        window.localStorage.removeItem('jwtToken');
+        try {
+          const userData = await api.getProfile(localJwtToken);
+          setJwtToken(localJwtToken);
+          setUser(userData);
+          setIsLogin(true);
+        } catch (error) {
+          console.log('驗證失敗');
+          window.localStorage.removeItem('jwtToken');
+        }
       }
       setLoading(false);
     };

@@ -41,7 +41,8 @@ const Title = styled.div`
 
 // export default Home;
 
-const CLIENT_ID = '1091689250522681374';
+// const CLIENT_ID = '1091689250522681374'; old
+const CLIENT_ID = '1099302704767045772';
 const REDIRECT_URI = 'http://localhost:3000/oauth2/redirect';
 const SCOPE = 'identify email bot';
 const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&permissions=2048&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
