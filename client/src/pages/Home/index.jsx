@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
-
-import { useEffect } from 'react';
+import api from '../../utils/api';
 
 const Wrapper = styled.div`
   max-width: 1200px;
@@ -43,66 +42,49 @@ const Title = styled.div`
 // export default Home;
 
 const CLIENT_ID = '1091689250522681374';
-const REDIRECT_URI = 'http://localhost:3000/';
+const REDIRECT_URI = 'http://localhost:3000/oauth2/redirect';
 const SCOPE = 'identify email bot';
 const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&permissions=2048&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
 
 const Home = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const [user, setUser] = useState([]);
+  const [channelId, setChannelId] = useState('');
 
-  const handleLogin = () => {
-    const authWindow = window.open(DISCORD_AUTH_URL, '_blank', 'width=600,height=800');
-    authWindow.focus();
+  // 點擊授權按鈕
+  const handleAuthorizeClick = () => {
+    // 設定彈跳視窗的設定
+    const popup = window.open(
+      `${DISCORD_AUTH_URL}`, // 填入你的後端 OAuth2 授權網址
+      '_blank',
+      'width=500,height=600'
+    );
+    // 添加事件監聽器以監聽message事件
+    window.addEventListener('message', handlePopupMessage, false);
   };
 
-  useEffect(() => {
-    const handleRedirect = async () => {
-      const code = new URLSearchParams(window.location.search).get('code');
-      console.log('react有拿到code嗎?', code);
-      // const response = await axios.post('http://localhost:8080/api/oauth2/token', {
-      //   code,
-      //   client_id: CLIENT_ID,
-      //   redirect_uri: REDIRECT_URI,
-      //   grant_type: 'authorization_code',
-      // });
-      // const accessToken = response.data.access_token;
-      // const userResponse = await axios.get('https://discord.com/api/users/@me', {
-      //   headers: {
-      //     authorization: `Bearer ${accessToken}`,
-      //   },
-      // });
-      // setAccessToken(accessToken);
-      // setUser(userResponse.data);
-
-      // console.log(accessToken, userResponse.data);
-    };
-    handleRedirect();
+  // handleResponse
+  const handleDiscordResponse = useCallback(async (code) => {
+    const systemChannelId = await api.getDiscordChannel(code);
+    setChannelId(systemChannelId);
+    return systemChannelId;
   }, []);
+
+  // 彈跳視窗的事件監聽
+  const handlePopupMessage = (event) => {
+    // 確認訊息是從正確的網址傳來的
+    if (event.origin !== window.location.origin) return;
+    const { type, payload } = event.data;
+    console.log('彈出視窗回傳的type and payload', type, payload);
+    if (type === 'discord:auth') {
+      window.removeEventListener('message', handlePopupMessage, false);
+      // 送訊息給後端
+      handleDiscordResponse(payload);
+    }
+  };
 
   return (
     <>
-      {accessToken ? (
-        <div>
-          <h2>Logged in as {user.username}</h2>
-          <img
-            src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`}
-            alt="Discord avatar"
-          />
-        </div>
-      ) : (
-        <button onClick={handleLogin}>Login with Discord</button>
-      )}
-      <Routes>
-        <Route
-          exact
-          path="/oauth2/redirect/*"
-          render={() => {
-            handleRedirect();
-            return <Redirect to="/" />;
-          }}
-        />
-      </Routes>
+      <button onClick={handleAuthorizeClick}>Login with Discord</button>
+      <p>{channelId}</p>
     </>
   );
 };

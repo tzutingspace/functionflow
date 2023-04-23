@@ -33,6 +33,14 @@ const API = {
     return res.data.data;
   },
 
+  // OAuth2
+  async getDiscordChannel(code) {
+    console.log('@getDiscordChannel', code);
+    const res = await axios.get(`${this.hostname}/oauth2/token?code=${code}`);
+    console.log('res', res);
+    return res.data.data.systemChannelId;
+  },
+
   // 新增或更新workflow and Job
   async createWorkflow() {
     const res = await axios.post(`${this.hostname}/workflow`);
