@@ -14,6 +14,7 @@ import { router as workflow } from './routers/workflow.js';
 import { router as tool } from './routers/tool.js';
 import { router as trigger } from './routers/trigger.js';
 import { router as admin } from './routers/admin.js';
+import { router as OAuth } from './routers/OAuth.js';
 
 dotenv.config();
 
@@ -34,15 +35,12 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(json());
 
-app.get('/', async (req, res) => {
-  res.json({ status: true, message: 'Our node.js app works' });
-});
-
 app.use('/admin', admin);
 app.use('/api/user', user);
-app.use('/api/', workflow);
-app.use('/api/', tool);
-app.use('/api/', trigger);
+app.use('/api', workflow);
+app.use('/api', tool);
+app.use('/api', trigger);
+app.use('/api/oauth2', OAuth);
 
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);

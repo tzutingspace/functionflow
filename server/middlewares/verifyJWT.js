@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken';
 import CustomError from '../utils/customError.js';
 
 export function verifyJWT(req, res, next) {
-  console.log('@verifyJWT header', req.headers);
+  console.log('@verifyJWT');
+  // console.log('@verifyJWT header', req.headers);
   if (!req.headers.authorization) {
     return next(new CustomError('No token', 401));
   }
