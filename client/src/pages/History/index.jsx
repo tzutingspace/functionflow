@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import Sidebar from './components/Sidebar';
-import Header from './components/Header';
 import MainContent from './components/MainContent';
 
 import styled from 'styled-components';
@@ -17,14 +16,11 @@ const Rightbar = styled.div`
 `;
 
 const History = () => {
-  const [searchText, setSearchText] = useState();
-
   return (
     <Wrapper>
       <Sidebar />
       <Rightbar>
-        <Header searchText={searchText} setSearchText={setSearchText} />
-        <MainContent searchText={searchText} setSearchText={setSearchText} />
+        <MainContent />
       </Rightbar>
     </Wrapper>
   );

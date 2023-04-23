@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   background-color: #333;
@@ -27,7 +27,7 @@ const AddWorkflow = styled.button`
   color: #000000;
 `;
 
-const Header = (searchText, setSearchText) => {
+const Header = () => {
   return (
     <Wrapper>
       <HeadTitle>Workflows</HeadTitle>

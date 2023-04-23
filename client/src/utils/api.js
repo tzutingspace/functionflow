@@ -65,6 +65,18 @@ const API = {
     return res.data;
   },
 
+  async deleteWorkflows(workflowIds, jwt) {
+    console.log('@delete workflowIds', workflowIds);
+    const res = await axios.delete(`${this.hostname}/workflows/`, {
+      data: workflowIds,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    return res.data;
+  },
+
   // GET function 資訊
   async getTriggers() {
     const res = await axios.get(`${this.hostname}/triggers`);
