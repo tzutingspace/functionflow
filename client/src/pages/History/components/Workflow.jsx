@@ -5,6 +5,8 @@ import API from '../../../utils/api';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/authContext';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Optional CSS
 
 const HeadWrapper = styled.div`
   background-color: #dfd1aaa3;
@@ -62,7 +64,6 @@ const DeleteButton = styled.button`
 `;
 
 const WorkflowTable = () => {
-  ``;
   const [workflowdata, setWorkflowdata] = useState([]); // 全部資訊
   const [records, setRecords] = useState([]); //顯示
 
@@ -127,20 +128,45 @@ const WorkflowTable = () => {
   // reference:https://react-data-table-component.netlify.app/?path=/docs/selectable-manage-selections--manage-selections
   const contextActions = useMemo(() => {
     const handleDelete = async () => {
-      if (
-        window.confirm(`Are you sure you want to delete:\r ${selectedRows.map((r) => r.name)}?`)
-      ) {
-        setToggleCleared(!toggleCleared);
-        setRecords(differenceBy(records, selectedRows, 'id'));
-        console.log('被選擇的項目', selectedRows[0]);
+      confirmAlert({
+        title: 'Confirm delete',
+        message: `Are you sure you want to delete:\r ${selectedRows.map((r) => r.name)}?`,
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: async () => {
+              setToggleCleared(!toggleCleared);
+              setRecords(differenceBy(records, selectedRows, 'id'));
+              console.log('被選擇的項目', selectedRows[0]);
 
-        const deleteIds = selectedRows.map((workflow) => workflow.id);
+              const deleteIds = selectedRows.map((workflow) => workflow.id);
 
-        //FIXME: JWT token?? 應該可以從useContext拿
-        const localJwtToken = localStorage.getItem('jwtToken');
-        console.log('ids', deleteIds);
-        await API.deleteWorkflows({ id: deleteIds }, localJwtToken);
-      }
+              //FIXME: JWT token?? 應該可以從useContext拿
+              const localJwtToken = localStorage.getItem('jwtToken');
+              console.log('ids', deleteIds);
+              await API.deleteWorkflows({ id: deleteIds }, localJwtToken);
+            },
+          },
+          {
+            label: 'No',
+          },
+        ],
+      });
+
+      // if (
+      //   window.confirm(`Are you sure you want to delete:\r ${selectedRows.map((r) => r.name)}?`)
+      // ) {
+      //   setToggleCleared(!toggleCleared);
+      //   setRecords(differenceBy(records, selectedRows, 'id'));
+      //   console.log('被選擇的項目', selectedRows[0]);
+
+      //   const deleteIds = selectedRows.map((workflow) => workflow.id);
+
+      //   //FIXME: JWT token?? 應該可以從useContext拿
+      //   const localJwtToken = localStorage.getItem('jwtToken');
+      //   console.log('ids', deleteIds);
+      //   await API.deleteWorkflows({ id: deleteIds }, localJwtToken);
+      // }
     };
     return (
       <DeleteButton key="delete" onClick={handleDelete}>
