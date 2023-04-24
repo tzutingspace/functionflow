@@ -50,18 +50,19 @@ const HeadInput = styled.input`
 `;
 
 const WorkflowStatus = styled.div`
-  font-size: 14px;
-  color: #cccccc; /* 示例顏色 */
+  font-size: 18px;
   margin-left: 16px;
-  background-color: #cccccc; /* 灰色背景顏色 */
+  background-color: #dfd1aa82; /* 灰色背景顏色 */
   border-radius: 20px; /* 圓弧造型 */
-  padding: 8px 20px; /* 內邊距 */
+  padding: 10px 16px; /* 內邊距 */
   color: #20315b; /* 文字顏色 */
   margin-right: 16px; /* 右邊間距 */
   font-weight: bold;
   padding: 10px 16px;
   width: 40px;
+  border: none;
   text-align: center;
+  width: auto;
 `;
 
 const TriggerButton = styled.div`
@@ -70,7 +71,7 @@ const TriggerButton = styled.div`
   margin-right: 16px; /* 右邊間距 */
   background-color: #6acf91;
   color: #fff;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
   padding: 10px 16px;
   border: none;
