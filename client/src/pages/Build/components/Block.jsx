@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Job from './Job';
 import { WorkflowStateContext } from '../contexts/workflowContext';
@@ -94,6 +94,7 @@ const AddButtonNew = styled.button`
 
 const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
   // const { setIsJobsSave } = useContext(WorkflowStateContext);
+  const jobBlockRef = useRef(null);
 
   // 新增Job的button
   function addJob() {
@@ -110,7 +111,14 @@ const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
       return [...prev, newjob];
     });
 
-    // setIsJobsSave(false, jobData);
+    setTimeout(() => {
+      if (jobBlockRef.current) {
+        window.scrollTo({
+          top: jobBlockRef.current.offsetTop + 250,
+          behavior: 'smooth',
+        });
+      }
+    }, 100);
   }
 
   // 移除Job的button
@@ -120,7 +128,7 @@ const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper ref={jobBlockRef}>
         {idx ? (
           <DeleteButton type="button" onClick={() => removeJob()}>
             Remove
