@@ -9,7 +9,8 @@ const ToolButton = styled.button`
   justify-content: flex-start;
   align-items: flex-start;
   padding: 0.5rem;
-  border-radius: 0.25rem;
+  /* border-radius: 0.25rem; */
+  border-radius: 10px;
   background-color: #f3ecda;
   line-height: 1rem;
   max-height: 60px;
@@ -24,6 +25,7 @@ const ContentWrapper = styled.div`
   align-items: center;
   color: #333;
   width: 100%;
+  padding: 2px 2px; /* 內邊距 */
 `;
 
 const TextWrapper = styled.div`
@@ -32,7 +34,7 @@ const TextWrapper = styled.div`
 
 const Title = styled.div`
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
   text-align: left;
   margin-left: 10px;
   color: #20315b;

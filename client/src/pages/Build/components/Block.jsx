@@ -24,12 +24,14 @@ const DeleteButton = styled.button`
   right: 20px;
   padding: 10px;
   background-color: rgb(232, 108, 108);
-  color: #fff;
+  color: #20315b;
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 8px;
-  font-size: 14px;
+  font-size: 18px;
   cursor: pointer;
+  font-weight: 600;
+  /* text-align: center; */
 `;
 
 const ButtonArea = styled.div`
@@ -121,7 +123,7 @@ const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
       <Wrapper>
         {idx ? (
           <DeleteButton type="button" onClick={() => removeJob()}>
-            Remove Job
+            Remove
           </DeleteButton>
         ) : (
           <></>

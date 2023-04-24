@@ -3,16 +3,20 @@ import JobTitle from './JobTitle';
 import Tool from './Tool';
 
 const JobTilteStyled = styled.div`
-  font-size: 30px;
+  font-size: 32px;
   font-weight: bold;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   display: flex;
   color: #20315b;
   align-items: center;
 `;
 
-const JobContent = styled.div``;
+const JobContent = styled.div`
+  width: 90%;
+  margin: auto;
+  margin-top: 20px;
+`;
 
 const Job = ({ idx, jobData, jobsData, setJobsData, workflowTitle }) => {
   return (

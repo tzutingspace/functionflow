@@ -6,32 +6,31 @@ import { WorkflowStateContext } from '../contexts/workflowContext';
 import Discord from '../../../components/Discord';
 
 const FunctionWrapper = styled.div`
-  font-size: 18px;
-  font-weight: bold;
+  padding-bottom: 10px;
 `;
 
 const FunctionName = styled.div`
-  font-size: 18px;
+  font-size: 26px;
   font-weight: bold;
+  color: #20315b;
 `;
 
 const FunctionDescription = styled.div`
   margin-left: 8px;
-  font-size: 12px;
-  margin-bottom: 15px;
+  font-size: 16px;
+  color: #20315b;
 `;
 
 const InputLabel = styled.div`
-  margin-right: 10px;
-  font-size: 16px;
-  margin-bottom: 3px;
-  margin-top: 6px;
+  color: #20315b;
+  font-size: 22px;
+  font-weight: 500;
 `;
 
 const InputDescription = styled.div`
-  margin-left: 8px;
-  margin-right: 10px;
-  font-size: 12px;
+  color: #20315b;
+  margin-left: 14px;
+  font-size: 14px;
   margin-bottom: 3px;
 `;
 
@@ -40,7 +39,12 @@ const ConfigGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 80%;
+  width: 85%;
+  padding: 8px 8px; /* 內邊距 */
+  background-color: #f3ecda;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  margin-left: 20px;
 `;
 
 const ConfigureSelect = styled.select`
@@ -50,6 +54,7 @@ const ConfigureSelect = styled.select`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-left: 14px;
 `;
 
 const ConfigureOption = styled.option`
@@ -59,6 +64,7 @@ const ConfigureOption = styled.option`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-left: 14px;
 `;
 
 const ConfigureString = styled.input`
@@ -68,6 +74,8 @@ const ConfigureString = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-left: 14px;
+  max-width: 250px;
 `;
 
 const ConfigureNumber = styled.input`
@@ -78,6 +86,7 @@ const ConfigureNumber = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-left: 14px;
 `;
 
 const ConfigureTime = styled.input`
@@ -87,58 +96,66 @@ const ConfigureTime = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-left: 14px;
 `;
 
 const SaveButton = styled.button`
   display: block;
   position: absolute; /* 加入絕對定位 */
-  bottom: 20px; /* 距離底部 20px */
+  bottom: 25px; /* 距離底部 20px */
   right: 20px; /* 距離右側 20px */
   padding: 10px;
-  background-color: #0c0c0c;
-  color: #fff;
+  background-color: #20315b;
+  color: #dfd1aa;
   text-align: center;
   cursor: pointer;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 20px;
+  font-size: 18px;
 `;
 
 const ReturnValueWrapper = styled.div`
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  width: 85%;
+  padding: 8px 8px; /* 內邊距 */
+  background-color: #f3ecda;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  margin-left: 20px;
 `;
 
 const ReturnValueTitle = styled.div`
-  padding: 10px 10px 1px 3px;
-  font-size: 14px;
+  padding: 0px 10px 1px 3px;
+  font-size: 18px;
 `;
 
 const ReturnValueSet = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
 `;
 
 const ReturnValue = styled.div`
-  padding: 10px 10px 1px 10px;
+  padding: 0px 10px 0px 10px;
   font-size: 14px;
+  border: none;
 `;
 
 const ReturnValueResult = styled.div`
-  padding: 0px 20px;
+  padding: 0px 10px 0px 10px;
   font-size: 14px;
 `;
 
 const ValueCopy = styled.a`
-  padding: 10px 10px 1px 10px;
-  font-size: 3px;
-  color: #7f7979;
-  padding: 10px;
+  padding: 0px 10px 0px 10px;
+  font-size: 14px;
+  color: #b6abab;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
-
   &:hover {
     color: #000;
   }

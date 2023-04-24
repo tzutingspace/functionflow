@@ -3,13 +3,13 @@ import styled from 'styled-components';
 const JobNameLabel = styled.div``;
 
 const JobName = styled.input`
-  width: 20%;
+  width: 30%;
   height: 150%;
   padding: 8px;
   margin-left: 2px;
   border: 1px solid #20315b;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 18px;
   /* margin-bottom: 10px; */
 `;
 

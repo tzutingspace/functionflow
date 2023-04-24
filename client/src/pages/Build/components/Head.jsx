@@ -46,6 +46,7 @@ const HeadInput = styled.input`
   font-size: 28px;
   font-weight: bold;
   height: 44px;
+  color: #20315b;
 `;
 
 const WorkflowStatus = styled.div`
