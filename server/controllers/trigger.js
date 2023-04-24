@@ -36,7 +36,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   console.log('建立instances回傳的結果', readyToQueueObj);
 
   // FIXME: SQS結果確認
-  // await putToSQS(JSON.stringify(readyToQueueObj));
+  await putToSQS(JSON.stringify(readyToQueueObj));
   // 放進sqs test run
   return res.json({ data: readyToQueueObj });
 };
