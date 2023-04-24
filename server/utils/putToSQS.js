@@ -15,7 +15,9 @@ export const putToSQS = async (msg) => {
     DelaySeconds: Number('30'),
   };
   try {
+    console.log('insqs input', input);
     const command = new SendMessageCommand(input);
+    console.log('command', command);
     const response = await client.send(command);
     console.log('SQS回傳的結果', response);
     // process data.
