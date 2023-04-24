@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
 // FIXME: 應該要寫成另一個file
 // trigger success
 app.post('/triggerFinish', (req, res) => {
+  console.log('@app triggerFinish, req.body', req.body);
   const { socketId, data } = req.body;
   io.to(socketId).emit('triggerFinish', { message: data });
   res.send({ data: 'accept' });
