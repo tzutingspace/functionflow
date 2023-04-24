@@ -7,9 +7,9 @@ import api from '../../utils/api';
 import discordLogo from './discord-logo.png';
 
 // const CLIENT_ID = '1091689250522681374'; old
-const CLIENT_ID = '1099302704767045772';
-const REDIRECT_URI = 'http://localhost:3000/oauth2/redirect';
-const SCOPE = 'identify email bot';
+const CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
+const REDIRECT_URI = process.env.REACT_APP_DISCORD_REDIRECT_URI;
+const SCOPE = process.env.REACT_APP_DISCORD_SCOPE;
 const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&permissions=2048&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
 
 const Wrapper = styled.div`

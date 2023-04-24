@@ -146,7 +146,8 @@ const ValueCopy = styled.a`
 
 const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
   // 紀錄是否save過
-  const { isJobsSave, setIsJobsSave } = useContext(WorkflowStateContext);
+  // const { isJobsSave, setIsJobsSave } = useContext(WorkflowStateContext);
+  const [isSave, setIsSave] = useState(false);
 
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
@@ -244,7 +245,9 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
       waitingSaveData['trigger_function_id'] = jobData['trigger_function_id'];
       waitingSaveData['job_number'] = jobsData.length - 1;
       waitingSaveData['jobsInfo'] = input;
-      await API.updateWorkflow(waitingSaveData);
+      const res = await API.updateWorkflow(waitingSaveData);
+      console.log('idx==0, res:', res);
+      setIsSave(true);
     } else {
       console.log('處理idx!=0, update jobs status');
       console.log('jobConfigData', jobConfigData);
@@ -260,15 +263,19 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
       // 新增JOB
       if (!jobsData[idx]['settingInfo']) {
         // waitingSaveData['insertJobSeq'] = idx;
-        const jobId = await API.createJob(waitingSaveData);
-        waitingSaveData['jobsInfo']['job_id'] = jobId['data'];
+        const res = await API.createJob(waitingSaveData);
+        waitingSaveData['jobsInfo']['job_id'] = res['data'];
+        console.log('create a job. res:', res);
+        setIsSave(true);
         // 更新JOB
       } else {
         console.log('更新job', jobsData[idx]);
         // waitingSaveData['updateJobSeq'] = idx;
         const jobId = jobsData[idx]['settingInfo']['jobsInfo']['job_id'];
-        await API.updateJob(jobId, waitingSaveData);
+        const res = await API.updateJob(jobId, waitingSaveData);
         waitingSaveData['jobsInfo']['job_id'] = jobId;
+        console.log('update a job. res:', res);
+        setIsSave(true);
       }
     }
 
@@ -285,6 +292,33 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
     console.log('最後jobsData呈現的結果', jobsData);
   }
 
+  // 變更數字job
+
+  const changeNumJob = (e, item) => {
+    console.log('變更數字 job', 'e:', e.target.value, 'item:', item);
+    const value = parseInt(e.target.value, 10);
+    let newObj = {};
+    if (!isNaN(value) && value >= item.min && value <= item.max) {
+      newObj[item.name] = e.target.value;
+      setInput((prev) => {
+        return { ...prev, ...newObj };
+      });
+    }
+    setIsSave(false);
+  };
+
+  // 變更job
+  const changeJob = (e, item) => {
+    console.log('變更job', 'e:', e.target.value, 'item:', item);
+    let newObj = {};
+    newObj[item.name] = e.target.value;
+    setInput((prev) => {
+      console.log('@setInput , onchange', { ...prev, ...newObj });
+      return { ...prev, ...newObj };
+    });
+    setIsSave(false);
+  };
+
   return (
     <>
       <FunctionWrapper>
@@ -299,17 +333,7 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
               <InputLabel>{`${item.label}:`}</InputLabel>
               {item.description && <InputDescription>{`${item.description}`}</InputDescription>}
               {item.type === 'list' && (
-                <ConfigureSelect
-                  value={input[item.name]}
-                  onChange={(e) => {
-                    let newObj = {};
-                    newObj[item.name] = e.target.value;
-                    setInput((prev) => {
-                      console.log('onchange', { ...prev, ...newObj });
-                      return { ...prev, ...newObj };
-                    });
-                  }}
-                >
+                <ConfigureSelect value={input[item.name]} onChange={(e) => changeJob(e, item)}>
                   {item.list.map((opt) => {
                     return <ConfigureOption key={opt}>{opt}</ConfigureOption>;
                   })}
@@ -329,13 +353,7 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
                 <ConfigureString
                   value={input[item.name]}
                   placeholder={item.name}
-                  onChange={(e) => {
-                    let newObj = {};
-                    newObj[item.name] = e.target.value;
-                    setInput((prev) => {
-                      return { ...prev, ...newObj };
-                    });
-                  }}
+                  onChange={(e) => changeJob(e, item)}
                 ></ConfigureString>
               )}
               {item.type === 'number' && (
@@ -344,43 +362,21 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
                   type="number"
                   max={item.max}
                   min={item.min}
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value, 10);
-                    let newObj = {};
-                    if (!isNaN(value) && value >= item.min && value <= item.max) {
-                      newObj[item.name] = e.target.value;
-                      setInput((prev) => {
-                        return { ...prev, ...newObj };
-                      });
-                    }
-                  }}
+                  onChange={(e) => changeNumJob(e, item)}
                 ></ConfigureNumber>
               )}
               {item.type === 'time' && (
                 <ConfigureTime
                   value={input[item.name]}
                   type="time"
-                  onChange={(e) => {
-                    let newObj = {};
-                    newObj[item.name] = e.target.value;
-                    setInput((prev) => {
-                      return { ...prev, ...newObj };
-                    });
-                  }}
+                  onChange={(e) => changeJob(e, item)}
                 ></ConfigureTime>
               )}
               {item.type === 'datetime-local' && (
                 <ConfigureTime
                   value={input[item.name]}
                   type="datetime-local"
-                  onChange={(e) => {
-                    console.log('時間值', e.target.value);
-                    let newObj = {};
-                    newObj[item.name] = e.target.value;
-                    setInput((prev) => {
-                      return { ...prev, ...newObj };
-                    });
-                  }}
+                  onChange={(e) => changeJob(e, item)}
                 ></ConfigureTime>
               )}
             </ConfigGroup>
@@ -410,7 +406,7 @@ const JobConfig = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
             );
           })}
       </ReturnValueWrapper>
-      <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>
+      {!isSave && <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>}
     </>
   );
 };

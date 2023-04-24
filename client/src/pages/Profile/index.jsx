@@ -55,6 +55,7 @@ function Profile() {
     if (isLogin)
       return (
         <>
+          <Content>{`Id: ${user.id}`}</Content>
           <Content>{`Name: ${user.name}`}</Content>
           <Content>{`Email: ${user.email}`}</Content>
           <LogoutButton onClick={logout}>登出</LogoutButton>

@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 const API = {
-  hostname: 'http://localhost:8080/api',
+  hostname: process.env.REACT_APP_API_URL,
+  // hostname: 'http://localhost:8080/api',
 
   // user 相關
   async signup(data) {
     console.log('signup', data);
-    const res = await axios.post(`${this.hostname}/user/login`, data, {
+    const res = await axios.post(`${this.hostname}/user/signup`, data, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -42,8 +43,16 @@ const API = {
   },
 
   // 新增或更新workflow and Job
-  async createWorkflow() {
-    const res = await axios.post(`${this.hostname}/workflow`);
+  async createWorkflow(jwt) {
+    console.log('@API', jwt);
+    //FIXME: post 可以不給data？
+    const data = { data: 'empty' };
+    const res = await axios.post(`${this.hostname}/workflow`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     return res.data;
   },
   async updateWorkflow(workflowInfo) {
@@ -96,9 +105,13 @@ const API = {
   },
 
   //FIXME: userID 要從JWT給 DEMO 暫時寫成/:id
-  async getWorkflowByUser() {
-    const id = 3;
-    const res = await axios.get(`${this.hostname}/workflow/user/${id}`);
+  async getWorkflowByUser(userId, jwt) {
+    const res = await axios.get(`${this.hostname}/workflow/user/${userId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     return res.data;
   },
   // Trigger workflow

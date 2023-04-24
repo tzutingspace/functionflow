@@ -1,6 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+
+import { AuthContext } from '../../contexts/authContext';
 import { WorkflowStateProvider } from './contexts/workflowContext';
 import { WorkflowStateContext } from './contexts/workflowContext';
 
@@ -9,16 +11,19 @@ import Head from './components/Head';
 import API from '../../utils/api';
 
 const Build = () => {
+  const { jwtToken, isLogin } = useContext(AuthContext);
+
   const location = useLocation();
   const [workflowTitle, setWorkflowTitle] = useState('Untitled Workflow');
   const [jobs, setJobs] = useState([{ name: 'Trigger', uuid: uuidv4() }]);
 
   const [workflowStatus, setworkflowStatus] = useState('draft');
-  const { isJobsSave, setIsJobsSave } = useContext(WorkflowStateContext);
+  // const { isJobsSave, setIsJobsSave } = useContext(WorkflowStateContext);
 
   useEffect(() => {
     const createWorkflow = async () => {
-      const { data } = await API.createWorkflow();
+      console.log('@createworkflow useEffect', isLogin, jwtToken);
+      const { data } = await API.createWorkflow(jwtToken);
       const workflowId = data;
       console.log('workflow ID:', workflowId);
 
@@ -28,8 +33,11 @@ const Build = () => {
         return [...prev];
       });
     };
-    createWorkflow();
-  }, []);
+    if (isLogin) {
+      createWorkflow();
+    }
+    //FIXME: 沒有登入應該要導引到登入
+  }, [isLogin]);
 
   return (
     <>

@@ -91,7 +91,7 @@ const AddButtonNew = styled.button`
 // JobsData 是整個workflow的資料
 
 const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
-  const { setIsJobsSave } = useContext(WorkflowStateContext);
+  // const { setIsJobsSave } = useContext(WorkflowStateContext);
 
   // 新增Job的button
   function addJob() {
@@ -108,7 +108,7 @@ const Block = ({ workflowTitle, jobData, jobsData, setJobsData, idx }) => {
       return [...prev, newjob];
     });
 
-    setIsJobsSave(false, jobData);
+    // setIsJobsSave(false, jobData);
   }
 
   // 移除Job的button

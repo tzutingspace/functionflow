@@ -67,7 +67,7 @@ function Header() {
       <h1>Function Flow</h1>
       <PageLinks>
         <PageLink to="/profile">
-          <PageLinkProfileIcon icon={profile} />
+          {/* <PageLinkProfileIcon icon={profile} /> */}
           <PageLinkText>會員</PageLinkText>
         </PageLink>
       </PageLinks>

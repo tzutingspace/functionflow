@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
@@ -25,6 +26,9 @@ const Home = () => {
     <Wrapper>
       {/* <Header></Header> */}
       <Title>Function Flow</Title>
+      <Link to="/history">history</Link>
+      <Link to="/profile">Profile</Link>
+      <Link to="/createworkflow">New +</Link>
     </Wrapper>
   );
 };

@@ -110,7 +110,7 @@ const BackButton = styled(Link)`
   cursor: pointer;
 `;
 
-const socket = io.connect('http://localhost:8080');
+const socket = io.connect(process.env.REACT_APP_SOCKET_URL);
 
 const Head = ({
   jobsData,

@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useContext } from 'react';
 import differenceBy from 'lodash/differenceBy';
 import DataTable from 'react-data-table-component';
 import API from '../../../utils/api';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/authContext';
 
 const HeadWrapper = styled.div`
   background-color: #333;
@@ -42,15 +43,22 @@ const WorkflowTable = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [toggleCleared, setToggleCleared] = useState(false);
 
+  const { user, isLogin, jwtToken } = useContext(AuthContext);
+
   useEffect(() => {
     const getworkflows = async () => {
-      const { data } = await API.getWorkflowByUser();
+      const userId = user.id;
+      console.log('userId', userId);
+      const { data } = await API.getWorkflowByUser(userId, jwtToken);
       console.log('axios回來的data', data);
       setWorkflowdata(data);
       setRecords(data);
     };
-    getworkflows();
-  }, []);
+    if (isLogin) {
+      getworkflows();
+    }
+    // getworkflows();
+  }, [isLogin]);
 
   const colums = [
     {
