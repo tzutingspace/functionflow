@@ -2,10 +2,14 @@ import styled from 'styled-components';
 import JobTitle from './JobTitle';
 import Tool from './Tool';
 
-const JobTilteStyled = styled.h2`
-  font-size: 24px;
+const JobTilteStyled = styled.div`
+  font-size: 30px;
   font-weight: bold;
   margin-top: 0;
+  margin-bottom: 10px;
+  display: flex;
+  color: #20315b;
+  align-items: center;
 `;
 
 const JobContent = styled.div``;

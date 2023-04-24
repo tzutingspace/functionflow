@@ -8,7 +8,7 @@ import plus from './plus.png';
 
 const Wrapper = styled.div`
   position: relative;
-  border: 1px solid #ccc;
+  border: 2.5px solid #20315b;
   border-radius: 8px;
   padding: 16px;
   background-color: #f8f8f8;
@@ -51,12 +51,12 @@ const Emptydiv = styled.div`
   height: 60px;
   padding-left: 1px;
   padding-right: 1px;
-  width: 1.97917px;
+  width: 3px;
   margin-left: 0px;
   margin-right: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
-  background-color: #64b6f8;
+  background-color: #20315b;
   border-width: 0;
   border-style: solid;
   border-color: transparent;

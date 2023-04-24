@@ -7,32 +7,58 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/authContext';
 
 const HeadWrapper = styled.div`
-  background-color: #333;
-  color: #fff;
+  background-color: #dfd1aaa3;
+  color: #20315b;
   padding: 20px;
   display: flex;
   justify-content: space-between;
 `;
 
 const HeadTitle = styled.div`
-  font-weight: bold;
-  font-size: larger;
+  font-size: 36px;
   margin-right: auto;
+  font-weight: bold;
 `;
 
 const HeadSearch = styled.input`
   width: 300px;
   padding-right: 50px;
   margin: 0px 4px;
-  border: 1px solid #ddd;
+  border: 2px solid #20315b;
   border-radius: 4px;
+  padding: 8px 20px; /* 內邊距 */
 `;
 
-const AddWorkflow = styled.button`
+const AddWorkflow = styled(Link)`
   width: 100px;
-  color: #000000;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin-left: 16px;
+  padding: 8px 20px; /* 內邊距 */
+  margin-right: 20px; /* 右邊間距 */
+  background-color: #20315b;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 8px; /* 圓弧造型 */
+  text-align: center;
+`;
+
+const DeleteButton = styled.button`
+  margin-left: 16px;
+  padding: 8px 20px; /* 內邊距 */
+  margin-right: 20px; /* 右邊間距 */
+  background-color: #d61e2d;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 20px; /* 圓弧造型 */
 `;
 
 const WorkflowTable = () => {
@@ -117,24 +143,22 @@ const WorkflowTable = () => {
       }
     };
     return (
-      <button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }} icon>
+      <DeleteButton key="delete" onClick={handleDelete}>
         Delete
-      </button>
+      </DeleteButton>
     );
   }, [records, selectedRows, toggleCleared]);
 
   return (
     <>
       <HeadWrapper>
-        <HeadTitle>Workflows</HeadTitle>
+        <HeadTitle>History</HeadTitle>
         <HeadSearch
           placeholder="I am a search bar."
           type="text"
           onChange={handleFilter}
         ></HeadSearch>
-        <AddWorkflow>
-          <Link to="/createworkflow">New +</Link>
-        </AddWorkflow>
+        <AddWorkflow to="/createworkflow">New +</AddWorkflow>
       </HeadWrapper>
       {records && (
         <DataTable

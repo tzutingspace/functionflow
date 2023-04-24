@@ -14,6 +14,12 @@ const Wrapper = styled.div`
   background-color: #f8f8f8;
   padding: 16px;
   margin-bottom: 20px;
+  width: 100vw;
+  position: fixed;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  z-index: 300;
+  top: 0;
 `;
 
 const WorkflowHeaderLeft = styled.div`
@@ -28,8 +34,8 @@ const WorkflowHeaderRight = styled.div`
 `;
 
 const Logo = styled(Link)`
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   background-image: url(${logo});
   background-size: contain;
   background-color: #ccc; /* 示例顏色 */
@@ -37,19 +43,24 @@ const Logo = styled(Link)`
 `;
 
 const HeadInput = styled.input`
-  font-size: 26px;
+  font-size: 28px;
   font-weight: bold;
+  height: 44px;
 `;
 
 const WorkflowStatus = styled.div`
-  font-size: 12px;
+  font-size: 14px;
   color: #cccccc; /* 示例顏色 */
   margin-left: 16px;
   background-color: #cccccc; /* 灰色背景顏色 */
   border-radius: 20px; /* 圓弧造型 */
   padding: 8px 20px; /* 內邊距 */
-  color: white; /* 文字顏色 */
+  color: #20315b; /* 文字顏色 */
   margin-right: 16px; /* 右邊間距 */
+  font-weight: bold;
+  padding: 10px 16px;
+  width: 40px;
+  text-align: center;
 `;
 
 const TriggerButton = styled.div`
@@ -67,9 +78,9 @@ const TriggerButton = styled.div`
 `;
 
 const DeployButton = styled.div`
-  background-color: #000000;
-  color: #fff;
-  font-size: 14px;
+  background-color: #20315b;
+  color: #dfd1aa;
+  font-size: 18px;
   font-weight: bold;
   padding: 10px 16px;
   border: none;
@@ -78,9 +89,9 @@ const DeployButton = styled.div`
 `;
 
 const ExpandButton = styled.div`
-  background-color: #000000;
-  color: #fff;
-  font-size: 14px;
+  background-color: #20315b;
+  color: #dfd1aa;
+  font-size: 18px;
   font-weight: bold;
   padding: 10px 16px;
   margin-left: 16px;
@@ -91,19 +102,21 @@ const ExpandButton = styled.div`
 
 const ExpandedContent = styled.div`
   position: absolute;
-  top: 100%; /* 使展開內容位於下方 */
-  left: 0;
+  top: 150%; /* 使展開內容位於下方 */
+  left: 10;
   right: 0;
   background-color: #f8f8f8;
-  padding: 16px;
+  padding: 20px;
   z-index: 10; /* 設置較大的 z-index 值，使展開內容在上層 */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
 
 const BackButton = styled(Link)`
-  color: #000000;
+  color: #20315b;
+  justify-items: auto;
   font-size: 14px;
   font-weight: bold;
   padding: 10px 16px;
@@ -219,6 +232,7 @@ const Head = ({
         {expanded && (
           <ExpandedContent>
             <BackButton to="/">Back</BackButton>
+            <BackButton to="/history">History</BackButton>
           </ExpandedContent>
         )}
         <p>{triggerResult}</p>

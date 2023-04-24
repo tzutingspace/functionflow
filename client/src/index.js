@@ -19,7 +19,7 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
-        <Route path="profile" element={<Profile />} />
+        {/* <Route path="profile" element={<Profile />} /> */}
         <Route path="createworkflow" element={<Build />} />
         <Route path="history" element={<History />} />
         <Route path="oauth2/redirect" element={<Oauth2 />} />

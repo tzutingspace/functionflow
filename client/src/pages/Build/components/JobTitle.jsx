@@ -1,11 +1,16 @@
 import styled from 'styled-components';
 
+const JobNameLabel = styled.div``;
+
 const JobName = styled.input`
   width: 20%;
+  height: 150%;
   padding: 8px;
-  border: 1px solid #ddd;
+  margin-left: 2px;
+  border: 1px solid #20315b;
   border-radius: 4px;
   font-size: 14px;
+  /* margin-bottom: 10px; */
 `;
 
 const JobTitle = ({ jobData, setJobsData }) => {
@@ -23,7 +28,7 @@ const JobTitle = ({ jobData, setJobsData }) => {
 
   return (
     <>
-      <label>Job Name: </label>
+      <JobNameLabel>Job Name: </JobNameLabel>
       <JobName type="text" placeholder={jobData.name} onChange={(e) => changeJobName(e)}></JobName>
     </>
   );

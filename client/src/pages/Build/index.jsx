@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import styled from 'styled-components';
 
 import { AuthContext } from '../../contexts/authContext';
 import { WorkflowStateProvider } from './contexts/workflowContext';
@@ -9,6 +10,12 @@ import { WorkflowStateContext } from './contexts/workflowContext';
 import Block from './components/Block';
 import Head from './components/Head';
 import API from '../../utils/api';
+
+const NextArea = styled.div`
+  box-sizing: border-box;
+  margin-top: 100px;
+  width: 100vw;
+`;
 
 const Build = () => {
   const { jwtToken, isLogin } = useContext(AuthContext);
@@ -50,17 +57,19 @@ const Build = () => {
           workflowStatus={workflowStatus}
           setworkflowStatus={setworkflowStatus}
         />
-        {jobs.map((item, idx) => (
-          <Block
-            key={item.uuid}
-            workflowTitle={workflowTitle}
-            setworkflowStatus={setworkflowStatus}
-            jobData={item}
-            jobsData={jobs}
-            setJobsData={setJobs}
-            idx={idx}
-          />
-        ))}
+        <NextArea>
+          {jobs.map((item, idx) => (
+            <Block
+              key={item.uuid}
+              workflowTitle={workflowTitle}
+              setworkflowStatus={setworkflowStatus}
+              jobData={item}
+              jobsData={jobs}
+              setJobsData={setJobs}
+              idx={idx}
+            />
+          ))}
+        </NextArea>
       </WorkflowStateProvider>
     </>
   );

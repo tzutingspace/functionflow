@@ -1,42 +1,42 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+// import React from 'react';
+// import styled from 'styled-components';
+// import { Link } from 'react-router-dom';
 
-const Wrapper = styled.div`
-  background-color: #333;
-  color: #fff;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-`;
+// const Wrapper = styled.div`
+//   background-color: #333;
+//   color: #fff;
+//   padding: 20px;
+//   display: flex;
+//   justify-content: space-between;
+// `;
 
-const HeadTitle = styled.div`
-  font-weight: bold;
-  font-size: larger;
-  margin-right: auto;
-`;
+// const HeadTitle = styled.div`
+//   font-weight: bold;
+//   font-size: larger;
+//   margin-right: auto;
+// `;
 
-const HeadSearch = styled.input`
-  width: 300px;
-  padding-right: 50px;
-  margin: 0px 4px;
-`;
+// const HeadSearch = styled.input`
+//   width: 300px;
+//   padding-right: 50px;
+//   margin: 0px 4px;
+// `;
 
-const AddWorkflow = styled.button`
-  width: 100px;
-  color: #000000;
-`;
+// const AddWorkflow = styled.button`
+//   width: 100px;
+//   color: #000000;
+// `;
 
-const Header = () => {
-  return (
-    <Wrapper>
-      <HeadTitle>Workflows</HeadTitle>
-      <HeadSearch placeholder="maybe it will be a search bar"></HeadSearch>
-      <AddWorkflow>
-        <Link to="/createworkflow">New +</Link>
-      </AddWorkflow>
-    </Wrapper>
-  );
-};
+// const Header = () => {
+//   return (
+//     <Wrapper>
+//       <HeadTitle>Workflows</HeadTitle>
+//       <HeadSearch placeholder="maybe it will be a search bar"></HeadSearch>
+//       <AddWorkflow>
+//         <Link to="/createworkflow">New +</Link>
+//       </AddWorkflow>
+//     </Wrapper>
+//   );
+// };
 
-export default Header;
+// export default Header;

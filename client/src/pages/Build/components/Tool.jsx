@@ -10,10 +10,12 @@ const ToolButton = styled.button`
   align-items: flex-start;
   padding: 0.5rem;
   border-radius: 0.25rem;
-  background-color: #ccc;
+  background-color: #f3ecda;
   line-height: 1rem;
   max-height: 60px;
   width: 100%;
+  margin-bottom: 6px;
+  border: 0px;
   cursor: pointer;
 `;
 
@@ -30,11 +32,18 @@ const TextWrapper = styled.div`
 
 const Title = styled.div`
   font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+  margin-left: 10px;
+  color: #20315b;
 `;
 
 const Description = styled.div`
   font-size: 0.857em;
   font-weight: 200;
+  text-align: left;
+  margin-left: 14px;
+  color: #20315b;
 `;
 
 const Tool = ({ jobData, jobsData, setJobsData, idx, workflowTitle }) => {
