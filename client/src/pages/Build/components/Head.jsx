@@ -7,6 +7,8 @@ import { WorkflowStateContext } from '../contexts/workflowContext';
 import { AuthContext } from '../../../contexts/authContext';
 import logo from './logo.png';
 
+import ActionAlerts from '../components/Alert.jsx';
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -142,6 +144,9 @@ const Head = ({
   const { user, isLogin, jwtToken } = useContext(AuthContext);
   const { isDraft, setIsDraft } = useContext(WorkflowStateContext);
 
+  const [isTrigger, setIsTrigger] = useState(false);
+  const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
+
   //FIXME: 確認是否登入;
 
   const handleExpandClick = () => {
@@ -195,19 +200,36 @@ const Head = ({
     const id = jobsData[0]['id'];
     const socketId = user.name + user.id;
     const result = await API.triggerWorkflow(id, socketId, jwtToken);
-    console.log('Trigger 結果', result);
-    alert('Trigger 已送出，請稍等結果');
+    console.log('Trigger 送出 response', result);
+    // alert('Trigger 已送出，請稍等結果');
+    setIsTrigger(true);
+
     //FIXME: 需要帶變數
     socket.emit('trigger', socketId);
     socket.on('triggerFinish', (data) => {
+      console.log('後端emit資料過來', data);
+      // alert(`Trigger 已完成, 結果:${data.message}`);
       setTriggerResult(() => {
         return data.message;
       });
+      setIsTriggerResultBack(true);
     });
   }
 
   return (
     <Wrapper>
+      <ActionAlerts
+        isOpen={isTrigger}
+        onClose={setIsTrigger}
+        message={'Trigger 已送出，請稍等結果'}
+      ></ActionAlerts>
+      {
+        <ActionAlerts
+          isOpen={isTriggerResultBack}
+          onClose={setIsTriggerResultBack}
+          message={`Trigger 已完成, 結果:${triggerResult}`}
+        ></ActionAlerts>
+      }
       <WorkflowHeaderLeft>
         <Logo to="/"></Logo>
         <HeadInput
@@ -237,7 +259,7 @@ const Head = ({
             <BackButton to="/history">History</BackButton>
           </ExpandedContent>
         )}
-        <p>{triggerResult}</p>
+        {/* <p>{triggerResult}</p> */}
       </WorkflowHeaderRight>
     </Wrapper>
   );
