@@ -128,8 +128,9 @@ export const login = async (req, res, next) => {
 
 export const getProfile = async (req, res) => {
   const result = req.user;
+  console.log('@controller ID', result);
   delete result.iat;
   delete result.exp;
-  delete result.id;
+  // delete result.id;
   res.json({ data: result });
 };

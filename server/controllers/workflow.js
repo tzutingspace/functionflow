@@ -18,8 +18,9 @@ export const getWorkflow = async (req, res, next) => {
 
 export const getWorkflowByUser = async (req, res, next) => {
   console.log('@controller getWorkflowByUser');
-  // FIXME: userId 要從JWT拿 ; DEMO 暫時用/:id
-  const { id } = req.params;
+  // FIXME: params可以拿掉
+  // const { id } = req.params;
+  const { id } = req.user;
   if (!vaildInterger(id)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
@@ -31,7 +32,7 @@ export const getWorkflowByUser = async (req, res, next) => {
 export const initWorkflow = async (req, res) => {
   console.log('@controller initWorkflow');
   // FIXME: 身份驗證後需修改
-  const userId = 3; // req.user
+  const userId = req.user.id;
   const workflowId = await DBWorkflow.initWorkflow(userId);
   return res.json({ data: workflowId });
 };

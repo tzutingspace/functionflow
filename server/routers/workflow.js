@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
+import { verifyJWT } from '../middlewares/verifyJWT.js';
 import {
   getWorkflow,
   getWorkflowByUser,
@@ -15,12 +16,14 @@ const router = Router();
 
 router.get('/workflow/:id', wrapAsync(getWorkflow));
 
-router.get('/workflow/user/:id', wrapAsync(getWorkflowByUser));
+router.get('/workflow/user/:id', verifyJWT, wrapAsync(getWorkflowByUser));
 
+// FIXME: update要驗證身份
 router.put('/workflow/:id', wrapAsync(updateWorkflow));
 
-router.post('/workflow', wrapAsync(initWorkflow));
+router.post('/workflow', verifyJWT, wrapAsync(initWorkflow));
 
+// FIXME: 驗證身份?
 router.post('/job', wrapAsync(createJob));
 
 router.put('/job/:id', wrapAsync(updateJob));

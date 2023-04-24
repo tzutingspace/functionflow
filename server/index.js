@@ -55,6 +55,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// FIXME: 應該要寫成另一個file
 // trigger success
 app.post('/triggerFinish', (req, res) => {
   const { roomId, data } = req.body;
