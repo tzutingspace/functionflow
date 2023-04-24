@@ -115,9 +115,15 @@ const API = {
     return res.data;
   },
   // Trigger workflow
-  async triggerWorkflow(id) {
-    const res = await axios.get(`${this.hostname}/trigger/workflow/${id}`);
-    return res;
+  async triggerWorkflow(id, socketId, jwt) {
+    const data = { socketId };
+    const res = await axios.post(`${this.hostname}/trigger/workflow/${id}`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    return res.data;
   },
 };
 

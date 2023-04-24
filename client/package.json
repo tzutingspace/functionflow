@@ -25,7 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "sync": "aws s3 sync ./build 's3://tingproject.link'",
+    "invalidate": "aws cloudfront create-invalidation --distribution-id E3AZ9MD2H986YS --paths '/*'"
   },
   "browserslist": {
     "production": [

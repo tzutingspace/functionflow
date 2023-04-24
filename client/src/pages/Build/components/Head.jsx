@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import io, { Socket } from 'socket.io-client';
 import { Link } from 'react-router-dom';
 import { WorkflowStateContext } from '../contexts/workflowContext';
+import { AuthContext } from '../../../contexts/authContext';
 import logo from './logo.png';
 
 const Wrapper = styled.div`
@@ -123,7 +124,10 @@ const Head = ({
   const [expanded, setExpanded] = useState(false);
   const [triggerResult, setTriggerResult] = useState('');
 
+  const { user, isLogin, jwtToken } = useContext(AuthContext);
   const { isDraft, setIsDraft } = useContext(WorkflowStateContext);
+
+  //FIXME: 確認是否登入;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -174,11 +178,12 @@ const Head = ({
   async function triggerWorkflow() {
     console.log('click trigger workflow');
     const id = jobsData[0]['id'];
-    const result = await API.triggerWorkflow(id);
+    const socketId = user.name + user.id;
+    const result = await API.triggerWorkflow(id, socketId, jwtToken);
     console.log('Trigger 結果', result);
     alert('Trigger 已送出，請稍等結果');
     //FIXME: 需要帶變數
-    socket.emit('trigger', 'userId123');
+    socket.emit('trigger', socketId);
     socket.on('triggerFinish', (data) => {
       setTriggerResult(() => {
         return data.message;
