@@ -1,10 +1,15 @@
 import { Router } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
 
+import { verifyJWT } from '../middlewares/verifyJWT.js';
 import { manualTriggerWorkflow } from '../controllers/trigger.js';
 
 const router = Router();
 
-router.get('/trigger/workflow/:id', wrapAsync(manualTriggerWorkflow));
+router.post(
+  '/trigger/workflow/:id',
+  verifyJWT,
+  wrapAsync(manualTriggerWorkflow)
+);
 
 export { router };

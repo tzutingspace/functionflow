@@ -35,6 +35,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(json());
 
+// for load-blancer health check
+app.get('/', (req, res) => {
+  res.json({ data: 200 });
+});
 app.use('/admin', admin);
 app.use('/api/user', user);
 app.use('/api', workflow);
@@ -45,9 +49,9 @@ app.use('/api/oauth2', OAuth);
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  socket.on('trigger', (roomName) => {
-    socket.join(roomName);
-    console.log(`User joined room: ${roomName}`);
+  socket.on('trigger', (socketId) => {
+    socket.join(socketId);
+    console.log(`User joined room, Scoket Id: ${socketId}`);
   });
 
   socket.on('disconnect', () => {
@@ -58,8 +62,8 @@ io.on('connection', (socket) => {
 // FIXME: 應該要寫成另一個file
 // trigger success
 app.post('/triggerFinish', (req, res) => {
-  const { roomId, data } = req.body;
-  io.to(roomId).emit('triggerFinish', { message: data });
+  const { socketId, data } = req.body;
+  io.to(socketId).emit('triggerFinish', { message: data });
   res.send({ data: 'accept' });
 });
 

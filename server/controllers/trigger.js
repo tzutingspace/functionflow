@@ -7,8 +7,9 @@ import CustomError from '../utils/customError.js';
 
 export const manualTriggerWorkflow = async (req, res, next) => {
   console.log('@controller manual Trigger');
+  console.log('req body', req);
   const { id } = req.params;
-
+  const { socketId } = req.body;
   if (!vaildInterger(id)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
@@ -31,7 +32,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   // 建立workflow instance and job instance , 並回傳job資訊
   const readyToQueueObj = await DBinstances.createInstances(workflowInfo);
   readyToQueueObj.target_queue = 'manualTriggerQueue';
-  readyToQueueObj.socketId = '123'; // FIXME: 給id
+  readyToQueueObj.socketId = socketId; // FIXME: 給id
   console.log('建立instances回傳的結果', readyToQueueObj);
 
   // FIXME: SQS結果確認
