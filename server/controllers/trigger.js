@@ -32,7 +32,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   // 建立workflow instance and job instance , 並回傳job資訊
   const readyToQueueObj = await DBinstances.createInstances(workflowInfo);
   readyToQueueObj.target_queue = 'manualTriggerQueue';
-  readyToQueueObj.socketId = socketId; // FIXME: 給id
+  readyToQueueObj.socket_id = socketId;
   console.log('建立instances回傳的結果', readyToQueueObj);
 
   // FIXME: SQS結果確認
