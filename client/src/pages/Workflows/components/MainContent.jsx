@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import WorkflowTable from '../components/Workflow';
+import WorkflowTable from './Workflow';
 
 const Wrapper = styled.div`
   flex: 1;

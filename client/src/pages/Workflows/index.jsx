@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 
@@ -15,7 +14,7 @@ const Rightbar = styled.div`
   flex-direction: column;
 `;
 
-const History = () => {
+const Workflows = () => {
   return (
     <Wrapper>
       <Sidebar />
@@ -26,4 +25,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default Workflows;

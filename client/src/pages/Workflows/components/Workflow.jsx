@@ -63,6 +63,24 @@ const DeleteButton = styled.button`
   border-radius: 20px; /* 圓弧造型 */
 `;
 
+const customStyles = {
+  headRow: { style: { border: 'none' } },
+  headCells: { style: { color: '#202124', fontSize: '14px' } },
+  rows: {
+    highlightOnHoverStyle: {
+      backgroundColor: 'rgb(230, 244, 244)',
+      borderBottomColor: '#FFFFFF',
+      borderRadius: '25px',
+      outline: '1px solid #FFFFFF',
+    },
+  },
+  pagination: {
+    style: {
+      border: 'none',
+    },
+  },
+};
+
 const WorkflowTable = () => {
   const [workflowdata, setWorkflowdata] = useState([]); // 全部資訊
   const [records, setRecords] = useState([]); //顯示
@@ -152,21 +170,6 @@ const WorkflowTable = () => {
           },
         ],
       });
-
-      // if (
-      //   window.confirm(`Are you sure you want to delete:\r ${selectedRows.map((r) => r.name)}?`)
-      // ) {
-      //   setToggleCleared(!toggleCleared);
-      //   setRecords(differenceBy(records, selectedRows, 'id'));
-      //   console.log('被選擇的項目', selectedRows[0]);
-
-      //   const deleteIds = selectedRows.map((workflow) => workflow.id);
-
-      //   //FIXME: JWT token?? 應該可以從useContext拿
-      //   const localJwtToken = localStorage.getItem('jwtToken');
-      //   console.log('ids', deleteIds);
-      //   await API.deleteWorkflows({ id: deleteIds }, localJwtToken);
-      // }
     };
     return (
       <DeleteButton key="delete" onClick={handleDelete}>
@@ -178,7 +181,7 @@ const WorkflowTable = () => {
   return (
     <>
       <HeadWrapper>
-        <HeadTitle>History</HeadTitle>
+        <HeadTitle>Workflows</HeadTitle>
         <HeadSearch
           placeholder="I am a search bar."
           type="text"
@@ -188,15 +191,18 @@ const WorkflowTable = () => {
       </HeadWrapper>
       {records && (
         <DataTable
-          title="Wokflows"
+          // title="Your Workflows"
           columns={colums}
           data={records}
+          noTableHead
           selectableRows
           fixedHeader
           pagination
+          highlightOnHover
           contextActions={contextActions}
           onSelectedRowsChange={handleSelect}
           clearSelectedRows={toggleCleared}
+          customStyles={customStyles}
         ></DataTable>
       )}
     </>

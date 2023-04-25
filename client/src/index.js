@@ -6,7 +6,7 @@ import App from './App';
 import Home from './pages/Home';
 
 import Build from './pages/Build';
-import History from './pages/History';
+import Workflows from './pages/Workflows';
 import Oauth2 from './pages/Oauth2';
 
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
@@ -19,7 +19,7 @@ root.render(
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
         <Route path="createworkflow" element={<Build />} />
-        <Route path="history" element={<History />} />
+        <Route path="history" element={<Workflows />} />
         <Route path="oauth2/redirect" element={<Oauth2 />} />
       </Route>
     </Routes>
