@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import * as DBWorkflow from '../models/workflow.js';
-import * as DBinstances from '../models/instances.js';
+import * as DBinstances from '../models/instance.js';
 import { vaildInterger, getNowTime } from '../utils/utli.js';
 import { putToSQS } from '../utils/putToSQS.js';
 import CustomError from '../utils/customError.js';

@@ -109,3 +109,30 @@ export async function createInstances(workflowInfo) {
 
   return readyToQueueObj;
 }
+
+export async function searchInstancesHistory(workflowId) {
+  const [rows] = await pool.query(
+    `
+    SELECT
+      wfi.workflow_id as wf_id,
+      wfi.status as wfi_status,
+      wfi.trigger_type,
+      wfi.manual_trigger,
+      wfi.id as wfi_id,
+      jobi.id as job_id,
+      jobi.sequence,
+      jobi.name as job_name,
+      jobi.status as job_status,
+      jobi.customer_input as customer_input,
+      jobi.result_output
+    FROM 
+      workflows_instances as wfi
+    LEFT JOIN 
+      jobs_instances as jobi ON wfi.id = jobi.workflow_instance_id
+    WHERE 
+      workflow_id = ?
+    `,
+    [workflowId]
+  );
+  return rows;
+}
