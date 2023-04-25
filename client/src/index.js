@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import Home from './pages/Home';
 
-import Profile from './pages/Profile';
 import Build from './pages/Build';
 import History from './pages/History';
 import Oauth2 from './pages/Oauth2';
@@ -19,7 +18,6 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
-        {/* <Route path="profile" element={<Profile />} /> */}
         <Route path="createworkflow" element={<Build />} />
         <Route path="history" element={<History />} />
         <Route path="oauth2/redirect" element={<Oauth2 />} />

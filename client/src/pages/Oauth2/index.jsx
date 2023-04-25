@@ -11,7 +11,7 @@ const Oauth2 = () => {
       window.close();
     }
   });
-  return <div>Oauth2...ing</div>;
+  return <></>;
 };
 
 export default Oauth2;
