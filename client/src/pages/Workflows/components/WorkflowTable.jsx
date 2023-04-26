@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useMemo, useContext } from 'react';
 import differenceBy from 'lodash/differenceBy';
 import DataTable from 'react-data-table-component';
-import API from '../../../utils/api';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/authContext';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Optional CSS
+
+import { AuthContext } from '../../../contexts/authContext';
+import API from '../../../utils/api';
+import { formatDate } from '../../../utils/utils';
 
 const HeadWrapper = styled.div`
   background-color: #dfd1aaa3;
@@ -81,6 +83,18 @@ const customStyles = {
   },
 };
 
+const WorkflowName = styled(Link)`
+  color: #20315b;
+  font-weight: bold;
+  /* text-decoration: none;
+  border-bottom: solid; */
+
+  &:active {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+`;
+
 const WorkflowTable = () => {
   const [workflowdata, setWorkflowdata] = useState([]); // 全部資訊
   const [records, setRecords] = useState([]); //顯示
@@ -110,6 +124,11 @@ const WorkflowTable = () => {
       name: 'NAME',
       selector: (row) => row.name,
       sortable: true,
+      cell: (row) => (
+        <WorkflowName to={`/instances/@${user.name}/${row.name}/${row.id}`}>
+          {row.name}
+        </WorkflowName>
+      ),
     },
     {
       name: 'STEPS',
@@ -123,7 +142,7 @@ const WorkflowTable = () => {
     },
     {
       name: 'UPDATED',
-      selector: (row) => row.updated_at,
+      selector: (row) => formatDate(row.updated_at),
       sortable: true,
     },
   ];

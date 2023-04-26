@@ -74,6 +74,7 @@ const LeftArea = styled.div`
   padding-right: 2rem;
   /* background-color: #dfd1aaa3; */
   border-right: 1px solid #dfd1aaa3;
+  padding-bottom: 10rem;
 `;
 
 const LeftTitle = styled.div`
