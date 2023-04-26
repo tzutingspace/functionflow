@@ -1,11 +1,13 @@
-import Sidebar from '../../components/Sidebar';
-import MainContent from './components/MainContent';
-
+import React, { useEffect, useState, useMemo, useContext } from 'react';
 import styled from 'styled-components';
+
+import MainContent from './MainContent';
+import Sidebar from '../../components/Sidebar';
 
 const Wrapper = styled.div`
   display: flex;
   height: 100vh;
+  overflow: hidden;
 `;
 
 const Rightbar = styled.div`
@@ -14,7 +16,7 @@ const Rightbar = styled.div`
   flex-direction: column;
 `;
 
-const Workflows = () => {
+const Instances = () => {
   return (
     <Wrapper>
       <Sidebar />
@@ -25,4 +27,4 @@ const Workflows = () => {
   );
 };
 
-export default Workflows;
+export default Instances;

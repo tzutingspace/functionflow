@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import WorkflowTable from './Workflow';
+import WorkflowTable from './WorkflowTable';
 
 const Wrapper = styled.div`
   flex: 1;
   background-color: #fff;
 `;
 
-const MainContent = (searchText, setSearchText) => {
+const MainContent = () => {
   return (
     <Wrapper>
-      <WorkflowTable searchText={searchText} setSearchText={setSearchText}></WorkflowTable>
+      <WorkflowTable></WorkflowTable>
     </Wrapper>
   );
 };

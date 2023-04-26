@@ -86,6 +86,14 @@ const API = {
     return res.data;
   },
 
+  // 抓取intances 紀錄
+  async getInstance(workflowId) {
+    console.log('@get Instance', workflowId);
+    //FIXME: 先寫死
+    const res = await axios.get(`${this.hostname}/instance/599`);
+    return res.data.data;
+  },
+
   // GET function 資訊
   async getTriggers() {
     const res = await axios.get(`${this.hostname}/triggers`);

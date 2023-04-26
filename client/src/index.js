@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -7,9 +6,10 @@ import Home from './pages/Home';
 
 import Build from './pages/Build';
 import Workflows from './pages/Workflows';
+import Instances from './pages/Instances';
 import Oauth2 from './pages/Oauth2';
 
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -19,7 +19,8 @@ root.render(
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
         <Route path="createworkflow" element={<Build />} />
-        <Route path="history" element={<Workflows />} />
+        <Route path="workflows" element={<Workflows />} />
+        <Route path="instances" element={<Instances />} />
         <Route path="oauth2/redirect" element={<Oauth2 />} />
       </Route>
     </Routes>

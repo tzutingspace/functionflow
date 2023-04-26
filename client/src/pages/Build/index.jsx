@@ -20,7 +20,7 @@ const NextArea = styled.div`
 const Build = () => {
   const { jwtToken, isLogin } = useContext(AuthContext);
 
-  const location = useLocation();
+  // const location = useLocation();
   const [workflowTitle, setWorkflowTitle] = useState('Untitled Workflow');
   const [jobs, setJobs] = useState([{ name: 'Trigger', uuid: uuidv4() }]);
 

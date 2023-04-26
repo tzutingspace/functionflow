@@ -191,10 +191,9 @@ const WorkflowTable = () => {
       </HeadWrapper>
       {records && (
         <DataTable
-          // title="Your Workflows"
+          title="Your Workflows"
           columns={colums}
           data={records}
-          noTableHead
           selectableRows
           fixedHeader
           pagination

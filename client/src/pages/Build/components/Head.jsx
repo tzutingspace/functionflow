@@ -256,7 +256,7 @@ const Head = ({
         {expanded && (
           <ExpandedContent>
             <BackButton to="/">Back</BackButton>
-            <BackButton to="/history">History</BackButton>
+            <BackButton to="/workflows">Workflows</BackButton>
           </ExpandedContent>
         )}
         {/* <p>{triggerResult}</p> */}

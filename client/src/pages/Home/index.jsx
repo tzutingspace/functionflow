@@ -180,7 +180,7 @@ const Home = () => {
         </HeaderLeft>
         <HeaderRight>
           <HeadButton to="/">Profile</HeadButton>
-          <HeadButton to="/history"> History</HeadButton>
+          <HeadButton to="/workflows"> Workflows</HeadButton>
           <HeadButton to="/createworkflow">New +</HeadButton>
         </HeaderRight>
       </Header>
