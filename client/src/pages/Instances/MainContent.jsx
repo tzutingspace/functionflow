@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { formatDate, capitalizeFirstLetter } from '../../utils/utils';
+import { useParams } from 'react-router-dom';
+import { formatDate } from '../../utils/utils';
+import { AuthContext } from '../../contexts/authContext';
 import API from '../../utils/api';
 
 import success from './success.png';
@@ -258,12 +260,17 @@ const Emptydiv = styled.div`
 `;
 
 const MainContent = () => {
+  const { user, isLogin, jwtToken } = useContext(AuthContext);
+
   const [workflowHistory, setworkflowHistory] = useState([]);
   const [workflowInstance, setworkflowInstance] = useState();
 
+  const { workflowName, workflowid } = useParams();
+  console.log('useParams', workflowid);
+
   useEffect(() => {
     const getInstances = async () => {
-      const instances = await API.getInstance('id');
+      const instances = await API.getInstance(workflowid, jwtToken);
       console.log('api instances', instances);
       setworkflowHistory(() => instances);
       setworkflowInstance(() => instances[0]);
@@ -280,16 +287,15 @@ const MainContent = () => {
   return (
     <Wrapper>
       <HeadWrapper>
-        <HeadTitle>User Workflow Name</HeadTitle>
+        <HeadTitle>{workflowName}</HeadTitle>
         <EditWorkflow to="/createworkflow">Edit</EditWorkflow>
       </HeadWrapper>
       <MainArea>
         <LeftArea>
           <LeftTitle>History</LeftTitle>
-          {workflowHistory.map((wfi, idx) => (
+          {workflowHistory.map((wfi) => (
             <LeftWorkflowItems
               key={wfi.workflowInfo.workflowInstanceId}
-              idx={idx}
               onClick={() => clickWorkflowInatance(wfi)}
             >
               <WorkflowStatusStyle>
@@ -354,8 +360,8 @@ const MainContent = () => {
             </>
           )}
           {workflowInstance &&
-            workflowInstance.jobsInfo.map((jobsInstance, idx) => (
-              <>
+            workflowInstance.jobsInfo.map((jobsInstance) => (
+              <div key={jobsInstance.jobname}>
                 <JobBlock>
                   <JobTilteStyled>{jobsInstance.jobname}</JobTilteStyled>
                   <JobContent>
@@ -367,11 +373,11 @@ const MainContent = () => {
                     </JobConfigWrapper>
                     <JobItemTitle>{`Job Setting:`}</JobItemTitle>
                     {jobsInstance.customer_input &&
-                      Object.entries(jobsInstance.customer_input).map(([key, val], idx) => {
+                      Object.entries(jobsInstance.customer_input).map(([title, val]) => {
                         return (
-                          <JobConfigWrapper>
+                          <JobConfigWrapper key={title}>
                             <WrapperJobItem>
-                              <SettingTitle>{`${key}:`}</SettingTitle>
+                              <SettingTitle>{`${title}:`}</SettingTitle>
                               <JobItemContent>{`${val}`}</JobItemContent>
                             </WrapperJobItem>
                           </JobConfigWrapper>
@@ -379,11 +385,11 @@ const MainContent = () => {
                       })}
                     <JobItemTitle>{`Result Output:`}</JobItemTitle>
                     {jobsInstance.result_output &&
-                      Object.entries(jobsInstance.result_output).map(([key, val], idx) => {
+                      Object.entries(jobsInstance.result_output).map(([title, val]) => {
                         return (
-                          <JobConfigWrapper>
+                          <JobConfigWrapper key={title}>
                             <WrapperJobItem>
-                              <SettingTitle>{`${key}:`}</SettingTitle>
+                              <SettingTitle>{`${title}:`}</SettingTitle>
                               <JobItemContent>{`${val}`}</JobItemContent>
                             </WrapperJobItem>
                           </JobConfigWrapper>
@@ -394,7 +400,7 @@ const MainContent = () => {
                 <BottomArea>
                   <Emptydiv></Emptydiv>
                 </BottomArea>
-              </>
+              </div>
             ))}
         </RightArea>
       </MainArea>

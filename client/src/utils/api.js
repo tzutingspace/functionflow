@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API = {
   hostname: process.env.REACT_APP_API_URL,
-  // hostname: 'http://localhost:8080/api',
 
   // user 相關
   async signup(data) {
@@ -87,10 +86,14 @@ const API = {
   },
 
   // 抓取intances 紀錄
-  async getInstance(workflowId) {
+  async getInstance(workflowId, jwt) {
     console.log('@get Instance', workflowId);
-    //FIXME: 先寫死
-    const res = await axios.get(`${this.hostname}/instance/599`);
+    const res = await axios.get(`${this.hostname}/instance/${workflowId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     return res.data.data;
   },
 
