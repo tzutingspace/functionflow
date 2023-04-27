@@ -19,7 +19,7 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
-        <Route path="createworkflow" element={<Build />} />
+        {/* <Route path="createworkflow" element={<Build />} /> */}
         <Route path="edit/:workflowId" element={<Edit />} />
         <Route path="edit" element={<Edit />} />
         <Route path="workflows" element={<Workflows />} />

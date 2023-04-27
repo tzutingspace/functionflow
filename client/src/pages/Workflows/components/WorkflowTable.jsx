@@ -205,7 +205,7 @@ const WorkflowTable = () => {
           type="text"
           onChange={handleFilter}
         ></HeadSearch>
-        <AddWorkflow to="/createworkflow">New+</AddWorkflow>
+        <AddWorkflow to="/edit">New+</AddWorkflow>
       </HeadWrapper>
       {records && (
         <DataTable

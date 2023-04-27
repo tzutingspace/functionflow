@@ -181,7 +181,7 @@ const Home = () => {
         <HeaderRight>
           <HeadButton to="/">Profile</HeadButton>
           <HeadButton to="/workflows"> Workflows</HeadButton>
-          <HeadButton to="/createworkflow">New +</HeadButton>
+          <HeadButton to="/edit">New+</HeadButton>
         </HeaderRight>
       </Header>
       <Main>

@@ -292,7 +292,7 @@ const MainContent = () => {
     <Wrapper>
       <HeadWrapper>
         <HeadTitle>{workflowName}</HeadTitle>
-        <EditWorkflow to="/createworkflow">Edit</EditWorkflow>
+        <EditWorkflow to={`/edit/${workflowid}`}>Edit</EditWorkflow>
       </HeadWrapper>
       <MainArea>
         <LeftArea>
