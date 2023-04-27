@@ -14,6 +14,7 @@ export const searchInstancesHistory = async (req, res) => {
           trigger_type: curr.trigger_type,
           manual_trigger: curr.manual_trigger,
           workflowInstanceId: curr.wfi_id,
+          execution_time: curr.execution_time,
         },
         jobsInfo: [],
       };

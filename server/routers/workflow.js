@@ -10,6 +10,7 @@ import {
   updateJob,
   deployWorkflow,
   deleteWorkflows,
+  editWorkflow,
 } from '../controllers/workflow.js';
 
 const router = Router();
@@ -17,6 +18,9 @@ const router = Router();
 router.get('/workflow/:id', wrapAsync(getWorkflow));
 
 router.get('/workflow/user/:id', verifyJWT, wrapAsync(getWorkflowByUser));
+
+// FIXME: RESTFULL?
+router.get('/workflowandjob/:workflowId', verifyJWT, wrapAsync(editWorkflow));
 
 // FIXME: update要驗證身份
 router.put('/workflow/:id', wrapAsync(updateWorkflow));

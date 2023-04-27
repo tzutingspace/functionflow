@@ -5,7 +5,9 @@ import * as DBTool from '../models/tool.js';
 import { vaildInterger } from '../utils/utli.js';
 import CustomError from '../utils/customError.js';
 
-// Get old Workflow
+import { triggerFunctionMap } from '../config/triggerFunction.js';
+
+// Get old Workflow (Only workflow)
 export const getWorkflow = async (req, res, next) => {
   console.log('@controller getWorkflow');
   const { id } = req.params;
@@ -18,8 +20,6 @@ export const getWorkflow = async (req, res, next) => {
 
 export const getWorkflowByUser = async (req, res, next) => {
   console.log('@controller getWorkflowByUser');
-  // FIXME: params可以拿掉
-  // const { id } = req.params;
   const { id } = req.user;
   if (!vaildInterger(id)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
@@ -244,5 +244,66 @@ export const deployWorkflow = async (req, res, next) => {
     necessaryInfo,
     jobsInfo
   );
+  return res.json({ data: result });
+};
+
+// Edit Workflow 用
+
+export const editWorkflow = async (req, res, next) => {
+  console.log('@Edit Workflow controller...');
+  const { workflowId } = req.params;
+  console.log(workflowId);
+
+  // 驗證id是否為數字
+  if (!vaildInterger(workflowId)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  const data = await DBWorkflow.getWorkflowAndJobById(workflowId);
+
+  console.log('data', data);
+
+  if (data.length === 0) {
+    return next(new CustomError('Not Found', 404));
+  }
+
+  // 轉換custom 時間
+  // FIXME: 除了custom, 其他範例要給前端嗎？
+  const every = data[0].trigger_interval_seconds / 60;
+
+  // Create the first object
+  const firstObj = {
+    workflow_id: data[0].workflow_id,
+    workflow_name: data[0].workflow_name,
+    trigger_function_id: triggerFunctionMap[data[0].schedule_interval], // trigger_funcition數量不多, 利用constant轉換
+    status: data[0].status,
+    settingInfo: {
+      job_qty: data[0].job_qty,
+      start_time: date.format(data[0].start_time, 'YYYY-MM-DD HH:mm:ss'),
+      trigger_type: data[0].trigger_type,
+      customer_input: {
+        start_time: data[0].start_time, // daily, weekly, monthly 都只要start_time即可
+        every,
+        interval: 'minute', // FIXME: 先轉成minute, create 的時候沒有紀錄
+      },
+    },
+  };
+
+  // Create an array of job objects
+  const jobObjs = data.map((job) => ({
+    job_id: job.job_id,
+    job_name: job.job_name,
+    function_id: job.function_id,
+    settingInfo: {
+      sequence: job.sequence,
+      customer_input: job.customer_input,
+    },
+  }));
+
+  // Combine the first object and job objects into a single array
+  const result = [firstObj, ...jobObjs];
+
+  console.log(result);
+
   return res.json({ data: result });
 };

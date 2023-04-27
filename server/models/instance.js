@@ -119,6 +119,7 @@ export async function searchInstancesHistory(workflowId) {
       wfi.trigger_type,
       wfi.manual_trigger,
       wfi.id as wfi_id,
+      wfi.execution_time as execution_time,
       jobi.id as job_id,
       jobi.sequence,
       jobi.name as job_name,
@@ -130,7 +131,7 @@ export async function searchInstancesHistory(workflowId) {
     LEFT JOIN 
       jobs_instances as jobi ON wfi.id = jobi.workflow_instance_id
     WHERE 
-      workflow_id = ?
+      wfi.workflow_id = ?
     `,
     [workflowId]
   );

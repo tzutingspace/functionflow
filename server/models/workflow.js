@@ -1,6 +1,6 @@
 import pool from '../utils/db.js';
 
-// 取得 workflow
+// 取得 workflowById
 export async function getWorkflowById(id) {
   const [rows] = await pool.query(
     `
@@ -162,6 +162,7 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
   return workflowId;
 }
 
+// 刪除 workflow and job
 export async function deleteWorkflows(workflowIds) {
   console.log('workflows Id', workflowIds);
 
@@ -201,4 +202,32 @@ export async function deleteWorkflows(workflowIds) {
   });
 
   return '開發中';
+}
+
+// 取得 workflow and Jobs By WorkflowId
+export async function getWorkflowAndJobById(id) {
+  const [rows] = await pool.query(
+    `
+    SELECT 
+      wf.id as workflow_id,
+      wf.name as workflow_name,
+      wf.job_qty,
+      wf.start_time,
+      wf.status,
+      wf.trigger_type,
+      wf.schedule_interval,
+      wf.trigger_interval_seconds,
+      wf.trigger_api_route,
+      jobs.id as job_id,
+      jobs.name as job_name,
+      jobs.function_id as function_id,
+      jobs.sequence as \`sequence\`,
+      jobs.customer_input
+    FROM workflows as wf
+        INNER JOIN jobs ON wf.id = jobs.workflow_id
+    WHERE wf.id = ?
+    `,
+    [id]
+  );
+  return rows;
 }
