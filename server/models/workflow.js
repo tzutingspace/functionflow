@@ -224,7 +224,7 @@ export async function getWorkflowAndJobById(id) {
       jobs.sequence as \`sequence\`,
       jobs.customer_input
     FROM workflows as wf
-        INNER JOIN jobs ON wf.id = jobs.workflow_id
+        LEFT JOIN jobs ON wf.id = jobs.workflow_id
     WHERE wf.id = ?
     `,
     [id]

@@ -25,6 +25,9 @@ export const getWorkflowByUser = async (req, res, next) => {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
   const workflow = await DBWorkflow.getWorkflowByUser(id);
+
+  console.log('workflow', workflow);
+
   return res.json({ data: workflow });
 };
 
@@ -261,15 +264,37 @@ export const editWorkflow = async (req, res, next) => {
 
   const data = await DBWorkflow.getWorkflowAndJobById(workflowId);
 
-  console.log('data', data);
+  console.log('data..........', data);
 
   if (data.length === 0) {
     return next(new CustomError('Not Found', 404));
   }
 
   // 轉換custom 時間
-  // FIXME: 除了custom, 其他範例要給前端嗎？
-  const every = data[0].trigger_interval_seconds / 60;
+  // FIXME: 除了custom, 其他範例的話 要給前端every時間嗎？
+  const every = data[0].trigger_interval_seconds / 60 || 60; // 如果之前沒填, 就給60分鐘
+
+  // 處理只有 trigger 的 Workflow
+  if (data.length === 1) {
+    const workflowObj = {
+      workflow_id: data[0].workflow_id,
+      workflow_name: data[0].workflow_name,
+      trigger_function_id: triggerFunctionMap[data[0].schedule_interval] || 3, // 如果之前沒填, 就給custom
+      status: data[0].status,
+      settingInfo: {
+        job_qty: data[0].job_qty,
+        start_time: date.format(data[0].start_time, 'YYYY-MM-DD HH:mm:ss'),
+        trigger_type: data[0].trigger_type,
+        customer_input: {
+          start_time: data[0].start_time, // daily, weekly, monthly 都只要start_time即可
+          every,
+          interval: 'minute', // FIXME: 先轉成minute, create 的時候沒有紀錄
+        },
+      },
+    };
+
+    return res.json({ data: [workflowObj] });
+  }
 
   // Create the first object
   const firstObj = {
