@@ -15,17 +15,21 @@ const JobName = styled.input`
   /* margin-bottom: 10px; */
 `;
 
-const JobTitle = ({ jobData }) => {
-  const { setWorkflowJobs } = useContext(WorkflowStateContext);
+const JobTitle = ({ jobData, idx }) => {
+  const { setWorkflowJobs, setIsAllJobSave } = useContext(WorkflowStateContext);
 
   // 修改個別JOB名稱
   function changeJobName(e) {
     const inputValue = e.target.value;
     setWorkflowJobs((prev) => {
-      const index = prev.findIndex((job) => job.job_id === jobData.job_id);
+      const index = prev.findIndex((job) => job.id === jobData.id);
       if (index !== -1) {
         prev[index]['job_name'] = inputValue;
       }
+      return [...prev];
+    });
+    setIsAllJobSave((prev) => {
+      prev[idx] = false;
       return [...prev];
     });
   }

@@ -18,64 +18,101 @@ const NextArea = styled.div`
 export const WorkflowStateContext = createContext({
   isDraft: true,
   setIsDraft: () => {},
+  isAllJobSave: [],
+  setIsAllJobSave: () => {},
   workflowJobs: [],
   setWorkflowJobs: () => {},
 });
 
 const Edit = () => {
-  const { jwtToken, isLogin } = useContext(AuthContext);
-
-  // const [workflowTitle, setWorkflowTitle] = useState('');
-  // const [workflowStatus, setworkflowStatus] = useState('draft');
-  // const [jobs, setJobs] = useState([{ name: 'Trigger', uuid: uuidv4() }]);
-
   const { workflowId } = useParams();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // 進入頁面先要 workflow 資料
   const [isDraft, _setIsDraft] = useState(true);
-  const [workflowJobs, setWorkflowJobs] = useState([]);
+  const [isAllJobSave, setIsAllJobSave] = useState([]);
+  const [workflowJobs, setWorkflowJobs] = useState([{ name: 'Trigger', id: uuidv4() }]);
 
   const setIsDraft = (status) => {
     _setIsDraft(status);
   };
 
+  // 檢測是否有job被改變
   useEffect(() => {
+    const changeToDraft = () => {
+      setIsDraft(true);
+    };
+
+    for (const job of isAllJobSave) {
+      if (!job) {
+        changeToDraft();
+        return;
+      }
+    }
+  }, [isAllJobSave]);
+
+  useEffect(() => {
+    // Edit 舊 workflow
     const getWorkflowAndJob = async () => {
-      //workflow Id 從 Params 來
-      // const workflowId = 188; // 先寫固定值
+      // workflow Id 從 Params 來
       const localJwtToken = localStorage.getItem('jwtToken');
       const data = await API.getWorkflowAndJob(workflowId, localJwtToken);
-      console.log('API 有 job and wf 有資料嗎？', data.data);
-      setWorkflowJobs(data.data);
+
+      // FIXME: 一開始就符合前端的資料格式?
+      const workflowsData = data.data.map((item) => {
+        setIsAllJobSave((pre) => {
+          return [...pre, false];
+        });
+        return { ...item, id: item.workflow_id || item.job_id }; //for react unique key;
+      });
+      setWorkflowJobs(workflowsData);
       setLoading(false);
     };
-    getWorkflowAndJob();
+
+    const createWorkflow = async () => {
+      const localJwtToken = localStorage.getItem('jwtToken');
+      const { data } = await API.createWorkflow(localJwtToken);
+      const workflowId = data;
+      console.log('workflow ID:', workflowId);
+
+      setWorkflowJobs((prev) => {
+        prev[0]['id'] = workflowId; //for react unique key;
+        prev[0]['workflow_id'] = workflowId; //real data
+        prev[0]['workflow_name'] = 'Untitled Workflow';
+        return [...prev];
+      });
+      setIsAllJobSave((prev) => {
+        return [...prev, false];
+      });
+      setLoading(false);
+    };
+
+    // 判斷編輯還是新建
+    if (workflowId) {
+      getWorkflowAndJob();
+    } else {
+      createWorkflow();
+    }
   }, []);
 
   return (
     <>
-      <WorkflowStateContext.Provider value={{ isDraft, setIsDraft, workflowJobs, setWorkflowJobs }}>
+      <WorkflowStateContext.Provider
+        value={{
+          isDraft,
+          setIsDraft,
+          workflowJobs,
+          setWorkflowJobs,
+          isAllJobSave,
+          setIsAllJobSave,
+        }}
+      >
+        {console.log('@最外層, 所有的workflow資訊', workflowJobs)}
+        {console.log('@最外層, 所有isAllJobSave資訊', isAllJobSave)}
         {!loading && (
           <>
-            <Head
-            // workflowTitle={workflowTitle}
-            // setWorkflowTitle={setWorkflowTitle}
-            // jobsData={jobs}
-            // setJobsData={setJobs}
-            // workflowStatus={workflowStatus}
-            // setworkflowStatus={setworkflowStatus}
-            />
+            <Head />
             <NextArea>
-              {console.log('In...Edit...index', workflowJobs)}
               {workflowJobs.map((item, idx) => (
-                <Block
-                  key={item.uuid}
-                  // workflowTitle={workflowTitle}
-                  // setworkflowStatus={setworkflowStatus}
-                  jobData={item}
-                  // jobsData={jobs}
-                  // setJobsData={setJobs}
-                  idx={idx}
-                />
+                <Block key={item.id} jobData={item} idx={idx} />
               ))}
             </NextArea>
           </>

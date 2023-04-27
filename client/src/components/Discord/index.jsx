@@ -57,11 +57,16 @@ const Discord = ({ item, setInput }) => {
 
   // 點擊授權按鈕
   const handleAuthorizeClick = () => {
+    const width = 500;
+    const height = 660;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
     // 設定彈跳視窗的設定
     const popup = window.open(
       `${DISCORD_AUTH_URL}`, // 填入你的後端 OAuth2 授權網址
       '_blank',
-      'width=500,height=600'
+      `width=${width},height=${height},top=${top}, left=${left}`
     );
     // 添加事件監聽器以監聽message事件
     window.addEventListener('message', handlePopupMessage, false);

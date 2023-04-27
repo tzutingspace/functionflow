@@ -92,22 +92,31 @@ const AddButtonNew = styled.button`
 `;
 
 const Block = ({ jobData, idx }) => {
-  const { setWorkflowJobs } = useContext(WorkflowStateContext);
+  const { setWorkflowJobs, setIsAllJobSave } = useContext(WorkflowStateContext);
   const jobBlockRef = useRef(null);
 
   // 新增Job的button
   function addJob() {
     // 建立新job object
     const uuid = uuidv4();
-    const newjob = { job_name: `untitled_${uuid.substring(0, 8)}`, job_id: uuid };
+    const newjob = { job_name: `untitled_${uuid.substring(0, 8)}`, id: uuid }; //本次新加的用uuid
 
     // 重新Set workflow Chain
     setWorkflowJobs((prev) => {
-      const index = prev.findIndex((job) => job.job_id === jobData.job_id);
+      const index = prev.findIndex((job) => job.id === jobData.id);
       if (index !== -1) {
         return [...prev.slice(0, index + 1), newjob, ...prev.slice(index + 1)];
       }
       return [...prev, newjob];
+    });
+
+    // 重新Set save job 狀況紀錄
+    setIsAllJobSave((prev) => {
+      const index = prev.findIndex((job) => job.id === jobData.id);
+      if (index !== -1) {
+        return [...prev.slice(0, index + 1), false, ...prev.slice(index + 1)];
+      }
+      return [...prev, false];
     });
 
     setTimeout(() => {
@@ -122,7 +131,8 @@ const Block = ({ jobData, idx }) => {
 
   // 移除Job的button
   function removeJob() {
-    setWorkflowJobs((prevJobs) => prevJobs.filter((job) => job.uuid !== jobData.uuid));
+    setWorkflowJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobData.id));
+    setIsAllJobSave((prevJobs) => prevJobs.filter((job, index) => index !== idx));
   }
 
   return (

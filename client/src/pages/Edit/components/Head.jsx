@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import io, { Socket } from 'socket.io-client';
+import io from 'socket.io-client';
 
 import API from '../../../utils/api';
 import { WorkflowStateContext } from '..';
@@ -131,18 +131,10 @@ const BackButton = styled(Link)`
 
 const socket = io.connect(process.env.REACT_APP_SOCKET_URL);
 
-const Head = (
-  {
-    // jobsData,
-    // setJobsData,
-    // workflowTitle,
-    // setWorkflowTitle,
-    // workflowStatus,
-    // setworkflowStatus,
-  }
-) => {
+const Head = () => {
   const { user, isLogin, jwtToken } = useContext(AuthContext);
-  const { isDraft, setIsDraft, workflowJobs, setWorkflowJobs } = useContext(WorkflowStateContext);
+  const { isDraft, setIsDraft, workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
+    useContext(WorkflowStateContext);
 
   const [workflowTitle, setWorkflowTitle] = useState(workflowJobs[0].workflow_name);
 
@@ -158,6 +150,7 @@ const Head = (
     setExpanded(!expanded);
   };
 
+  // change workflow name
   function changeHead(value) {
     // 更新上層 jobs Data
     setWorkflowJobs((prev) => {
@@ -169,46 +162,51 @@ const Head = (
     setIsDraft(true);
   }
 
+  // deploy workflow name
   async function deployWorkflow() {
-    const jobsInfotmp = jobsData.slice(1).reduce((acc, curr, index) => {
+    for (const job of isAllJobSave) {
+      if (job === false) {
+        alert('您尚有 job 未存檔');
+        return;
+      }
+    }
+
+    const jobsInfoData = workflowJobs.slice(1).reduce((acc, curr, index) => {
       // 這邊sequence會重新確認
       curr['settingInfo']['jobsInfo']['sequence'] = index + 1;
       acc[index + 1] = { ...curr['settingInfo']['jobsInfo'] };
       return acc;
     }, {});
 
-    console.log('Depoly 確認目前JobsData', jobsData);
+    console.log('Depoly 確認目前workflowJobs: ', workflowJobs);
 
     const deployObj = {
       workflowInfo: {
         name: workflowTitle,
         status: 'active',
-        start_time: jobsData[0]['settingInfo']['start_time'],
-        trigger_function_id: jobsData[0]['trigger_function_id'],
-        trigger_api_route: jobsData[0]['trigger_api_route'],
-        jobsInfo: { ...jobsData[0]['settingInfo']['jobsInfo'] },
-        job_qty: jobsData.length - 1,
+        start_time: workflowJobs[0]['settingInfo']['start_time'],
+        trigger_function_id: workflowJobs[0]['trigger_function_id'],
+        trigger_api_route: workflowJobs[0]['trigger_api_route'],
+        jobsInfo: { ...workflowJobs[0]['settingInfo']['jobsInfo'] },
+        job_qty: workflowJobs.length - 1,
       },
-      jobsInfo: { ...jobsInfotmp },
+      jobsInfo: { ...jobsInfoData },
     };
 
-    console.log('deploy', deployObj);
-    const result = await API.deployWorkflow(jobsData[0]['id'], deployObj);
+    console.log('deploy Obj', deployObj);
+    const result = await API.deployWorkflow(workflowJobs[0]['id'], deployObj);
     console.log('deploy結果', result);
-    setworkflowStatus('deploy');
     setIsDraft(false);
   }
 
   async function triggerWorkflow() {
-    console.log('click trigger workflow');
-    const id = jobsData[0]['id'];
+    console.log('click trigger workflow...');
+    const id = workflowJobs[0]['id'];
     const socketId = user.name + user.id;
     const result = await API.triggerWorkflow(id, socketId, jwtToken);
     console.log('Trigger 送出 response', result);
-    // alert('Trigger 已送出，請稍等結果');
     setIsTrigger(true);
 
-    //FIXME: 需要帶變數
     socket.emit('trigger', socketId);
     socket.on('triggerFinish', (data) => {
       console.log('後端emit資料過來', data);
@@ -222,7 +220,6 @@ const Head = (
 
   return (
     <Wrapper>
-      {console.log('Head', workflowJobs)}
       <ActionAlerts
         isOpen={isTrigger}
         onClose={setIsTrigger}

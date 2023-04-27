@@ -19,16 +19,16 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       const localJwtToken = localStorage.getItem('jwtToken');
-      console.log('@ authContext useEffect');
+      // console.log('@ authContext useEffect');
       if (localJwtToken) {
         try {
           const userData = await API.getProfile(localJwtToken);
           setJwtToken(localJwtToken);
           setUser(userData);
           setIsLogin(true);
-          console.log('useEffect userData', userData);
+          // console.log('useEffect userData', userData);
         } catch (error) {
-          console.log('useEffect, JWT驗證失敗');
+          // console.log('useEffect, JWT驗證失敗');
           window.localStorage.removeItem('jwtToken');
         }
       }
@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password, provider) => {
-    console.log('login...', email, password, provider);
+    // console.log('login...', email, password, provider);
     setLoading(true);
     const result = await API.login({ email, password, provider });
     const { access_token: tokenFromServer, user: userData } = result;
@@ -50,7 +50,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    console.log('logout');
+    // console.log('logout');
     setLoading(true);
     setIsLogin(false);
     setUser({});

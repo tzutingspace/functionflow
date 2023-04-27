@@ -23,7 +23,7 @@ const API = {
     return res.data.data;
   },
   async getProfile(jwt) {
-    console.log('@api, getprofile token', jwt);
+    // console.log('@api, getprofile token', jwt);
     const res = await axios.get(`${this.hostname}/user/profile`, {
       headers: {
         'Content-Type': 'application/json',

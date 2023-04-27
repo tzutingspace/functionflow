@@ -166,10 +166,11 @@ const ValueCopy = styled.a`
 `;
 
 const JobConfig = ({ jobData, idx }) => {
-  const { workflowJobs, setWorkflowJobs } = useContext(WorkflowStateContext);
+  const { workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
+    useContext(WorkflowStateContext);
 
-  // 紀錄是否save過
-  const [isSave, setIsSave] = useState(false);
+  // 紀錄是否save過(only for job button)
+  // const [isSave, setIsSave] = useState(false);
 
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
@@ -202,7 +203,7 @@ const JobConfig = ({ jobData, idx }) => {
       // 判斷類別
       const tempObj = {};
       tempConfig.template_input.forEach((item) => {
-        console.log('檢查 jobconfig', item);
+        // console.log('檢查 jobconfig', item);
         if (item.type === 'list') {
           tempObj[item.name] = item.list[0];
           // edit 專用
@@ -277,7 +278,6 @@ const JobConfig = ({ jobData, idx }) => {
       waitingSaveData['jobsInfo'] = input;
       const res = await API.updateWorkflow(waitingSaveData);
       console.log('idx==0, res:', res);
-      setIsSave(true);
     } else {
       // JOB
       waitingSaveData['workflowInfo'] = { id: workflowJobs[0].workflow_id };
@@ -303,16 +303,23 @@ const JobConfig = ({ jobData, idx }) => {
         waitingSaveData['jobsInfo']['job_id'] = jobId; // FIXME: 要更新嗎？
         console.log('update a job. res:', res);
       }
-      setIsSave(true);
     }
+
+    // 紀錄已存檔
+    // setIsSave(true); // only for button
+    setIsAllJobSave((pre) => {
+      pre[idx] = true;
+      return [...pre];
+    });
 
     // 改變最上層(Block Chain)資料
     setWorkflowJobs((prev) => {
       console.log('setWorkflowJobs data');
-      const index = prev.findIndex((job) => job.job_id === jobData.job_id);
+      const index = prev.findIndex((job) => job.id === jobData.id);
       if (index !== -1) {
-        // console.log('最終post資料, 寫回上層settingInfo', waitingSaveData);
+        console.log('最終post資料, 寫回上層settingInfo', waitingSaveData);
         prev[index]['settingInfo'] = waitingSaveData;
+        prev[index]['job_id'] = waitingSaveData['jobsInfo']['job_id']; //for 更新用
       }
       return [...prev];
     });
@@ -330,7 +337,11 @@ const JobConfig = ({ jobData, idx }) => {
         return { ...prev, ...newObj };
       });
     }
-    setIsSave(false);
+    // setIsSave(false); // only for button
+    setIsAllJobSave((pre) => {
+      pre[idx] = false;
+      return [...pre];
+    });
   };
 
   // 變更job
@@ -342,7 +353,11 @@ const JobConfig = ({ jobData, idx }) => {
       console.log('@setInput , onchange', { ...prev, ...newObj });
       return { ...prev, ...newObj };
     });
-    setIsSave(false);
+    // setIsSave(false); // only for button
+    setIsAllJobSave((pre) => {
+      pre[idx] = false;
+      return [...pre];
+    });
   };
 
   return (
@@ -353,7 +368,7 @@ const JobConfig = ({ jobData, idx }) => {
       </FunctionWrapper>
       {template_input &&
         template_input.map((item) => {
-          console.log('template input', item);
+          // console.log('template input', item);
           return (
             <ConfigGroup key={item.name}>
               <InputLabel>{`${item.label}:`}</InputLabel>
@@ -432,7 +447,7 @@ const JobConfig = ({ jobData, idx }) => {
             );
           })}
       </ReturnValueWrapper>
-      {!isSave && <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>}
+      {!isAllJobSave[idx] && <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>}
     </>
   );
 };

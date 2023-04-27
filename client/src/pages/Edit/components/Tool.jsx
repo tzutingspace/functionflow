@@ -18,7 +18,7 @@ const ToolButton = styled.button`
   background-color: #f3ecda;
   line-height: 1rem;
   max-height: 60px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 6px;
   border: 0px;
   cursor: pointer;
@@ -55,8 +55,7 @@ const Description = styled.div`
 const Tool = ({ jobData, idx }) => {
   const [tools, setTools] = useState([]);
   const [showJobConfig, setShowJobConfig] = useState(false);
-
-  const { workflowJobs, setWorkflowJobs } = useContext(WorkflowStateContext);
+  const { setWorkflowJobs } = useContext(WorkflowStateContext);
 
   // 取得目前可用的function tools
   useEffect(() => {
@@ -73,7 +72,6 @@ const Tool = ({ jobData, idx }) => {
     if (!jobData.settingInfo) {
       getTools();
     } else {
-      console.log('@Tool 理論上要顯示先前data');
       setShowJobConfig(true);
     }
   }, []);

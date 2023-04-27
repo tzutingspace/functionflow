@@ -22,16 +22,10 @@ const Job = ({ idx, jobData }) => {
   return (
     <>
       <JobTilteStyled>
-        {idx ? <JobTitle jobData={jobData}></JobTitle> : <>Trigger</>}
+        {idx ? <JobTitle jobData={jobData} idx={idx}></JobTitle> : <>Trigger</>}
       </JobTilteStyled>
       <JobContent>
-        <Tool
-          idx={idx}
-          jobData={jobData}
-          // jobsData={jobsData}
-          // setJobsData={setJobsData}
-          // workflowTitle={workflowTitle}
-        />
+        <Tool idx={idx} jobData={jobData} />
       </JobContent>
     </>
   );

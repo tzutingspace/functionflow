@@ -21,6 +21,7 @@ root.render(
         <Route index element={<Home />} />
         <Route path="createworkflow" element={<Build />} />
         <Route path="edit/:workflowId" element={<Edit />} />
+        <Route path="edit" element={<Edit />} />
         <Route path="workflows" element={<Workflows />} />
         <Route path="instances/:atUsername/:workflowName/:workflowid" element={<Instances />} />
         <Route path="oauth2/redirect" element={<Oauth2 />} />
