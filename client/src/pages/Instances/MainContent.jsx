@@ -31,20 +31,20 @@ const HeadTitle = styled.div`
 `;
 
 const EditWorkflow = styled(Link)`
-  width: 100px;
-  margin-left: 16px;
-  padding: 8px 20px; /* 內邊距 */
+  width: 60px;
+  padding: 10px 20px; /* 內邊距 */
+  margin-left: 20px;
   margin-right: 20px; /* 右邊間距 */
   background-color: #20315b;
   color: #fff;
   font-size: 18px;
   font-weight: bold;
-  padding: 10px 16px;
   border: none;
   cursor: pointer;
   text-decoration: none;
   border-radius: 8px; /* 圓弧造型 */
   text-align: center;
+  line-height: 2rem;
 `;
 
 const MainArea = styled.div`
@@ -84,12 +84,13 @@ const LeftTitle = styled.div`
 `;
 
 const LeftWorkflowItems = styled.div`
+  /* background-color: red; */
   display: flex;
   justify-items: space-between;
   justify-content: center;
   margin-bottom: 1rem;
-  /* border: solid 1px; */
-  /* background-color: #dfd1aaa3; */
+  padding: 3px 6px 3px 3px; /* 內邊距 */
+  border-radius: 8px; /* 造型 */
   cursor: pointer;
   border-bottom: 1px solid #dfd1aaa3;
   &:hover {
@@ -113,6 +114,8 @@ const LeftWorkflowError = styled.div`
   border-color: transparent;
   height: 2rem;
   width: 2rem;
+  padding: 0px;
+  /* border: 1px solid red; */
 `;
 
 const WorkflowStatusStyle = styled.div`

@@ -67,12 +67,10 @@ const API = {
     const res = await axios.put(`${this.hostname}/job/${jobId}`, jobInfo);
     return res.data;
   },
-
   async deployWorkflow(workflowId, workflowInfo) {
     const res = await axios.put(`${this.hostname}/workflow/depoly/${workflowId}`, workflowInfo);
     return res.data;
   },
-
   async deleteWorkflows(workflowIds, jwt) {
     console.log('@delete workflowIds', workflowIds);
     const res = await axios.delete(`${this.hostname}/workflows/`, {
@@ -85,6 +83,16 @@ const API = {
     return res.data;
   },
 
+  // Edit 先前的workflow
+  async getWorkflowAndJob(workflowId, jwt) {
+    const res = await axios.get(`${this.hostname}/workflowandjob/${workflowId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    return res.data;
+  },
   // 抓取intances 紀錄
   async getInstance(workflowId, jwt) {
     console.log('@get Instance', workflowId);
@@ -96,7 +104,6 @@ const API = {
     });
     return res.data.data;
   },
-
   // GET function 資訊
   async getTriggers() {
     const res = await axios.get(`${this.hostname}/triggers`);

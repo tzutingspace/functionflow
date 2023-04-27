@@ -35,14 +35,13 @@ const HeadSearch = styled.input`
 
 const AddWorkflow = styled(Link)`
   width: 100px;
-  margin-left: 16px;
-  padding: 8px 20px; /* 內邊距 */
+  margin-left: 20px;
   margin-right: 20px; /* 右邊間距 */
   background-color: #20315b;
   color: #fff;
   font-size: 18px;
   font-weight: bold;
-  padding: 10px 16px;
+  padding: 13px 16px 10px 16px; /* 內邊距 */
   border: none;
   cursor: pointer;
   text-decoration: none;
@@ -62,7 +61,7 @@ const DeleteButton = styled.button`
   border: none;
   cursor: pointer;
   text-decoration: none;
-  border-radius: 20px; /* 圓弧造型 */
+  border-radius: 20px; /* 造型 */
 `;
 
 const customStyles = {
@@ -206,7 +205,7 @@ const WorkflowTable = () => {
           type="text"
           onChange={handleFilter}
         ></HeadSearch>
-        <AddWorkflow to="/createworkflow">New +</AddWorkflow>
+        <AddWorkflow to="/createworkflow">New+</AddWorkflow>
       </HeadWrapper>
       {records && (
         <DataTable

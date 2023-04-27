@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import api from '../utils/api';
+import API from '../utils/api';
 
 export const AuthContext = createContext({
   isLogin: false,
@@ -22,7 +22,7 @@ export const AuthContextProvider = ({ children }) => {
       console.log('@ authContext useEffect');
       if (localJwtToken) {
         try {
-          const userData = await api.getProfile(localJwtToken);
+          const userData = await API.getProfile(localJwtToken);
           setJwtToken(localJwtToken);
           setUser(userData);
           setIsLogin(true);
@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
   const login = async (email, password, provider) => {
     console.log('login...', email, password, provider);
     setLoading(true);
-    const result = await api.login({ email, password, provider });
+    const result = await API.login({ email, password, provider });
     const { access_token: tokenFromServer, user: userData } = result;
     setUser(userData);
     setJwtToken(tokenFromServer);
