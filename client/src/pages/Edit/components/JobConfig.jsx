@@ -371,7 +371,7 @@ const JobConfig = ({ jobData, idx }) => {
           // console.log('template input', item);
           return (
             <ConfigGroup key={item.name}>
-              <InputLabel>{`${item.label}:`}</InputLabel>
+              <InputLabel>{`${item.label}`}</InputLabel>
               {item.description && <InputDescription>{`${item.description}`}</InputDescription>}
               {item.type === 'list' && (
                 <ConfigureSelect value={input[item.name]} onChange={(e) => changeJob(e, item)}>

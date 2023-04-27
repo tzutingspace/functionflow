@@ -303,7 +303,7 @@ const MainContent = () => {
               onClick={() => clickWorkflowInatance(wfi)}
             >
               <WorkflowStatusStyle>
-                {wfi.workflowInfo.status === 'success' ? (
+                {wfi.workflowInfo.status === 'finished' ? (
                   <LeftWorkflowSuccess />
                 ) : (
                   <LeftWorkflowError />
@@ -326,7 +326,7 @@ const MainContent = () => {
                 <JobContent>
                   <JobConfigWrapper>
                     <WrapperJobItem>
-                      <JobItemTitle>Status:</JobItemTitle>
+                      <JobItemTitle>Status</JobItemTitle>
                       <JobItemContent>
                         {workflowInstance.workflowInfo.status.toLowerCase()}
                       </JobItemContent>
@@ -334,7 +334,7 @@ const MainContent = () => {
                   </JobConfigWrapper>
                   <JobConfigWrapper>
                     <WrapperJobItem>
-                      <JobItemTitle>Type:</JobItemTitle>
+                      <JobItemTitle>Type</JobItemTitle>
                       <JobItemContent>
                         {workflowInstance.workflowInfo.trigger_type.toLowerCase()}
                       </JobItemContent>
@@ -342,7 +342,7 @@ const MainContent = () => {
                   </JobConfigWrapper>
                   <JobConfigWrapper>
                     <WrapperJobItem>
-                      <JobItemTitle>Manual Trigger:</JobItemTitle>
+                      <JobItemTitle>Manual Trigger</JobItemTitle>
                       <JobItemContent>
                         {workflowInstance.workflowInfo.manual_trigger === 't' ? 'true' : 'false'}
                       </JobItemContent>
@@ -350,7 +350,7 @@ const MainContent = () => {
                   </JobConfigWrapper>
                   <JobConfigWrapper>
                     <WrapperJobItem>
-                      <JobItemTitle>Execution Time:</JobItemTitle>
+                      <JobItemTitle>Execution Time</JobItemTitle>
                       <JobItemContent>
                         {formatDate(workflowInstance.workflowInfo.execution_time)}
                       </JobItemContent>
@@ -371,29 +371,29 @@ const MainContent = () => {
                   <JobContent>
                     <JobConfigWrapper>
                       <WrapperJobItem>
-                        <JobItemTitle>Job Status:</JobItemTitle>
+                        <JobItemTitle>Job Status</JobItemTitle>
                         <JobItemContent>{jobsInstance.job_status}</JobItemContent>
                       </WrapperJobItem>
                     </JobConfigWrapper>
-                    <JobItemTitle>{`Job Setting:`}</JobItemTitle>
+                    <JobItemTitle>{`Job Setting`}</JobItemTitle>
                     {jobsInstance.customer_input &&
                       Object.entries(jobsInstance.customer_input).map(([title, val]) => {
                         return (
                           <JobConfigWrapper key={title}>
                             <WrapperJobItem>
-                              <SettingTitle>{`${title}:`}</SettingTitle>
+                              <SettingTitle>{`${title}`}</SettingTitle>
                               <JobItemContent>{`${val}`}</JobItemContent>
                             </WrapperJobItem>
                           </JobConfigWrapper>
                         );
                       })}
-                    <JobItemTitle>{`Result Output:`}</JobItemTitle>
+                    <JobItemTitle>{`Result Output`}</JobItemTitle>
                     {jobsInstance.result_output &&
                       Object.entries(jobsInstance.result_output).map(([title, val]) => {
                         return (
                           <JobConfigWrapper key={title}>
                             <WrapperJobItem>
-                              <SettingTitle>{`${title}:`}</SettingTitle>
+                              <SettingTitle>{`${title}`}</SettingTitle>
                               <JobItemContent>{`${val}`}</JobItemContent>
                             </WrapperJobItem>
                           </JobConfigWrapper>
