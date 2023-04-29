@@ -89,7 +89,7 @@ export async function createJob(workflowId, necessaryInfo = {}) {
 
 // update Job
 export async function updateJob(jobId, necessaryInfo = {}) {
-  console.log(necessaryInfo);
+  // console.log(necessaryInfo);
 
   const condition = { sql: '', binding: [] };
   const sqlTemp = [];

@@ -132,8 +132,11 @@ export async function searchInstancesHistory(workflowId) {
       jobs_instances as jobi ON wfi.id = jobi.workflow_instance_id
     WHERE 
       wfi.workflow_id = ?
+    ORDER BY
+      wfi.execution_time DESC
     `,
     [workflowId]
   );
+
   return rows;
 }

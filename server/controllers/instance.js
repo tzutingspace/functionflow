@@ -1,6 +1,7 @@
 import * as DBInstances from '../models/instance.js';
 
 export const searchInstancesHistory = async (req, res) => {
+  console.log('@searchInstancesHistory controller');
   const { workflowId } = req.params;
 
   const result = await DBInstances.searchInstancesHistory(workflowId);
@@ -32,7 +33,12 @@ export const searchInstancesHistory = async (req, res) => {
     return acc;
   }, {});
 
-  const output = Object.values(tempObj).map((info) => info);
+  const output = Object.values(tempObj)
+    .map((info) => info)
+    .sort(
+      (a, b) =>
+        b.workflowInfo.workflowInstanceId - a.workflowInfo.workflowInstanceId
+    );
 
   return res.json({ data: output });
 };
