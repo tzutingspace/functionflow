@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import API from '../../../utils/api';
 import Discord from '../../../components/Discord';
 import { formatInputDate } from '../../../utils/utils';
-
+import { TfiSave } from 'react-icons/tfi';
 import { WorkflowStateContext } from '..';
 
 const FunctionWrapper = styled.div`
@@ -103,19 +103,48 @@ const ConfigureTime = styled.input`
   margin-left: 14px;
 `;
 
-const SaveButton = styled.button`
+const CantSaveButtonDiv = styled.div`
   display: block;
   position: absolute; /* 加入絕對定位 */
-  bottom: 25px; /* 距離底部 20px */
-  right: 20px; /* 距離右側 20px */
-  padding: 10px;
-  background-color: #20315b;
-  color: #dfd1aa;
-  text-align: center;
+  top: 80px;
+  right: 10px;
+  padding: 15px;
+  background-color: #dfd1aa5d;
+  cursor: not-allowed;
+  border: none;
+  border-radius: 36px;
+  width: 30px;
+  height: 30px;
+`;
+
+const CantSaveButton = styled(TfiSave)`
+  color: #4a609659;
+  cursor: not-allowed;
+  border: none;
+  width: 30px;
+  height: 30px;
+`;
+
+const SaveButtonDiv = styled.div`
+  display: block;
+  position: absolute; /* 加入絕對定位 */
+  top: 80px;
+  right: 10px;
+  padding: 15px;
+  background-color: #dfd1aa;
   cursor: pointer;
   border: none;
-  border-radius: 20px;
-  font-size: 18px;
+  border-radius: 36px;
+  width: 30px;
+  height: 30px;
+`;
+
+const SaveButton = styled(TfiSave)`
+  color: #20315b;
+  cursor: pointer;
+  border: none;
+  width: 30px;
+  height: 30px;
 `;
 
 const ReturnValueWrapper = styled.div`
@@ -447,7 +476,16 @@ const JobConfig = ({ jobData, idx }) => {
             );
           })}
       </ReturnValueWrapper>
-      {!isAllJobSave[idx] && <SaveButton onClick={() => saveJob()}>Save Job</SaveButton>}
+      {!isAllJobSave[idx] && (
+        <SaveButtonDiv onClick={() => saveJob()}>
+          <SaveButton></SaveButton>
+        </SaveButtonDiv>
+      )}
+      {isAllJobSave[idx] && (
+        <CantSaveButtonDiv>
+          <CantSaveButton></CantSaveButton>
+        </CantSaveButtonDiv>
+      )}
     </>
   );
 };

@@ -1,39 +1,55 @@
 import { v4 as uuidv4 } from 'uuid';
 import { useContext, useRef } from 'react';
 import styled from 'styled-components';
-
+import { AiOutlinePlusCircle } from 'react-icons/ai';
+import { FaTrash } from 'react-icons/fa';
 import { WorkflowStateContext } from '..';
 
 import Job from './Job';
 
-import plus from './plus.png';
+const TriggerDiv = styled.div`
+  position: relative;
+  border: 5px solid #20315b;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  left: -16px;
+  bottom: 1rem;
+  z-index: 1;
+  width: calc(100% + 24px);
+`;
 
 const Wrapper = styled.div`
   position: relative;
   border: 2.5px solid #20315b;
   border-radius: 8px;
   padding: 16px;
-  background-color: #f8f8f8;
+  background-color: whitesmoke;
   max-width: 65%;
   margin-left: auto;
   margin-right: auto;
 `;
 
-const DeleteButton = styled.button`
+const DeleteButtonDiv = styled.div`
   display: block;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 10px;
-  background-color: rgb(232, 108, 108);
-  color: #20315b;
-  border: none;
-  border-radius: 20px;
-  padding: 8px;
-  font-size: 18px;
+  position: absolute; /* 加入絕對定位 */
+  top: 10px;
+  right: 10px;
+  padding: 15px;
+  background-color: #dfd1aa;
   cursor: pointer;
-  font-weight: 600;
-  /* text-align: center; */
+  border: none;
+  border-radius: 36px;
+  width: 30px;
+  height: 30px;
+`;
+
+const DeleteButton = styled(FaTrash)`
+  color: #20315b;
+  cursor: pointer;
+  border: none;
+  width: 30px;
+  height: 30px;
 `;
 
 const ButtonArea = styled.div`
@@ -42,7 +58,7 @@ const ButtonArea = styled.div`
   display: flex;
   flex-direction: column;
   border-width: 0;
-  height: 50px;
+  height: 60px;
   width: auto;
   border-style: solid;
   border-color: transparent;
@@ -68,27 +84,28 @@ const Emptydiv = styled.div`
   font-size: 0.875rem;
 `;
 
-const AddButtonNew = styled.button`
+const AddButtonNew = styled(AiOutlinePlusCircle)`
   align-items: center;
   box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
-  height: 32px;
+  height: 40px;
   justify-content: center;
   margin: 0px;
   padding: 0px;
   top: 10px;
   position: absolute;
-  width: 32px;
-  background-image: url(${plus});
-  background-size: contain;
-  background-repeat: no-repeat;
+  width: 40px;
+  color: #20315b;
   background-color: white;
   border-color: transparent;
   border: 0px;
   z-index: 1;
   cursor: pointer;
-  bottom: -20px; /* 超出容器一點點 */
+  &:hover {
+    width: 50px;
+    height: 50px;
+  }
 `;
 
 const Block = ({ jobData, idx }) => {
@@ -138,10 +155,11 @@ const Block = ({ jobData, idx }) => {
   return (
     <>
       <Wrapper ref={jobBlockRef}>
+        {idx === 0 ? <TriggerDiv></TriggerDiv> : <></>}
         {idx ? (
-          <DeleteButton type="button" onClick={() => removeJob()}>
-            Remove
-          </DeleteButton>
+          <DeleteButtonDiv onClick={() => removeJob()}>
+            <DeleteButton type="button"></DeleteButton>
+          </DeleteButtonDiv>
         ) : (
           <></>
         )}

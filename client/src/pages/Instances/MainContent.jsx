@@ -6,8 +6,7 @@ import { formatDate } from '../../utils/utils';
 import { AuthContext } from '../../contexts/authContext';
 import API from '../../utils/api';
 
-import success from './success.png';
-import error from './error.png';
+import { ImCheckmark, ImCancelCircle } from 'react-icons/im';
 
 const Wrapper = styled.div`
   flex: 1;
@@ -27,12 +26,11 @@ const HeadTitle = styled.div`
   font-size: 36px;
   margin-right: auto;
   font-weight: bold;
-  border-bottom: solid;
 `;
 
 const EditWorkflow = styled(Link)`
-  width: 60px;
-  padding: 10px 20px; /* 內邊距 */
+  width: 100px;
+  padding: 13px 16px 10px 16px; /* 內邊距 */
   margin-left: 20px;
   margin-right: 20px; /* 右邊間距 */
   background-color: #20315b;
@@ -44,7 +42,6 @@ const EditWorkflow = styled(Link)`
   text-decoration: none;
   border-radius: 8px; /* 圓弧造型 */
   text-align: center;
-  line-height: 2rem;
 `;
 
 const MainArea = styled.div`
@@ -72,7 +69,6 @@ const LeftArea = styled.div`
   padding-top: 0.5rem;
   padding-left: 1rem;
   padding-right: 2rem;
-  /* background-color: #dfd1aaa3; */
   border-right: 1px solid #dfd1aaa3;
   padding-bottom: 10rem;
 `;
@@ -98,24 +94,18 @@ const LeftWorkflowItems = styled.div`
   }
 `;
 
-const LeftWorkflowSuccess = styled.div`
-  background-image: url(${success});
-  background-size: contain;
-  background-repeat: no-repeat;
-  border-color: transparent;
-  height: 2rem;
-  width: 2rem;
+const LeftWorkflowSuccess = styled(ImCheckmark)`
+  height: 1.7rem;
+  width: 1.7rem;
+  padding: 0px;
+  color: #66b566;
 `;
 
-const LeftWorkflowError = styled.div`
-  background-image: url(${error});
-  background-size: contain;
-  background-repeat: no-repeat;
-  border-color: transparent;
-  height: 2rem;
-  width: 2rem;
+const LeftWorkflowError = styled(ImCancelCircle)`
+  height: 1.7rem;
+  width: 1.7rem;
   padding: 0px;
-  /* border: 1px solid red; */
+  color: red;
 `;
 
 const WorkflowStatusStyle = styled.div`
@@ -264,13 +254,12 @@ const Emptydiv = styled.div`
 `;
 
 const MainContent = () => {
-  const { user, isLogin, jwtToken } = useContext(AuthContext);
+  const { loading, jwtToken } = useContext(AuthContext);
 
   const [workflowHistory, setworkflowHistory] = useState([]);
   const [workflowInstance, setworkflowInstance] = useState();
 
   const { workflowName, workflowid } = useParams();
-  console.log('useParams', workflowid);
 
   useEffect(() => {
     const getInstances = async () => {
@@ -279,8 +268,9 @@ const MainContent = () => {
       setworkflowHistory(() => instances);
       setworkflowInstance(() => instances[0]);
     };
+    if (loading) return;
     getInstances();
-  }, []);
+  }, [loading]);
 
   const clickWorkflowInatance = (wfi) => {
     setworkflowInstance(() => {
