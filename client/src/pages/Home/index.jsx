@@ -138,7 +138,6 @@ const Home = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    console.log('handleLogin.....');
     login(email, password, 'native');
   };
 

@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../utils/api';
 
 export const AuthContext = createContext({
@@ -16,10 +17,12 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [jwtToken, setJwtToken] = useState();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const checkAuthStatus = async () => {
       const localJwtToken = localStorage.getItem('jwtToken');
-      // console.log('@ authContext useEffect');
+      console.log('@authContext useEffect');
       if (localJwtToken) {
         try {
           const userData = await API.getProfile(localJwtToken);
@@ -28,8 +31,9 @@ export const AuthContextProvider = ({ children }) => {
           setIsLogin(true);
           // console.log('useEffect userData', userData);
         } catch (error) {
-          // console.log('useEffect, JWT驗證失敗');
+          console.log('@authContext useEffect, JWT驗證失敗');
           window.localStorage.removeItem('jwtToken');
+          navigate('/');
         }
       }
       setLoading(false);

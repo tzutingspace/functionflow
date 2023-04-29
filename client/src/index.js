@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import Home from './pages/Home';
 
-import Build from './pages/Build';
+// import Build from './pages/Build';
 import Edit from './pages/Edit';
 import Workflows from './pages/Workflows';
 import Instances from './pages/Instances';

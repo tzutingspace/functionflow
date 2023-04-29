@@ -177,10 +177,7 @@ const WorkflowTable = () => {
 
               const deleteIds = selectedRows.map((workflow) => workflow.id);
 
-              //FIXME: JWT token?? 應該可以從useContext拿
-              const localJwtToken = localStorage.getItem('jwtToken');
-              console.log('ids', deleteIds);
-              await API.deleteWorkflows({ id: deleteIds }, localJwtToken);
+              await API.deleteWorkflows({ id: deleteIds }, jwtToken);
             },
           },
           {
