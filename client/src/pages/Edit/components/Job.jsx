@@ -18,11 +18,19 @@ const JobContent = styled.div`
   margin-top: 20px;
 `;
 
+const TriggerStyled = styled.div`
+  margin-right: 1rem;
+`;
+
 const Job = ({ idx, jobData }) => {
   return (
     <>
       <JobTilteStyled>
-        {idx ? <JobTitle jobData={jobData} idx={idx}></JobTitle> : <>Trigger</>}
+        {idx ? (
+          <JobTitle jobData={jobData} idx={idx}></JobTitle>
+        ) : (
+          <TriggerStyled>Trigger</TriggerStyled>
+        )}
       </JobTilteStyled>
       <JobContent>
         <Tool idx={idx} jobData={jobData} />

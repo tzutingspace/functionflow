@@ -9,14 +9,15 @@ import Job from './Job';
 
 const TriggerDiv = styled.div`
   position: relative;
-  border: 5px solid #20315b;
-  border-radius: 10px;
+  border: 12px solid #20315b;
+  border-radius: 10px 10px 0px 0px;
   margin-left: auto;
   margin-right: auto;
-  left: -16px;
-  bottom: 1rem;
+  left: -18px;
+  bottom: 1.1rem;
   z-index: 1;
-  width: calc(100% + 24px);
+  width: calc(100% + 13px);
+  padding-bottom: 0px;
 `;
 
 const Wrapper = styled.div`
