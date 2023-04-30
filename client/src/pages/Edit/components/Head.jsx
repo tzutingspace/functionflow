@@ -144,8 +144,6 @@ const Head = () => {
   const [isTrigger, setIsTrigger] = useState(false);
   const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
 
-  //FIXME: 確認是否登入;
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
