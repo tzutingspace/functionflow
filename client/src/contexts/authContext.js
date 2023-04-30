@@ -7,6 +7,7 @@ export const AuthContext = createContext({
   user: {},
   loading: false,
   jwtToken: '',
+  signup: () => {},
   login: () => {},
   logout: () => {},
 });
@@ -41,6 +42,19 @@ export const AuthContextProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  const signup = async (name, email, password, provider) => {
+    setLoading(true);
+    const result = await API.signup({ name, email, password, provider });
+    const { access_token: tokenFromServer, user: userData } = result;
+    setUser(userData);
+    setJwtToken(tokenFromServer);
+    window.localStorage.setItem('jwtToken', tokenFromServer);
+    setIsLogin(true);
+    setLoading(false);
+    // FIXME: 如果登入失敗要處理
+    navigate('/workflows');
+  };
+
   const login = async (email, password, provider) => {
     // console.log('login...', email, password, provider);
     setLoading(true);
@@ -51,6 +65,8 @@ export const AuthContextProvider = ({ children }) => {
     window.localStorage.setItem('jwtToken', tokenFromServer);
     setIsLogin(true);
     setLoading(false);
+    // FIXME: 如果登入失敗要處理
+    navigate('/workflows');
   };
 
   const logout = async () => {
@@ -72,6 +88,7 @@ export const AuthContextProvider = ({ children }) => {
         jwtToken,
         login,
         logout,
+        signup,
       }}
     >
       {children}

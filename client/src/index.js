@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import Home from './pages/Home';
 
-// import Build from './pages/Build';
 import Edit from './pages/Edit';
 import Workflows from './pages/Workflows';
 import Instances from './pages/Instances';
@@ -19,7 +18,6 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
-        {/* <Route path="createworkflow" element={<Build />} /> */}
         <Route path="edit/:workflowId" element={<Edit />} />
         <Route path="edit" element={<Edit />} />
         <Route path="workflows" element={<Workflows />} />
