@@ -36,11 +36,17 @@ const Edit = () => {
   const [isAllJobSave, setIsAllJobSave] = useState([]);
   const [workflowJobs, setWorkflowJobs] = useState([{ name: 'Trigger', id: uuidv4() }]);
 
-  const { jwtToken, loading } = useContext(AuthContext);
+  const { jwtToken, loading, isLogin } = useContext(AuthContext);
 
   const setIsDraft = (status) => {
     _setIsDraft(status);
   };
+
+  useEffect(() => {
+    if (!loading && !isLogin) {
+      window.location.href = `/`;
+    }
+  }, [loading]);
 
   // 檢測是否有job被改變
   useEffect(() => {

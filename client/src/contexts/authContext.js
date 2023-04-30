@@ -70,13 +70,14 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    // console.log('logout');
+    console.log('logout');
     setLoading(true);
     setIsLogin(false);
     setUser({});
     setJwtToken();
     window.localStorage.removeItem('jwtToken');
     setLoading(false);
+    navigate('/');
   };
 
   return (

@@ -1,6 +1,7 @@
+import { useEffect, useContext } from 'react';
 import Sidebar from '../../components/Sidebar';
 import MainContent from './components/MainContent';
-
+import { AuthContext } from '../../contexts/authContext';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -16,6 +17,14 @@ const Rightbar = styled.div`
 `;
 
 const Workflows = () => {
+  const { isLogin, loading } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!loading && !isLogin) {
+      window.location.href = `/`;
+    }
+  }, [loading]);
+
   return (
     <Wrapper>
       <Sidebar />

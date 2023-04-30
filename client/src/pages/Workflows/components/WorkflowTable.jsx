@@ -29,7 +29,7 @@ const HeadSearch = styled.input`
   padding-right: 50px;
   margin: 0px 4px;
   border: 2px solid #20315b;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 8px 20px; /* 內邊距 */
 `;
 
@@ -71,7 +71,7 @@ const customStyles = {
     highlightOnHoverStyle: {
       backgroundColor: 'rgb(230, 244, 244)',
       borderBottomColor: '#FFFFFF',
-      borderRadius: '25px',
+      // borderRadius: '25px',
       outline: '1px solid #FFFFFF',
     },
   },
@@ -112,10 +112,10 @@ const WorkflowTable = () => {
       setWorkflowdata(data);
       setRecords(data);
     };
+
     if (isLogin) {
       getworkflows();
     }
-    // getworkflows();
   }, [isLogin]);
 
   const colums = [
