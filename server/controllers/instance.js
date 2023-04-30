@@ -10,6 +10,7 @@ export const searchInstancesHistory = async (req, res) => {
     if (!acc[curr.wfi_id]) {
       acc[curr.wfi_id] = {
         workflowInfo: {
+          workflowStatus: curr.wf_status,
           workflowId: curr.wf_id,
           status: curr.wfi_status,
           trigger_type: curr.trigger_type,

@@ -114,6 +114,7 @@ export async function searchInstancesHistory(workflowId) {
   const [rows] = await pool.query(
     `
     SELECT
+      wf.status as wf_status,
       wfi.workflow_id as wf_id,
       wfi.status as wfi_status,
       wfi.trigger_type,
@@ -130,6 +131,8 @@ export async function searchInstancesHistory(workflowId) {
       workflows_instances as wfi
     LEFT JOIN 
       jobs_instances as jobi ON wfi.id = jobi.workflow_instance_id
+    INNER JOIN 
+      workflows as wf ON wfi.workflow_id = wf.id
     WHERE 
       wfi.workflow_id = ?
     ORDER BY
