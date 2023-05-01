@@ -23,7 +23,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
 
   // 建立 workflow instances
   workflowInfo.status = 'queued'; // 準備丟進queue
-  workflowInfo.execution_time = getNowTime(); // 和lambda一樣用台灣時間
+  workflowInfo.execution_time = getNowTime(); // FIXME: 全部改為UTC時間, 前端處理顯示當地時間
   workflowInfo.manual_trigger = 't'; // 手動測試
   workflowInfo.end_time = null;
 

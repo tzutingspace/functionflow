@@ -2,10 +2,22 @@ import moment from 'moment-timezone';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+// convert to UTC
+// 預設目前進來的時間都是Asia/Taipei
+export function convertLocalToUTC(localTime, timezone = 'Asia/Taipei') {
+  // 將本地時間解析為 Moment.js 對象
+  const localDatetime = moment.tz(localTime, timezone);
+  // 將本地時間轉換為 UTC 時間
+  const utcDatetime = localDatetime.clone().utc();
+
+  console.log('轉換後的時間,', utcDatetime.format('YYYY-MM-DD HH:mm:ss'));
+  return utcDatetime;
+}
+
 // 取得現在時間
 export function getNowTime() {
   // const dt0 = moment.utc().tz('UTC');
-  return moment.utc().tz('Asia/Hong_Kong').format('YYYY-MM-DD HH:mm:ss');
+  return moment.utc().tz('Asia/Taipei').format('YYYY-MM-DD HH:mm:ss');
 }
 
 export function calculateTime(inputTime, internalSeconds) {
