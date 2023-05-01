@@ -10,6 +10,9 @@ import { AuthContext } from '../../../contexts/authContext';
 import ActionAlerts from './Alert.jsx';
 import logo from './logo.png';
 
+import JoyRide from 'react-joyride';
+import { Steps } from '../../../utils/joyride';
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -93,42 +96,6 @@ const DeployButton = styled.div`
   border-radius: 20px; /* 圓弧造型 */
 `;
 
-const ExpandButton = styled.div`
-  background-color: #20315b;
-  color: #dfd1aa;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 10px 16px;
-  margin-left: 16px;
-  border: none;
-  cursor: pointer;
-  border-radius: 20px; /* 圓弧造型 */
-`;
-
-const ExpandedContent = styled.div`
-  position: absolute;
-  top: 150%; /* 使展開內容位於下方 */
-  left: 10;
-  right: 0;
-  background-color: #f8f8f8;
-  padding: 20px;
-  z-index: 10; /* 設置較大的 z-index 值，使展開內容在上層 */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const BackButton = styled(Link)`
-  color: #20315b;
-  justify-items: auto;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px 16px;
-  border: none;
-  cursor: pointer;
-`;
-
 const socket = io.connect(process.env.REACT_APP_SOCKET_URL);
 
 const Head = () => {
@@ -142,6 +109,8 @@ const Head = () => {
 
   const [isTrigger, setIsTrigger] = useState(false);
   const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
+
+  console.log('eweqw', Steps);
 
   // change workflow name
   function changeHead(value) {
@@ -238,6 +207,7 @@ const Head = () => {
           onChange={(e) => changeHead(e.target.value)}
           placeholder="Untitled Workflow"
           value={workflowTitle}
+          id="change-workflow-name"
         ></HeadInput>
         <WorkflowStatus>{isDraft ? 'draft' : 'active'}</WorkflowStatus>
       </WorkflowHeaderLeft>

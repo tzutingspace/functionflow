@@ -10,6 +10,9 @@ import API from '../../utils/api';
 import Block from './components/Block';
 import Head from './components/Head';
 
+import JoyRide from 'react-joyride';
+import { Steps } from '../../utils/joyride';
+
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
 `;
@@ -126,6 +129,15 @@ const Edit = () => {
         {workflowLoading && <Loading type="spinningBubbles" color="#313538" />}
         {!workflowLoading && (
           <>
+            <JoyRide
+              continuous
+              hideCloseButton
+              scrollToFirstStep
+              showProgress
+              showSkipButton
+              steps={Steps}
+              run={true}
+            />
             <Head />
             <NextArea>
               {workflowJobs.map((item, idx) => (
