@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 import API from '../../../utils/api';
 import Discord from '../../../components/Discord';
@@ -9,18 +9,28 @@ import { formatInputDate } from '../../../utils/utils';
 import { TfiSave } from 'react-icons/tfi';
 import { WorkflowStateContext } from '..';
 
+const JobConfigWrapper = styled.div`
+  /* border: solid 1px blue; */
+  margin-top: 0px;
+  margin: 0px 20px;
+  padding: 0px 20px;
+`;
+
 const FunctionWrapper = styled.div`
+  /* border: solid 1px blue; */
   padding-bottom: 10px;
 `;
 
 const FunctionName = styled.div`
+  /* border: solid 1px blue; */
   font-size: 26px;
   font-weight: bold;
   color: #20315b;
+  margin-bottom: 0.5rem;
 `;
 
 const FunctionDescription = styled.div`
-  margin-left: 8px;
+  /* margin-left: 1.2rem; */
   font-size: 16px;
   color: #20315b;
 `;
@@ -33,22 +43,23 @@ const InputLabel = styled.div`
 
 const InputDescription = styled.div`
   color: #20315b;
-  margin-left: 14px;
+  /* margin-left: 14px; */
   font-size: 14px;
   margin-bottom: 3px;
 `;
 
 const ConfigGroup = styled.div`
+  /* border: solid 1px red; */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 85%;
-  padding: 8px 8px; /* 內邊距 */
+  width: 100%;
+  padding: 10px 10px; /* 內邊距 */
   background-color: #f3ecda;
   border-radius: 10px;
   margin-bottom: 10px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
 `;
 
 const ConfigureSelect = styled.select`
@@ -58,7 +69,7 @@ const ConfigureSelect = styled.select`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  margin-left: 14px;
+  /* margin-left: 14px; */
 `;
 
 const ConfigureOption = styled.option`
@@ -68,7 +79,7 @@ const ConfigureOption = styled.option`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  margin-left: 14px;
+  /* margin-left: 14px; */
 `;
 
 const ConfigureString = styled.input`
@@ -78,7 +89,7 @@ const ConfigureString = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  margin-left: 14px;
+  /* margin-left: 14px; */
   max-width: 250px;
 `;
 
@@ -90,7 +101,7 @@ const ConfigureNumber = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  margin-left: 14px;
+  /* margin-left: 14px; */
 `;
 
 const ConfigureTime = styled.input`
@@ -100,14 +111,14 @@ const ConfigureTime = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  margin-left: 14px;
+  /* margin-left: 14px; */
 `;
 
 const CantSaveButtonDiv = styled.div`
   display: block;
   position: absolute; /* 加入絕對定位 */
-  top: 80px;
-  right: 10px;
+  top: 100px;
+  right: 24px;
   padding: 15px;
   background-color: #dfd1aa5d;
   cursor: not-allowed;
@@ -128,8 +139,8 @@ const CantSaveButton = styled(TfiSave)`
 const SaveButtonDiv = styled.div`
   display: block;
   position: absolute; /* 加入絕對定位 */
-  top: 80px;
-  right: 10px;
+  top: 100px;
+  right: 24px;
   padding: 15px;
   background-color: #dfd1aa;
   cursor: pointer;
@@ -148,21 +159,24 @@ const SaveButton = styled(TfiSave)`
 `;
 
 const ReturnValueWrapper = styled.div`
+  /* border: 1px solid red; */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 85%;
+  width: 100%;
   padding: 8px 8px; /* 內邊距 */
   background-color: #f3ecda;
   border-radius: 10px;
   margin-bottom: 10px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
 `;
 
 const ReturnValueTitle = styled.div`
-  padding: 0px 10px 1px 3px;
+  padding: 0px 10px 4px 0px;
   font-size: 18px;
+  color: #20315b;
+  font-weight: bold;
 `;
 
 const ReturnValueSet = styled.div`
@@ -171,18 +185,29 @@ const ReturnValueSet = styled.div`
   align-items: center;
 `;
 
+const ReturnTitleName = styled.div`
+  padding: 0px 10px 0px 10px;
+  font-size: 14px;
+  border: none;
+  color: #20315b;
+  width: 120px;
+`;
+
 const ReturnValue = styled.div`
   padding: 0px 10px 0px 10px;
   font-size: 14px;
   border: none;
+  color: #20315b;
+  /* width: 120px; */
 `;
 
 const ReturnValueResult = styled.div`
   padding: 0px 10px 0px 10px;
   font-size: 14px;
+  color: #20315b;
 `;
 
-const ValueCopy = styled.a`
+const ValueCopy = styled.div`
   padding: 0px 10px 0px 10px;
   font-size: 14px;
   color: #b6abab;
@@ -190,7 +215,7 @@ const ValueCopy = styled.a`
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
   &:hover {
-    color: #000;
+    color: #20315b;
   }
 `;
 
@@ -255,6 +280,7 @@ const JobConfig = ({ jobData, idx }) => {
           const hours = String(currentTime.getHours()).padStart(2, '0');
           const minutes = String(currentTime.getMinutes()).padStart(2, '0');
           tempObj[item.name] = `${year}-${month}-${date} ${hours}:${minutes}`;
+          // 後端來的時間為UTC, 需要轉為當地時間
           if (jobData.settingInfo) {
             tempObj[item.name] = formatInputDate(jobData.settingInfo.customer_input[item.name]);
           }
@@ -390,7 +416,7 @@ const JobConfig = ({ jobData, idx }) => {
   };
 
   return (
-    <>
+    <JobConfigWrapper>
       <FunctionWrapper>
         <FunctionName>{`${external_name}`}</FunctionName>
         <FunctionDescription>{` ${description}`}</FunctionDescription>
@@ -454,7 +480,7 @@ const JobConfig = ({ jobData, idx }) => {
         })}
       <ReturnValueWrapper>
         {template_output && template_output.length !== 0 ? (
-          <ReturnValueTitle>$return_value:</ReturnValueTitle>
+          <ReturnValueTitle>$return_value</ReturnValueTitle>
         ) : (
           <></>
         )}
@@ -463,7 +489,8 @@ const JobConfig = ({ jobData, idx }) => {
             return (
               <div key={item.name}>
                 <ReturnValueSet key={item.name}>
-                  <ReturnValue>{`return_name: ${item.name}`}</ReturnValue>
+                  <ReturnTitleName>{`return_name:`}</ReturnTitleName>
+                  <ReturnValue>{`${item.name}`}</ReturnValue>
                   <CopyToClipboard
                     text={`{{steps.${jobData.job_name}.${item.name}}}`}
                     onCopy={() => setCopied(true)}
@@ -471,7 +498,10 @@ const JobConfig = ({ jobData, idx }) => {
                     <ValueCopy type="button">Copy</ValueCopy>
                   </CopyToClipboard>
                 </ReturnValueSet>
-                <ReturnValueResult>{`return_value_type: ${item.type}`}</ReturnValueResult>
+                <ReturnValueSet>
+                  <ReturnTitleName>{`return_value_type:`}</ReturnTitleName>
+                  <ReturnValueResult>{`${item.type}`}</ReturnValueResult>
+                </ReturnValueSet>
               </div>
             );
           })}
@@ -486,7 +516,7 @@ const JobConfig = ({ jobData, idx }) => {
           <CantSaveButton></CantSaveButton>
         </CantSaveButtonDiv>
       )}
-    </>
+    </JobConfigWrapper>
   );
 };
 

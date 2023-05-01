@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 import io from 'socket.io-client';
 
@@ -138,25 +138,22 @@ const Head = () => {
 
   const [workflowTitle, setWorkflowTitle] = useState(workflowJobs[0].workflow_name);
 
-  const [expanded, setExpanded] = useState(false);
   const [triggerResult, setTriggerResult] = useState('');
 
   const [isTrigger, setIsTrigger] = useState(false);
   const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   // change workflow name
   function changeHead(value) {
+    // 因為route切換關西, workflow命名不可以用slash
+    const inputValue = value.replace('/', '_');
     // 更新上層 jobs Data
     setWorkflowJobs((prev) => {
-      prev[0]['workflow_name'] = value;
+      prev[0]['workflow_name'] = inputValue;
       return [...prev];
     });
     // 更新 title
-    setWorkflowTitle(value);
+    setWorkflowTitle(inputValue);
     setIsDraft(true);
   }
 
@@ -167,6 +164,11 @@ const Head = () => {
         alert('您尚有 job 未存檔');
         return;
       }
+    }
+
+    if (workflowJobs.length <= 1) {
+      alert('您尚未建立job');
+      return;
     }
 
     const jobsInfoData = workflowJobs.slice(1).reduce((acc, curr, index) => {
@@ -231,7 +233,7 @@ const Head = () => {
         ></ActionAlerts>
       }
       <WorkflowHeaderLeft>
-        <Logo to="/"></Logo>
+        <Logo to="/workflows"></Logo>
         <HeadInput
           onChange={(e) => changeHead(e.target.value)}
           placeholder="Untitled Workflow"
@@ -250,16 +252,6 @@ const Head = () => {
         <DeployButton type="button" onClick={() => deployWorkflow()}>
           Deploy
         </DeployButton>
-        <ExpandButton onClick={() => setExpanded(!expanded)}>
-          {expanded ? 'Close' : 'OPEN'}
-        </ExpandButton>
-        {expanded && (
-          <ExpandedContent>
-            <BackButton to="/">Back</BackButton>
-            <BackButton to="/workflows">Workflows</BackButton>
-          </ExpandedContent>
-        )}
-        {/* <p>{triggerResult}</p> */}
       </WorkflowHeaderRight>
     </Wrapper>
   );

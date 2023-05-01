@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import JobTitle from './JobTitle';
 import Tool from './Tool';
 
@@ -19,7 +19,10 @@ const JobContent = styled.div`
 `;
 
 const TriggerStyled = styled.div`
-  margin-right: 1rem;
+  /* margin-right: 1rem; */
+  margin-left: 2rem;
+  /* padding-left: 10px; */
+  /* border: solid 1px red; */
 `;
 
 const Job = ({ idx, jobData }) => {

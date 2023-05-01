@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { useState, useCallback } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
@@ -19,6 +19,9 @@ const Wrapper = styled.div`
   align-items: stretch;
   min-height: 60px;
   border: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  justify-content: center;
 `;
 
 const Placeholder = styled.span`
@@ -38,7 +41,7 @@ const DiscodLogo = styled.img`
 const OAuthButton = styled.button`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 250px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;

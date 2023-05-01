@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { useContext, useRef } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { FaTrash } from 'react-icons/fa';
+import { IoTrashOutline } from 'react-icons/io5';
 import { WorkflowStateContext } from '..';
 
 import Job from './Job';
@@ -34,8 +35,8 @@ const Wrapper = styled.div`
 const DeleteButtonDiv = styled.div`
   display: block;
   position: absolute; /* 加入絕對定位 */
-  top: 10px;
-  right: 10px;
+  top: 170px;
+  right: 24px;
   padding: 15px;
   background-color: #dfd1aa;
   cursor: pointer;
@@ -45,7 +46,7 @@ const DeleteButtonDiv = styled.div`
   height: 30px;
 `;
 
-const DeleteButton = styled(FaTrash)`
+const DeleteButton = styled(IoTrashOutline)`
   color: #20315b;
   cursor: pointer;
   border: none;

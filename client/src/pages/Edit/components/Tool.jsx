@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 import API from '../../../utils/api';
 import JobConfig from './JobConfig';
+import { TfiSave } from 'react-icons/tfi';
 
 import { WorkflowStateContext } from '..';
 
@@ -19,6 +20,7 @@ const ToolButton = styled.button`
   line-height: 1rem;
   max-height: 60px;
   width: 90%;
+  margin-left: 2rem;
   margin-bottom: 6px;
   border: 0px;
   cursor: pointer;
@@ -50,6 +52,28 @@ const Description = styled.div`
   text-align: left;
   margin-left: 14px;
   color: #20315b;
+`;
+
+const CantSaveButtonDiv = styled.div`
+  display: block;
+  position: absolute; /* 加入絕對定位 */
+  top: 100px;
+  right: 24px;
+  padding: 15px;
+  background-color: #dfd1aa5d;
+  cursor: not-allowed;
+  border: none;
+  border-radius: 36px;
+  width: 30px;
+  height: 30px;
+`;
+
+const CantSaveButton = styled(TfiSave)`
+  color: #4a609659;
+  cursor: not-allowed;
+  border: none;
+  width: 30px;
+  height: 30px;
 `;
 
 const Tool = ({ jobData, idx }) => {
@@ -106,6 +130,13 @@ const Tool = ({ jobData, idx }) => {
             </ContentWrapper>
           </ToolButton>
         ))
+      ) : (
+        <></>
+      )}
+      {showJobConfig === false ? (
+        <CantSaveButtonDiv>
+          <CantSaveButton></CantSaveButton>
+        </CantSaveButtonDiv>
       ) : (
         <></>
       )}

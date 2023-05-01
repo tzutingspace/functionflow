@@ -1,15 +1,16 @@
 import { useContext } from 'react';
 import { WorkflowStateContext } from '..';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 //https://www.csscodelab.com/google-like-css-input-box-placeholder-shown/
 const JobTileWrapper = styled.label`
   position: relative;
   /* margin-right: 1rem; */
-  width: 85%;
+  width: 99%;
   /* max-width: 600px; */
   border-radius: 6px;
   overflow: hidden;
+  margin: 0 auto;
 `;
 
 const JobNameLabel = styled.span`
@@ -31,7 +32,7 @@ const JobName = styled.input`
   width: 100%;
   border: 0;
   font-family: inherit;
-  padding: 16px 12px 0 20px;
+  padding: 20px 12px 0 20px;
   height: 48px;
   font-size: 32px;
   font-weight: 900;
