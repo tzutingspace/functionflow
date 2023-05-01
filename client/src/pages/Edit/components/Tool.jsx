@@ -79,7 +79,7 @@ const CantSaveButton = styled(TfiSave)`
 const Tool = ({ jobData, idx }) => {
   const [tools, setTools] = useState([]);
   const [showJobConfig, setShowJobConfig] = useState(false);
-  const { setWorkflowJobs } = useContext(WorkflowStateContext);
+  const { setWorkflowJobs, joyrideState, setJoyrideState } = useContext(WorkflowStateContext);
 
   // 取得目前可用的function tools
   useEffect(() => {
@@ -112,6 +112,21 @@ const Tool = ({ jobData, idx }) => {
       return [...prev];
     });
     setShowJobConfig(true);
+
+    if (joyrideState.stepIndex === 1) {
+      setJoyrideState({
+        ...joyrideState,
+        run: true,
+        stepIndex: 2,
+      });
+    }
+    if (joyrideState.stepIndex === 5) {
+      setJoyrideState({
+        ...joyrideState,
+        run: true,
+        stepIndex: 6,
+      });
+    }
   }
 
   return (
@@ -119,7 +134,13 @@ const Tool = ({ jobData, idx }) => {
       {/* 尚未選擇tool */}
       {showJobConfig === false ? (
         tools.map((item) => (
-          <ToolButton key={item.id} type="button" value={item.id} onClick={() => reRender(item.id)}>
+          <ToolButton
+            className="tool-button"
+            key={item.id}
+            type="button"
+            value={item.id}
+            onClick={() => reRender(item.id)}
+          >
             <ContentWrapper>
               <TextWrapper>
                 <Title>{`${item.external_name}`}</Title>

@@ -507,7 +507,7 @@ const JobConfig = ({ jobData, idx }) => {
           })}
       </ReturnValueWrapper>
       {!isAllJobSave[idx] && (
-        <SaveButtonDiv onClick={() => saveJob()}>
+        <SaveButtonDiv id={`save-button-${idx}`} onClick={() => saveJob()}>
           <SaveButton></SaveButton>
         </SaveButtonDiv>
       )}

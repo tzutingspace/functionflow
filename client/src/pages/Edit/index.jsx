@@ -11,7 +11,7 @@ import Block from './components/Block';
 import Head from './components/Head';
 
 import JoyRide from 'react-joyride';
-import { Steps } from '../../utils/joyride';
+import { handleJoyrideCallback, joyrideStyles, Steps } from '../../utils/joyride';
 
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
@@ -30,6 +30,8 @@ export const WorkflowStateContext = createContext({
   setIsAllJobSave: () => {},
   workflowJobs: [],
   setWorkflowJobs: () => {},
+  joyrideState: {},
+  setJoyrideState: () => {},
 });
 
 const Edit = () => {
@@ -39,17 +41,18 @@ const Edit = () => {
   const [isAllJobSave, setIsAllJobSave] = useState([]);
   const [workflowJobs, setWorkflowJobs] = useState([{ name: 'Trigger', id: uuidv4() }]);
 
+  const [joyrideState, setJoyrideState] = useState({
+    run: true,
+    steps: Steps,
+    stepIndex: 0,
+    paused: false, // 新增 paused 屬性
+  });
+
   const { jwtToken, loading, isLogin } = useContext(AuthContext);
 
   const setIsDraft = (status) => {
     _setIsDraft(status);
   };
-
-  useEffect(() => {
-    if (!loading && !isLogin) {
-      window.location.href = `/`;
-    }
-  }, [loading]);
 
   // 檢測是否有job被改變
   useEffect(() => {
@@ -65,6 +68,7 @@ const Edit = () => {
     }
   }, [isAllJobSave]);
 
+  // 確認頁面狀況
   useEffect(() => {
     // Edit 舊 workflow
     const getWorkflowAndJob = async () => {
@@ -83,7 +87,7 @@ const Edit = () => {
       setWorkflowJobs(workflowsData);
       setWorkflowLoading(false);
     };
-
+    // 新 workflow
     const createWorkflow = async () => {
       // const localJwtToken = localStorage.getItem('jwtToken');
       console.log('@createWorkflow jwtToken', jwtToken);
@@ -105,12 +109,35 @@ const Edit = () => {
 
     // 判斷編輯還是新建
     if (loading) return;
+
+    // 沒有登入導回首頁
+    if (!loading && !isLogin) {
+      window.location.href = `/`;
+    }
+
+    // 判斷編輯還是新建
     if (workflowId) {
       getWorkflowAndJob();
     } else {
       createWorkflow();
     }
   }, [loading]);
+
+  // 導覽過, 就關閉
+  useEffect(() => {
+    const isTourTaken = localStorage.getItem('isTourTaken');
+    if (isTourTaken) {
+      setJoyrideState((prev) => {
+        prev.run = false;
+        return { ...prev };
+      });
+    } else {
+      setJoyrideState((prev) => {
+        prev.run = true;
+        return { ...prev };
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -122,6 +149,8 @@ const Edit = () => {
           setWorkflowJobs,
           isAllJobSave,
           setIsAllJobSave,
+          joyrideState,
+          setJoyrideState,
         }}
       >
         {console.log('@最外層, 所有的workflow資訊', workflowJobs)}
@@ -130,13 +159,16 @@ const Edit = () => {
         {!workflowLoading && (
           <>
             <JoyRide
+              styles={joyrideStyles}
               continuous
               hideCloseButton
               scrollToFirstStep
               showProgress
               showSkipButton
-              steps={Steps}
-              run={true}
+              {...joyrideState}
+              callback={(data) => handleJoyrideCallback(data, joyrideState, setJoyrideState)}
+              // disableOverlayClose={true}
+              // disableCloseOnEsc={true}
             />
             <Head />
             <NextArea>

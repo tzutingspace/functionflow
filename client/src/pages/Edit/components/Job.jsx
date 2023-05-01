@@ -35,7 +35,7 @@ const Job = ({ idx, jobData }) => {
           <TriggerStyled>Trigger</TriggerStyled>
         )}
       </JobTilteStyled>
-      <JobContent id="trigger-type">
+      <JobContent id={`input-content-${idx}`}>
         <Tool idx={idx} jobData={jobData} />
       </JobContent>
     </>

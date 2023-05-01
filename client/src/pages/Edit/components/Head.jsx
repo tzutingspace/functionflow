@@ -10,9 +10,6 @@ import { AuthContext } from '../../../contexts/authContext';
 import ActionAlerts from './Alert.jsx';
 import logo from './logo.png';
 
-import JoyRide from 'react-joyride';
-import { Steps } from '../../../utils/joyride';
-
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -99,8 +96,8 @@ const DeployButton = styled.div`
 const socket = io.connect(process.env.REACT_APP_SOCKET_URL);
 
 const Head = () => {
-  const { user, isLogin, jwtToken } = useContext(AuthContext);
-  const { isDraft, setIsDraft, workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
+  const { user, jwtToken } = useContext(AuthContext);
+  const { isDraft, setIsDraft, workflowJobs, setWorkflowJobs, isAllJobSave } =
     useContext(WorkflowStateContext);
 
   const [workflowTitle, setWorkflowTitle] = useState(workflowJobs[0].workflow_name);
@@ -109,8 +106,6 @@ const Head = () => {
 
   const [isTrigger, setIsTrigger] = useState(false);
   const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
-
-  console.log('eweqw', Steps);
 
   // change workflow name
   function changeHead(value) {
@@ -207,7 +202,7 @@ const Head = () => {
           onChange={(e) => changeHead(e.target.value)}
           placeholder="Untitled Workflow"
           value={workflowTitle}
-          id="change-workflow-name"
+          id="setting-workflow-name"
         ></HeadInput>
         <WorkflowStatus>{isDraft ? 'draft' : 'active'}</WorkflowStatus>
       </WorkflowHeaderLeft>
@@ -219,7 +214,7 @@ const Head = () => {
             Trigger
           </TriggerButton>
         )}
-        <DeployButton type="button" onClick={() => deployWorkflow()}>
+        <DeployButton id="deploy-button" type="button" onClick={() => deployWorkflow()}>
           Deploy
         </DeployButton>
       </WorkflowHeaderRight>

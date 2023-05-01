@@ -112,6 +112,7 @@ const AddButtonNew = styled(AiOutlinePlusCircle)`
 
 const Block = ({ jobData, idx }) => {
   const { setWorkflowJobs, setIsAllJobSave } = useContext(WorkflowStateContext);
+  const { joyrideState, setJoyrideState } = useContext(WorkflowStateContext);
   const jobBlockRef = useRef(null);
 
   // 新增Job的button
@@ -146,6 +147,14 @@ const Block = ({ jobData, idx }) => {
         });
       }
     }, 100);
+
+    if (joyrideState.stepIndex === 4) {
+      setJoyrideState({
+        ...joyrideState,
+        run: true,
+        stepIndex: 5,
+      });
+    }
   }
 
   // 移除Job的button
@@ -165,13 +174,9 @@ const Block = ({ jobData, idx }) => {
         ) : (
           <></>
         )}
-        <Job
-          idx={idx}
-          jobData={jobData}
-          // workflowTitle={workflowTitle}
-        />
+        <Job idx={idx} jobData={jobData} />
       </Wrapper>
-      <ButtonArea>
+      <ButtonArea id={`add-job-button-${idx}`}>
         <Emptydiv></Emptydiv>
         <AddButtonNew type="button" onClick={() => addJob()}></AddButtonNew>
       </ButtonArea>
