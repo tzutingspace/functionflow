@@ -7,7 +7,7 @@ import CustomError from '../utils/customError.js';
 
 export const manualTriggerWorkflow = async (req, res, next) => {
   console.log('@controller manual Trigger');
-  console.log('req body', req);
+  // console.log('req body', req.body);
   const { id } = req.params;
   const { socketId } = req.body;
   if (!vaildInterger(id)) {
@@ -19,6 +19,16 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   // 如果為空, 報錯
   if (!workflowInfo) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  // 如果為job_qty空, 報錯, 不可以 trigger 沒有 job 的 workflow
+  if (!workflowInfo.job_qty) {
+    return next(
+      new CustomError(
+        'Query Params Error(No JOb can be Trigger)',
+        StatusCodes.BAD_REQUEST
+      )
+    );
   }
 
   // 建立 workflow instances
@@ -36,7 +46,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   console.log('建立instances回傳的結果', readyToQueueObj);
 
   // FIXME: SQS結果確認 testing 先關閉
-  await putToSQS(JSON.stringify(readyToQueueObj));
+  // await putToSQS(JSON.stringify(readyToQueueObj));
   // 放進sqs test run
   return res.json({ data: readyToQueueObj });
 };
