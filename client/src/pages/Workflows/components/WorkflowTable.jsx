@@ -140,6 +140,11 @@ const WorkflowTable = () => {
       sortable: true,
     },
     {
+      name: 'START TIME',
+      selector: (row) => formatDate(row.start_time),
+      sortable: true,
+    },
+    {
       name: 'UPDATED',
       selector: (row) => formatDate(row.updated_at),
       sortable: true,

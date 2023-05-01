@@ -7,7 +7,6 @@ export function formatDate(dateString) {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit',
     hour12: false,
     timeZone: 'Asia/Taipei',
   });
@@ -15,6 +14,7 @@ export function formatDate(dateString) {
   // console.log('時間處理結果', formattedDate);
 
   const formattedDateString = formattedDate.replace(/\//g, '-');
+
   return formattedDateString;
   // const [date, time] = formattedDate.split(', ');
   // const [month, day, year] = date.split('/');
