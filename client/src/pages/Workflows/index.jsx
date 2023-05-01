@@ -26,12 +26,18 @@ const Workflows = () => {
   }, [loading]);
 
   return (
-    <Wrapper>
-      <Sidebar />
-      <Rightbar>
-        <MainContent />
-      </Rightbar>
-    </Wrapper>
+    <>
+      {!isLogin ? (
+        <></>
+      ) : (
+        <Wrapper>
+          <Sidebar />
+          <Rightbar>
+            <MainContent />
+          </Rightbar>
+        </Wrapper>
+      )}
+    </>
   );
 };
 

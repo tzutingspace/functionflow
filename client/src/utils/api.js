@@ -59,6 +59,12 @@ const API = {
     const res = await axios.put(`${this.hostname}/workflow/${id}`, { workflowInfo });
     return res.data;
   },
+  async updateWorkflowStatus(workflowId, changeStatus) {
+    console.log('changeStatus', changeStatus);
+    const id = workflowId;
+    const res = await axios.put(`${this.hostname}/workflow/status/${id}`, { changeStatus });
+    return res.data;
+  },
   async createJob(jobInfo) {
     const res = await axios.post(`${this.hostname}/job`, jobInfo);
     return res.data;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -8,12 +8,18 @@ import API from '../../utils/api';
 
 import { ImCheckmark, ImCancelCircle } from 'react-icons/im';
 
+import { styled as muiStyled } from '@mui/material/styles';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+
 const Wrapper = styled.div`
   flex: 1;
   background-color: #fff;
   height: 100vh;
   overflow: hidden;
 `;
+
 const HeadWrapper = styled.div`
   background-color: #dfd1aaa3;
   color: #20315b;
@@ -24,14 +30,68 @@ const HeadWrapper = styled.div`
 
 const HeadTitle = styled.div`
   font-size: 36px;
-  margin-right: auto;
+  margin-right: 1.5rem;
   font-weight: bold;
 `;
+
+const StyledFormGroup = muiStyled(FormGroup)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const IOSSwitch = muiStyled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  '& .MuiSwitch-switchBase': {
+    padding: 0,
+    margin: 2,
+    transitionDuration: '300ms',
+    '&.Mui-checked': {
+      transform: 'translateX(16px)',
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
+        opacity: 1,
+        border: 0,
+      },
+      '&.Mui-disabled + .MuiSwitch-track': {
+        opacity: 0.5,
+      },
+    },
+    '&.Mui-focusVisible .MuiSwitch-thumb': {
+      color: '#33cf4d',
+      border: '6px solid #fff',
+    },
+    '&.Mui-disabled .MuiSwitch-thumb': {
+      color: theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[600],
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxSizing: 'border-box',
+    width: 22,
+    height: 22,
+  },
+  '& .MuiSwitch-track': {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+    opacity: 1,
+    transition: theme.transitions.create(['background-color'], {
+      duration: 500,
+    }),
+  },
+}));
 
 const EditWorkflow = styled(Link)`
   width: 100px;
   padding: 13px 16px 10px 16px; /* 內邊距 */
-  margin-left: 20px;
+  margin-left: auto;
   margin-right: 20px; /* 右邊間距 */
   background-color: #20315b;
   color: #fff;
@@ -108,7 +168,7 @@ const LeftWorkflowError = styled(ImCancelCircle)`
   color: red;
 `;
 
-const WorkflowStatusStyle = styled.div`
+const WorkflowInstanceStatusStyle = styled.div`
   /* border: solid 1px blue; */
   align-self: center;
 `;
@@ -256,32 +316,91 @@ const Emptydiv = styled.div`
 const MainContent = () => {
   const { loading, jwtToken } = useContext(AuthContext);
 
+  // 主要顯示
   const [workflowHistory, setworkflowHistory] = useState([]);
   const [workflowInstance, setworkflowInstance] = useState();
 
-  const { workflowName, workflowid } = useParams();
+  // workflow status
+  const [workflowStatus, setWorkflowStatus] = useState(false);
+  const isEmptyWorkflow = useRef(false);
+
+  const { workflowName, workflowid } = useParams('active');
 
   useEffect(() => {
     const getInstances = async () => {
       const instances = await API.getInstance(workflowid, jwtToken);
       console.log('api instances', instances);
+
+      //FIXME: 處理api錯誤？
+
+      // 沒要到資料
+      if (instances.length === 0) return;
+
+      // set workflow狀態
+      setWorkflowStatus(() => {
+        if (instances[0]['workflowInfo']['workflowStatus'] === 'active') {
+          return true;
+        }
+
+        // job 為零, 不應該讓他active
+        if (!instances[0]['workflowInfo']['workflowJobsQty']) {
+          console.log('jobsQty', instances[0]['workflowInfo']['workflowJobsQty']);
+          isEmptyWorkflow.current = true;
+        }
+        return false;
+      });
+
+      // 沒有instance 歷史紀錄
+      if (!instances[0].workflowInfo.workflowInstanceId) return;
+
+      // set workflow history 紀錄 , 左邊用
       setworkflowHistory(() => instances);
+
+      // set instances 狀況 右邊使用
       setworkflowInstance(() => instances[0]);
     };
     if (loading) return;
     getInstances();
   }, [loading]);
 
+  // 顯示右邊項目
   const clickWorkflowInatance = (wfi) => {
     setworkflowInstance(() => {
       return { ...wfi };
     });
   };
 
+  // workflow active <= => inactive
+  const handleSwitchChange = async () => {
+    console.log('switch....');
+    console.log('你有這筆workflow的資訊嗎?', workflowInstance);
+    if (isEmptyWorkflow.current) {
+      alert('此workflow尚未有對應的job, 請建立workflow在調整');
+      return;
+    }
+    console.log('workflowId', workflowid);
+    console.log('workflowStatus', workflowStatus);
+    const changeWorkflowStatus = !workflowStatus ? 'active' : 'inactive';
+    const res = await API.updateWorkflowStatus(workflowid, changeWorkflowStatus);
+    console.log(res);
+    setWorkflowStatus((prev) => !prev);
+  };
+
   return (
     <Wrapper>
       <HeadWrapper>
         <HeadTitle>{workflowName}</HeadTitle>
+        <StyledFormGroup sx={{ display: 'flex' }}>
+          <FormControlLabel
+            labelPlacement="end"
+            control={<IOSSwitch sx={{ m: '1', marginRight: '10px' }} />}
+            label={workflowStatus ? 'Active' : 'Inactive'}
+            onChange={handleSwitchChange}
+            checked={workflowStatus}
+            // inputProps={{ 'aria-label': 'controlled' }}
+          />
+        </StyledFormGroup>
+        {/* <WorkflowStatusStyle>{workflowStatus}</WorkflowStatusStyle> */}
         <EditWorkflow to={`/edit/${workflowid}`}>Edit</EditWorkflow>
       </HeadWrapper>
       <MainArea>
@@ -292,13 +411,13 @@ const MainContent = () => {
               key={wfi.workflowInfo.workflowInstanceId}
               onClick={() => clickWorkflowInatance(wfi)}
             >
-              <WorkflowStatusStyle>
+              <WorkflowInstanceStatusStyle>
                 {wfi.workflowInfo.status === 'finished' ? (
                   <LeftWorkflowSuccess />
                 ) : (
                   <LeftWorkflowError />
                 )}
-              </WorkflowStatusStyle>
+              </WorkflowInstanceStatusStyle>
               <WorkflowTriggerType>
                 {wfi.workflowInfo.trigger_type.toUpperCase()}
               </WorkflowTriggerType>
