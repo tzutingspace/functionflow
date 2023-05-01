@@ -7,10 +7,12 @@ export async function getWorkflowById(id) {
     SELECT 
       id,
       name,
+      start_time,
       trigger_type,
       next_execute_time,
       schedule_interval,
-      trigger_interval_seconds
+      trigger_interval_seconds,
+      job_qty
     FROM 
       workflows 
     WHERE
@@ -23,7 +25,7 @@ export async function getWorkflowById(id) {
 // 取得 workflows by userId
 export async function getWorkflowByUser(id) {
   const [rows] = await pool.query(
-    `SELECT * FROM workflows WHERE user_id = ? AND (status='draft' OR status='active') ORDER by created_at DESC`,
+    `SELECT * FROM workflows WHERE user_id = ? AND (status='draft' OR status='active' OR status='inactive') ORDER by created_at DESC`,
     [id]
   );
   return rows;

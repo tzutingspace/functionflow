@@ -12,6 +12,7 @@ const pool = mysql
     waitForConnections: true,
     connectionLimit: 20,
     idleTimeout: 60000,
+    timezone: 'UTC', // 從mysql拉出來的date不改變成本地時間
   })
   .promise();
 

@@ -40,7 +40,7 @@ export const initWorkflow = async (req, res) => {
   return res.json({ data: workflowId });
 };
 
-// Update a Workflow
+// Update a Workflow (內容更新)
 export const updateWorkflow = async (req, res, next) => {
   console.log('@controller updateWorkflow');
   console.log('request Body', req.body);
@@ -106,6 +106,141 @@ export const updateWorkflow = async (req, res, next) => {
   };
   const result = await DBWorkflow.updateWorkflow(workflowId, necessaryInfo);
   return res.json({ data: result });
+};
+
+// active or inactive workflow
+// FIXME: 不和 update 共用, 因為可能需要幫他修改 execution_time >> 需要去確認 DB 的 trigger 模式是什麼
+// inactive >> active 計算方式可能會不一樣
+export const updataWorkflowStatus = async (req, res, next) => {
+  console.log('@updateWorkflowStatus controller');
+  console.log('request Body', req.body);
+  const workflowId = req.params.id;
+  const { changeStatus } = req.body;
+  // 驗證id是否為數字
+  if (!vaildInterger(workflowId)) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+  // 沒有給 changeStatus
+  if (!changeStatus) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+  // 確認是否有該 worflow
+  const workflow = await DBWorkflow.getWorkflowById(workflowId);
+  console.log('目前workflow狀況', workflow);
+
+  if (!workflow) {
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+  }
+
+  // active >> inactive 直接關閉
+  if (changeStatus === 'inactive') {
+    const updateResult = await DBWorkflow.updateWorkflow(workflowId, {
+      status: changeStatus,
+    });
+    console.log('更新結果', updateResult);
+
+    return res.json({ data: updateResult.info });
+  }
+  // draft & inactive >> active
+
+  // 檢查是否有設定trigger
+  if (!workflow.trigger_type) {
+    return next(
+      new CustomError(
+        'Query Params Error(trigger type undefined)',
+        StatusCodes.BAD_REQUEST
+      )
+    );
+  }
+  // 檢查是否有設定job
+  if (!workflow.job_qty) {
+    return next(
+      new CustomError('Query Params Error(empty job)', StatusCodes.BAD_REQUEST)
+    );
+  }
+
+  // 如果是trigger type schedule 要重新計算下次 execution_time
+  const currentDate = new Date();
+  console.log('當下時間', currentDate);
+  const startTime = new Date(workflow.start_time);
+  let nextExecuteTime;
+  // 計算最接近當下的基準日期
+  const newDate = new Date(
+    Date.UTC(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+      startTime.getUTCHours(),
+      startTime.getUTCMinutes(),
+      startTime.getUTCSeconds(),
+      startTime.getUTCMilliseconds()
+    )
+  );
+  if (workflow.schedule_interval === 'custom') {
+    // 'custom' >> 將日期變成當下日期後計算
+    nextExecuteTime = date.addSeconds(
+      newDate,
+      parseInt(workflow.trigger_interval_seconds, 10)
+    );
+
+    // FIXME: 可以直接計算嗎？
+    while (nextExecuteTime < currentDate) {
+      nextExecuteTime = date.addSeconds(
+        nextExecuteTime,
+        parseInt(workflow.trigger_interval_seconds, 10)
+      );
+    }
+  } else if (workflow.schedule_interval === 'daily') {
+    nextExecuteTime = date.addDays(newDate, 1);
+    // 如果 nextExecuteTime 已過當下時間,
+    if (nextExecuteTime < currentDate) {
+      nextExecuteTime = date.addDays(nextExecuteTime, 1);
+    }
+  } else if (workflow.schedule_interval === 'weekly') {
+    // 計算出距離今天最近的同星期的日期
+    const targetDayOfWeek = startTime.getDay(); // 取得星期幾
+    const nowDayOfWeek = currentDate.getDay(); // 取得今天是星期幾
+
+    const daysUntilNextTargetDay = (targetDayOfWeek + 7 - nowDayOfWeek) % 7; // 計算距離今天最近的同星期的日期還有幾天
+
+    nextExecuteTime = new Date(
+      currentDate.getTime() + daysUntilNextTargetDay * 24 * 60 * 60 * 1000
+    );
+
+    // 將時間設定為原本的時間
+    nextExecuteTime.setUTCHours(startTime.getUTCHours());
+    nextExecuteTime.setUTCMinutes(startTime.getUTCMinutes());
+    nextExecuteTime.setUTCSeconds(startTime.getUTCSeconds());
+    nextExecuteTime.setUTCMilliseconds(startTime.getUTCMilliseconds());
+
+    // 如果 nextExecuteTime 已過當下時間,
+    if (nextExecuteTime < currentDate) {
+      nextExecuteTime = date.addDays(nextExecuteTime, 7);
+    }
+  } else if (workflow.schedule_interval === 'monthly') {
+    // 計算出距離今天最近的月份日期
+    const startMonth = startTime.getMonth(); // 開始日期的月份
+    const nowMonth = currentDate.getMonth(); // 現在的月份
+    const monthDiff = nowMonth - startMonth; // 計算月份差距
+    nextExecuteTime = date.addMonths(startTime, monthDiff);
+
+    console.log('當下時間', currentDate);
+    console.log('下次執行時間', nextExecuteTime);
+
+    // 如果 nextExecuteTime 已過當下時間,
+    if (nextExecuteTime < currentDate) {
+      nextExecuteTime = date.addMonths(nextExecuteTime, 1);
+    }
+  }
+  console.log('nextExecuteTime', nextExecuteTime);
+
+  // 更新資料庫資料
+  const updateResult = await DBWorkflow.updateWorkflow(workflowId, {
+    status: changeStatus,
+    next_execute_time: nextExecuteTime,
+  });
+  console.log('active...更新結果', updateResult);
+  return res.json({ data: updateResult });
 };
 
 // DELETE Workflows
@@ -251,7 +386,6 @@ export const deployWorkflow = async (req, res, next) => {
 };
 
 // Edit Workflow 用
-
 export const editWorkflow = async (req, res, next) => {
   console.log('@Edit Workflow controller...');
   const { workflowId } = req.params;
@@ -264,7 +398,7 @@ export const editWorkflow = async (req, res, next) => {
 
   const data = await DBWorkflow.getWorkflowAndJobById(workflowId);
 
-  console.log('data..........', data);
+  // console.log('data..........', data);
 
   if (data.length === 0) {
     return next(new CustomError('Not Found', 404));

@@ -6,12 +6,14 @@ export const searchInstancesHistory = async (req, res) => {
 
   const result = await DBInstances.searchInstancesHistory(workflowId);
 
+  console.log('DB結果', result);
   const tempObj = result.reduce((acc, curr) => {
     if (!acc[curr.wfi_id]) {
       acc[curr.wfi_id] = {
         workflowInfo: {
           workflowStatus: curr.wf_status,
           workflowId: curr.wf_id,
+          workflowJobsQty: curr.wf_jobs_qty,
           status: curr.wfi_status,
           trigger_type: curr.trigger_type,
           manual_trigger: curr.manual_trigger,
@@ -41,5 +43,8 @@ export const searchInstancesHistory = async (req, res) => {
         b.workflowInfo.workflowInstanceId - a.workflowInfo.workflowInstanceId
     );
 
+  // FIXME: 如果沒有instance 結果?, 前端處理?
+
+  console.log('@searchInstancesHistory controller output', output);
   return res.json({ data: output });
 };

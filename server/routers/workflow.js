@@ -6,6 +6,7 @@ import {
   getWorkflowByUser,
   initWorkflow,
   updateWorkflow,
+  updataWorkflowStatus,
   createJob,
   updateJob,
   deployWorkflow,
@@ -24,6 +25,8 @@ router.get('/workflowandjob/:workflowId', verifyJWT, wrapAsync(editWorkflow));
 
 // FIXME: update要驗證身份
 router.put('/workflow/:id', wrapAsync(updateWorkflow));
+
+router.put('/workflow/status/:id', wrapAsync(updataWorkflowStatus));
 
 router.post('/workflow', verifyJWT, wrapAsync(initWorkflow));
 

@@ -115,7 +115,8 @@ export async function searchInstancesHistory(workflowId) {
     `
     SELECT
       wf.status as wf_status,
-      wfi.workflow_id as wf_id,
+      wf.id as wf_id,
+      wf.job_qty as wf_jobs_qty,
       wfi.status as wfi_status,
       wfi.trigger_type,
       wfi.manual_trigger,
@@ -127,14 +128,11 @@ export async function searchInstancesHistory(workflowId) {
       jobi.status as job_status,
       jobi.customer_input as customer_input,
       jobi.result_output
-    FROM 
-      workflows_instances as wfi
-    LEFT JOIN 
-      jobs_instances as jobi ON wfi.id = jobi.workflow_instance_id
-    INNER JOIN 
-      workflows as wf ON wfi.workflow_id = wf.id
+    FROM workflows as wf
+      LEFT JOIN workflows_instances as wfi ON wf.id = wfi.workflow_id
+      LEFT JOIN jobs_instances as jobi ON wfi.id = jobi.workflow_instance_id
     WHERE 
-      wfi.workflow_id = ?
+      wf.id = ?
     ORDER BY
       wfi.execution_time DESC
     `,
