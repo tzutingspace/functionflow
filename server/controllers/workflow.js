@@ -176,13 +176,14 @@ export const updataWorkflowStatus = async (req, res, next) => {
       startTime.getUTCMilliseconds()
     )
   );
+
+  // console.log('newDate', newDate);
   if (workflow.schedule_interval === 'custom') {
     // 'custom' >> 將日期變成當下日期後計算
     nextExecuteTime = date.addSeconds(
       newDate,
       parseInt(workflow.trigger_interval_seconds, 10)
     );
-
     // FIXME: 可以直接計算嗎？
     while (nextExecuteTime < currentDate) {
       nextExecuteTime = date.addSeconds(
@@ -191,7 +192,8 @@ export const updataWorkflowStatus = async (req, res, next) => {
       );
     }
   } else if (workflow.schedule_interval === 'daily') {
-    nextExecuteTime = date.addDays(newDate, 1);
+    // nextExecuteTime = date.addDays(newDate, 1);
+    // console.log('@daily', nextExecuteTime);
     // 如果 nextExecuteTime 已過當下時間,
     if (nextExecuteTime < currentDate) {
       nextExecuteTime = date.addDays(nextExecuteTime, 1);
@@ -224,8 +226,8 @@ export const updataWorkflowStatus = async (req, res, next) => {
     const monthDiff = nowMonth - startMonth; // 計算月份差距
     nextExecuteTime = date.addMonths(startTime, monthDiff);
 
-    console.log('當下時間', currentDate);
-    console.log('下次執行時間', nextExecuteTime);
+    // console.log('當下時間', currentDate);
+    // console.log('下次執行時間', nextExecuteTime);
 
     // 如果 nextExecuteTime 已過當下時間,
     if (nextExecuteTime < currentDate) {
