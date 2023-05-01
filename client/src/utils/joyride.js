@@ -9,8 +9,8 @@ export const joyrideStyles = {
 
 export const Steps = [
   {
-    title: 'Workflow Title',
-    content: '給他一個獨特的workflow name',
+    title: 'Workflow Name',
+    content: 'Please enter the name you want for your workflow.',
     target: '#setting-workflow-name',
     placement: 'bottom',
     disableBeacon: true,
@@ -18,15 +18,15 @@ export const Steps = [
   },
   {
     title: 'Trigger Type',
-    content: '選擇 Trigger 的 type',
+    content: 'Please choose the trigger mechanism you want.',
     target: '#input-content-0',
     placement: 'bottom',
     // disableBeacon: true,
     hideBackButton: true,
   },
   {
-    title: 'Trigger Type',
-    content: '填寫內容',
+    title: 'Trigger Content',
+    content: 'Please provide detailed content.',
     target: '#input-content-0',
     placement: 'bottom',
     // disableBeacon: true,
@@ -34,45 +34,48 @@ export const Steps = [
   },
   {
     title: 'Save Trigger',
-    content: '針對你的trigger進行存檔',
+    content: 'Save based on your settings.',
     target: '#save-button-0',
     placement: 'bottom',
     hideBackButton: true,
   },
   {
-    title: '新增job',
-    content: '新增job',
+    title: 'Add a new job',
+    content: 'Add a new job',
     target: '#add-job-button-0',
     placement: 'bottom',
+    hideBackButton: true,
   },
   {
-    title: '選擇你job',
-    content: '填寫job內容',
+    title: 'Job Funcition',
+    content: 'Choose the job function you want.',
     target: '#input-content-1',
     placement: 'bottom',
+    hideBackButton: true,
   },
   {
-    title: '填寫job內容',
-    content: '填寫job內容',
+    title: 'Job Funcition Content',
+    content: 'Please provide detailed content.',
     target: '#input-content-1',
     placement: 'bottom',
+    hideBackButton: true,
   },
   {
-    title: 'Save Trigger',
-    content: '針對你的trigger進行存檔',
+    title: 'Save Job Content',
+    content: 'Save based on your settings.',
     target: '#save-button-1',
     placement: 'bottom',
     hideBackButton: true,
   },
   {
-    title: '完成depoly',
-    content: '完成整個',
+    title: 'Depoly',
+    content: 'Once you have finished setting up your workflow, please deploy it.',
     target: '#deploy-button',
     placement: 'bottom',
+    hideBackButton: true,
   },
 ];
 
-// JoyrideCallbacks.js
 export const handleJoyrideCallback = (data, joyrideState, setJoyrideState) => {
   const { action, index, type, status } = data;
 
