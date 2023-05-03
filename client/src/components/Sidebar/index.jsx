@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   overflow-y: hidden;
   align-items: center;
 
-  /* 加上這段 */
+  /* 加上這段 讓最後的 item 置底 */
   & > div:last-child {
     position: absolute;
     bottom: 20px;
@@ -42,7 +42,8 @@ const WeclomeMessage = styled.div`
   padding-left: 12px;
   position: relative;
   font-size: 24px;
-  text-decoration: underline;
+  margin-bottom: 1.2rem;
+  /* text-decoration: underline; */
   font-weight: 560;
 `;
 

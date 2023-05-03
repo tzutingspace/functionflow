@@ -126,6 +126,7 @@ const Edit = () => {
   // 導覽過, 就關閉
   useEffect(() => {
     const isTourTaken = localStorage.getItem('isTourTaken');
+    // console.log('tourTaken', isTourTaken);
     if (isTourTaken) {
       setJoyrideState((prev) => {
         prev.run = false;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { formatDate } from '../../utils/utils';
@@ -199,6 +199,7 @@ const RightArea = styled.div`
   height: 100vh;
   padding-top: 1rem;
   padding-bottom: 10rem;
+  max-width: 1000px;
 `;
 
 // 參考Build/components/Block/Wrapper
@@ -253,12 +254,18 @@ const JobItemTitle = styled.div`
   color: #20315b;
   font-weight: bold;
   padding-bottom: 0.2rem;
+  font-size: 16px;
+  text-decoration: underline;
 `;
 
 const JobItemContent = styled.div`
   /* border: 1px solid red; */
   color: #20315b;
   font-weight: bold;
+  width: 65%;
+  /* flex-wrap: wrap; */
+  overflow-wrap: break-word; /* 兼容性更好的寫法，當單詞超出邊界時換行 */
+  margin-left: auto;
 `;
 
 const JobConfigWrapper = styled.div`
@@ -274,10 +281,13 @@ const SettingTitle = styled.div`
   box-sizing: border-box;
   bottom: auto;
   display: flex;
-  margin-left: 1rem;
+  /* margin-left: 1rem; */
   width: 9rem;
   color: #20315b;
   font-weight: bold;
+  /* justify-content: center; */
+  align-items: center;
+  /* line-height: 1rem; */
 `;
 
 // 參考Build/components/Block/ButtonArea
@@ -504,6 +514,20 @@ const MainContent = () => {
                             <WrapperJobItem>
                               <SettingTitle>{`${title}`}</SettingTitle>
                               <JobItemContent>{`${val}`}</JobItemContent>
+                              {/* {Array.isArray(val) ? (
+                                Object.entries(val[0]).map(([key, value]) => {
+                                  if (key === 'title') {
+                                    return (
+                                      <JobItemContent>{`${key}: ${value.slice(
+                                        0,
+                                        17
+                                      )}...`}</JobItemContent>
+                                    );
+                                  }
+                                })
+                              ) : (
+                                <JobItemContent>{`${val}`}</JobItemContent>
+                              )} */}
                             </WrapperJobItem>
                           </JobConfigWrapper>
                         );

@@ -47,14 +47,14 @@ export const Steps = [
     hideBackButton: true,
   },
   {
-    title: 'Job Funcition',
+    title: 'Job Function',
     content: 'Choose the job function you want.',
     target: '#input-content-1',
     placement: 'bottom',
     hideBackButton: true,
   },
   {
-    title: 'Job Funcition Content',
+    title: 'Job Function Content',
     content: 'Please provide detailed content.',
     target: '#input-content-1',
     placement: 'bottom',

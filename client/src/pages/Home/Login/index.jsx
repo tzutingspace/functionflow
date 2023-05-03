@@ -65,7 +65,7 @@ const SwitchText = styled.div`
   text-align: center;
   text-decoration: underline;
   text-shadow: none;
-  font-size: 6px;
+  font-size: 12px;
   color: hsla(200, 18%, 58%, 1);
   cursor: pointer;
   display: block;

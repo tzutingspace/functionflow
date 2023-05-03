@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useContext } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 import MainContent from './MainContent';
 import Sidebar from '../../components/Sidebar';
@@ -14,6 +14,7 @@ const Rightbar = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  width: 80%;
 `;
 
 const Instances = () => {
