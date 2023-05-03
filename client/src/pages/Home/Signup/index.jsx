@@ -1,6 +1,10 @@
 import { useState, useContext } from 'react';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AuthContext } from '../../../contexts/authContext';
 
 import { ValidUsername, ValidateEmail, ValidatePassword } from '../../../utils/utils';
@@ -88,7 +92,7 @@ const UserAlert = styled.div`
 `;
 
 const Signup = ({ onFormSwitch }) => {
-  const { signup, loading } = useContext(AuthContext);
+  const { signup, loading, ErrorMessage } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -114,8 +118,14 @@ const Signup = ({ onFormSwitch }) => {
       setPasswordError(true);
       return;
     }
-    console.log('~~~', 'signup');
-    // signup(name, email, password, 'native');
+
+    signup(name, email, password, 'native');
+    // console.log('ewqeqwe', result);
+    // if (!result) {
+    //   console.log('dasdasdasda');
+    //   toast('Wow so easy!');
+    //   console.log('dasdasdasda');
+    // }
   };
 
   const handleKeyPress = (e) => {
@@ -158,7 +168,7 @@ const Signup = ({ onFormSwitch }) => {
           ></UserInput>
         </InputInline>
         {usernameError && (
-          <UserAlert>{`Username must be 1-20 characters long, no special characters.`}</UserAlert>
+          <UserAlert>{`Username must be 1-20 characters, no special characters.`}</UserAlert>
         )}
         <InputInline>
           <UserInput
@@ -178,7 +188,8 @@ const Signup = ({ onFormSwitch }) => {
             onKeyPress={handleKeyPress}
           ></UserInput>
         </InputInline>
-        {passwordError && <UserAlert>{`Must be 6-16 characters in length.`}</UserAlert>}
+        {passwordError && <UserAlert>{`Password must be 6-16 characters.`}</UserAlert>}
+        {ErrorMessage && <UserAlert>{ErrorMessage}</UserAlert>}
         <SignupButton onClick={handleSignup}>Registration</SignupButton>
         <SwitchText onClick={() => onFormSwitch('login')}>
           Already have an account? Login Here.

@@ -11,6 +11,7 @@ const API = {
         'Content-Type': 'application/json',
       },
     });
+    console.log('signup', res);
     return res.data.data;
   },
   async login(data) {

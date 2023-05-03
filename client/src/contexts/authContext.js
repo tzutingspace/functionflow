@@ -1,12 +1,14 @@
 import { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../utils/api';
+import { result } from 'lodash';
 
 export const AuthContext = createContext({
   isLogin: false,
   user: {},
   loading: false,
   jwtToken: '',
+  ErrorMessage: '',
   signup: () => {},
   login: () => {},
   logout: () => {},
@@ -18,12 +20,14 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [jwtToken, setJwtToken] = useState();
 
+  const [ErrorMessage, setErrorMessage] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
+    // console.log('@authContext useEffect');
     const checkAuthStatus = async () => {
       const localJwtToken = localStorage.getItem('jwtToken');
-      console.log('@authContext useEffect');
       if (localJwtToken) {
         try {
           const userData = await API.getProfile(localJwtToken);
@@ -43,16 +47,21 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   const signup = async (name, email, password, provider) => {
-    setLoading(true);
-    const result = await API.signup({ name, email, password, provider });
-    const { access_token: tokenFromServer, user: userData } = result;
-    setUser(userData);
-    setJwtToken(tokenFromServer);
-    window.localStorage.setItem('jwtToken', tokenFromServer);
-    setIsLogin(true);
-    setLoading(false);
-    // FIXME: 如果登入失敗要處理
-    navigate('/workflows');
+    try {
+      setLoading(true);
+      const result = await API.signup({ name, email, password, provider });
+      const { access_token: tokenFromServer, user: userData } = result;
+      setUser(userData);
+      setJwtToken(tokenFromServer);
+      window.localStorage.setItem('jwtToken', tokenFromServer);
+      setIsLogin(true);
+      setLoading(false);
+      navigate('/workflows');
+    } catch (error) {
+      // 登入失敗要處理
+      setErrorMessage(error.response.data.data.message);
+      setLoading(false);
+    }
   };
 
   const login = async (email, password, provider) => {
@@ -90,6 +99,7 @@ export const AuthContextProvider = ({ children }) => {
         login,
         logout,
         signup,
+        ErrorMessage,
       }}
     >
       {children}
