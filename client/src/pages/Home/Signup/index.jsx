@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { AuthContext } from '../../../contexts/authContext';
 
+import { ValidUsername, ValidateEmail, ValidatePassword } from '../../../utils/utils';
+
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
 `;
@@ -21,7 +23,7 @@ const InputInline = styled.div`
   left: 0px;
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-top: 12px;
   height: 100%;
 `;
 
@@ -30,14 +32,14 @@ const UserInput = styled.input`
   border: none;
   border-radius: 20px;
   padding: 12px 0 12px 24px;
-  font-size: 14px;
+  font-size: 12px;
   width: 100%;
   overflow: hidden;
   height: 1rem;
 
   &::placeholder {
     color: #20315b58;
-    font-size: 14px;
+    font-size: 12px;
     opacity: 1;
   }
 `;
@@ -61,6 +63,7 @@ const SignupButton = styled.button`
   font-weight: bold;
   text-transform: uppercase;
   line-height: 0.5rem;
+  margin-top: 12px;
 `;
 
 const SwitchText = styled.div`
@@ -74,20 +77,71 @@ const SwitchText = styled.div`
   margin-top: 16px;
 `;
 
+const UserAlert = styled.div`
+  color: red;
+  font-size: 5px;
+  align-items: center;
+  position: relative;
+  left: 20px;
+  display: flex;
+  width: 90%;
+`;
+
 const Signup = ({ onFormSwitch }) => {
   const { signup, loading } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [usernameError, setUsernameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
   const handleSignup = () => {
-    signup(name, email, password, 'native');
+    // 確認name
+    if (!ValidUsername(name) || !name) {
+      setUsernameError(true);
+      return;
+    }
+
+    // 確認email
+    if (!ValidateEmail(email)) {
+      setEmailError(true);
+      return;
+    }
+    // 確認password
+    if (!ValidatePassword(password)) {
+      setPasswordError(true);
+      return;
+    }
+    console.log('~~~', 'signup');
+    // signup(name, email, password, 'native');
   };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSignup();
     }
+  };
+
+  const handleUsername = (e) => {
+    const inputText = e.target.value;
+    if (!ValidUsername(inputText) || inputText.length > 20) {
+      setUsernameError(true);
+      return;
+    }
+    setName(inputText);
+    setUsernameError(false);
+  };
+
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+    setUsernameError(false);
+  };
+
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+    setPasswordError(false);
   };
 
   const renderContent = () => {
@@ -100,26 +154,31 @@ const Signup = ({ onFormSwitch }) => {
             type="name"
             placeholder="Enter your Username"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => handleUsername(e)}
           ></UserInput>
         </InputInline>
+        {usernameError && (
+          <UserAlert>{`Username must be 1-20 characters long, no special characters.`}</UserAlert>
+        )}
         <InputInline>
           <UserInput
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmail(e)}
           ></UserInput>
         </InputInline>
+        {emailError && <UserAlert>{`Please enter legal email.`}</UserAlert>}
         <InputInline>
           <UserInput
             type="password"
-            placeholder="Enter your password"
+            placeholder="Enter your password (6-16 characters)"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handlePassword(e)}
             onKeyPress={handleKeyPress}
           ></UserInput>
         </InputInline>
+        {passwordError && <UserAlert>{`Must be 6-16 characters in length.`}</UserAlert>}
         <SignupButton onClick={handleSignup}>Registration</SignupButton>
         <SwitchText onClick={() => onFormSwitch('login')}>
           Already have an account? Login Here.
