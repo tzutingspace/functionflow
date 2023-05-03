@@ -48,7 +48,9 @@ export function ValidateEmail(inputText) {
 
 export function ValidatePassword(inputText) {
   // reference: https://stackoverflow.com/questions/12090077/javascript-regular-expression-password-validation-having-special-characters
-  const pwdFormat = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+  // const pwdFormat = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+  // 用可顯示字元
+  const pwdFormat = /^[\x20-\x7E]{6,16}$/;
   if (pwdFormat.test(inputText)) {
     return true;
   }

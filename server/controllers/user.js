@@ -16,6 +16,7 @@ export const signup = async (req, res, next) => {
   console.log('@controller signup');
   const { name, email, password } = req.body;
   console.log('@signup request:', req.body);
+
   if (!req.is('application/json')) {
     return next(new CustomError('請使用正確content-type', 400));
   }
@@ -26,15 +27,12 @@ export const signup = async (req, res, next) => {
     return next(new CustomError('Email格式錯誤', 400));
   }
   if (!ValidatePassword(password)) {
-    return next(
-      new CustomError(
-        '密碼請輸入6-16位數, 至少含有數字, 英文字母, 特殊符號(!@#$%^&*)各一',
-        400
-      )
-    );
+    return next(new CustomError('密碼請輸入6-16位數', 400));
   }
   if (await DBUser.getUser(email)) {
-    return next(new CustomError('Email已被註冊', 403));
+    return next(
+      new CustomError('This email has already been registered.', 403)
+    );
   }
   const hashResult = await hashPassword(password);
   // 記得處理非同步問題，if mysql errno===1062 要顯示已註冊(寫在async handler)
