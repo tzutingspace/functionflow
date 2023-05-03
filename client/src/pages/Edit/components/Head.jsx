@@ -95,6 +95,11 @@ const DeployButton = styled.div`
 
 const socket = io.connect(process.env.REACT_APP_SOCKET_URL);
 
+function replaceSpecialCharacters(inputString) {
+  const regexForUrlEncodedChars = /[%!'"()*&$+/,:;=?#\\]/g;
+  return inputString.replace(regexForUrlEncodedChars, '_');
+}
+
 const Head = () => {
   const { user, jwtToken } = useContext(AuthContext);
   const { isDraft, setIsDraft, workflowJobs, setWorkflowJobs, isAllJobSave } =
@@ -110,7 +115,7 @@ const Head = () => {
   // change workflow name
   function changeHead(value) {
     // 因為route切換關西, workflow命名不可以用slash
-    const inputValue = value.replace('/', '_');
+    const inputValue = replaceSpecialCharacters(value); //.replace('/', '_');
     // 更新上層 jobs Data
     setWorkflowJobs((prev) => {
       prev[0]['workflow_name'] = inputValue;
