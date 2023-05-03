@@ -13,6 +13,8 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+if (process.env.NODE_ENV === 'production') console.log = function () {};
+
 root.render(
   <BrowserRouter>
     <Routes>
