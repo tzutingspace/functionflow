@@ -20,6 +20,7 @@ const Wrapper = styled.div`
   padding-top: 0.5rem;
   height: 100vh;
   overflow-y: hidden;
+  overflow-x: hidden;
   align-items: center;
 
   /* 加上這段 讓最後的 item 置底 */
@@ -37,6 +38,7 @@ const WeclomeMessage = styled.div`
   flex-shrink: 0;
   flex-wrap: wrap;
   height: 40px;
+  width: 180px;
   overflow-x: hidden;
   overflow-y: hidden;
   padding-left: 12px;
@@ -45,6 +47,8 @@ const WeclomeMessage = styled.div`
   margin-bottom: 1.2rem;
   /* text-decoration: underline; */
   font-weight: 560;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const ItemGroup = styled.div`
