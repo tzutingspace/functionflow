@@ -120,12 +120,6 @@ const Signup = ({ onFormSwitch }) => {
     }
 
     signup(name, email, password, 'native');
-    // console.log('ewqeqwe', result);
-    // if (!result) {
-    //   console.log('dasdasdasda');
-    //   toast('Wow so easy!');
-    //   console.log('dasdasdasda');
-    // }
   };
 
   const handleKeyPress = (e) => {

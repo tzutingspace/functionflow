@@ -12,6 +12,7 @@ export const AuthContext = createContext({
   signup: () => {},
   login: () => {},
   logout: () => {},
+  setErrorMessage: () => {},
 });
 
 export const AuthContextProvider = ({ children }) => {
@@ -66,16 +67,21 @@ export const AuthContextProvider = ({ children }) => {
 
   const login = async (email, password, provider) => {
     // console.log('login...', email, password, provider);
-    setLoading(true);
-    const result = await API.login({ email, password, provider });
-    const { access_token: tokenFromServer, user: userData } = result;
-    setUser(userData);
-    setJwtToken(tokenFromServer);
-    window.localStorage.setItem('jwtToken', tokenFromServer);
-    setIsLogin(true);
-    setLoading(false);
-    // FIXME: 如果登入失敗要處理
-    navigate('/workflows');
+    try {
+      setLoading(true);
+      const result = await API.login({ email, password, provider });
+      const { access_token: tokenFromServer, user: userData } = result;
+      setUser(userData);
+      setJwtToken(tokenFromServer);
+      window.localStorage.setItem('jwtToken', tokenFromServer);
+      setIsLogin(true);
+      setLoading(false);
+      navigate('/workflows');
+    } catch (error) {
+      console.log('error', error.response);
+      setErrorMessage(error.response.data.data.message);
+      setLoading(false);
+    }
   };
 
   const logout = async () => {
@@ -100,6 +106,7 @@ export const AuthContextProvider = ({ children }) => {
         logout,
         signup,
         ErrorMessage,
+        setErrorMessage,
       }}
     >
       {children}

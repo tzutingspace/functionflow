@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { AuthContext } from '../../../contexts/authContext';
 
+import { ValidUsername, ValidateEmail, ValidatePassword } from '../../../utils/utils';
+
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
 `;
@@ -12,6 +14,7 @@ const Text = styled.div`
   letter-spacing: 0.5px;
   line-height: 1.4;
   margin: 8px auto 32px;
+  color: #20315b;
 `;
 
 const InputInline = styled.div`
@@ -19,7 +22,7 @@ const InputInline = styled.div`
   left: 0px;
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-top: 12px;
   height: 100%;
 `;
 
@@ -59,6 +62,7 @@ const LogInButton = styled.button`
   font-weight: bold;
   text-transform: uppercase;
   line-height: 0.5rem;
+  margin-top: 12px;
 `;
 
 const SwitchText = styled.div`
@@ -72,12 +76,31 @@ const SwitchText = styled.div`
   margin-top: 16px;
 `;
 
+const UserAlert = styled.div`
+  color: red;
+  font-size: 5px;
+  align-items: center;
+  position: relative;
+  left: 20px;
+  display: flex;
+  width: 90%;
+`;
+
 const Login = ({ onFormSwitch }) => {
-  const { login, loading } = useContext(AuthContext);
+  const { login, loading, ErrorMessage, setErrorMessage } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    if (!ValidateEmail(email) || !email) {
+      setErrorMessage('Please enter legal email.');
+      return;
+    }
+    if (!ValidatePassword(password) || !password) {
+      setErrorMessage('Password must be 6-16 characters.');
+      return;
+    }
+
     login(email, password, 'native');
   };
 
@@ -109,6 +132,7 @@ const Login = ({ onFormSwitch }) => {
             onKeyPress={handleKeyPress}
           ></UserInput>
         </InputInline>
+        {ErrorMessage && <UserAlert>{ErrorMessage}</UserAlert>}
         <LogInButton onClick={() => handleLogin()}>Login</LogInButton>
         <SwitchText onClick={() => onFormSwitch('signup')}>
           Don't have an account yet? Register here.
