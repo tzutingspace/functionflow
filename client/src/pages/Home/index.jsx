@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import styled from 'styled-components';
 import mainImage from './mainimage.png';
@@ -6,6 +6,8 @@ import mainImage from './mainimage.png';
 import HomeHead from './Header';
 import Login from './Login';
 import Signup from './Signup';
+
+import { AuthContext } from '../../contexts/authContext';
 
 // 頁面全局樣式
 const Wrapper = styled.div`
@@ -83,6 +85,12 @@ const FormContent = styled.div`
 
 const Home = () => {
   const [defaultForm, setDefaulForm] = useState('signup');
+  const { setErrorMessage } = useContext(AuthContext);
+
+  const handlerFormSwitch = (form) => {
+    setErrorMessage('');
+    setDefaulForm(form);
+  };
 
   return (
     <Wrapper>
@@ -92,9 +100,9 @@ const Home = () => {
           <LeftInnerBlock>
             <FormContent>
               {defaultForm === 'signup' ? (
-                <Signup onFormSwitch={setDefaulForm} />
+                <Signup onFormSwitch={handlerFormSwitch} />
               ) : (
-                <Login onFormSwitch={setDefaulForm} />
+                <Login onFormSwitch={handlerFormSwitch} />
               )}
             </FormContent>
           </LeftInnerBlock>

@@ -2,9 +2,6 @@ import { useState, useContext } from 'react';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 import { AuthContext } from '../../../contexts/authContext';
 
 import { ValidUsername, ValidateEmail, ValidatePassword } from '../../../utils/utils';
