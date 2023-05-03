@@ -33,7 +33,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
 
   // 建立 workflow instances
   workflowInfo.status = 'queued'; // 準備丟進queue
-  workflowInfo.execution_time = getNowTime(); // FIXME: 全部改為UTC時間, 前端處理顯示當地時間
+  workflowInfo.execution_time = getNowTime(); // 全部改為UTC時間, 前端處理顯示當地時間
   workflowInfo.manual_trigger = 't'; // 手動測試
   workflowInfo.end_time = null;
 
@@ -46,7 +46,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   console.log('建立instances回傳的結果', readyToQueueObj);
 
   // FIXME: SQS結果確認 testing 先關閉
-  await putToSQS(JSON.stringify(readyToQueueObj));
+  // await putToSQS(JSON.stringify(readyToQueueObj));
   // 放進sqs test run
   return res.json({ data: readyToQueueObj });
 };

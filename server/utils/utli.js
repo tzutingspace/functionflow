@@ -17,7 +17,7 @@ export function convertLocalToUTC(localTime, timezone = 'Asia/Taipei') {
 // 取得現在時間
 export function getNowTime() {
   // const dt0 = moment.utc().tz('UTC');
-  return moment.utc().tz('Asia/Taipei').format('YYYY-MM-DD HH:mm:ss');
+  return moment.utc().tz('UTC').format('YYYY-MM-DD HH:mm:ss');
 }
 
 export function calculateTime(inputTime, internalSeconds) {
