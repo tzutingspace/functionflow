@@ -35,7 +35,7 @@ export const AuthContextProvider = ({ children }) => {
           setJwtToken(localJwtToken);
           setUser(userData);
           setIsLogin(true);
-          // console.log('useEffect userData', userData);
+          navigate('/workflows'); //直接到使用者首頁
         } catch (error) {
           console.log('@authContext useEffect, JWT驗證失敗');
           window.localStorage.removeItem('jwtToken');
