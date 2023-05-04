@@ -1,4 +1,5 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
 import mainImage from './mainimage.png';
@@ -74,7 +75,6 @@ const DescriptionImage = styled.div`
 `;
 
 // Form Content
-
 const FormContent = styled.div`
   box-sizing: border-box;
   display: flex;
@@ -85,12 +85,19 @@ const FormContent = styled.div`
 
 const Home = () => {
   const [defaultForm, setDefaulForm] = useState('signup');
-  const { setErrorMessage } = useContext(AuthContext);
+  const { setErrorMessage, isLogin } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const handlerFormSwitch = (form) => {
     setErrorMessage('');
     setDefaulForm(form);
   };
+
+  // 已登入過的用戶進行跳轉
+  useEffect(() => {
+    if (isLogin) return navigate('/workflows');
+  }, [isLogin]);
 
   return (
     <Wrapper>

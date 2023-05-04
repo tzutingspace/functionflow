@@ -4,6 +4,9 @@ import styled from 'styled-components/macro';
 import MainContent from './MainContent';
 import Sidebar from '../../components/Sidebar';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Wrapper = styled.div`
   display: flex;
   height: 100vh;
@@ -24,6 +27,7 @@ const Instances = () => {
       <Rightbar>
         <MainContent />
       </Rightbar>
+      <ToastContainer />
     </Wrapper>
   );
 };

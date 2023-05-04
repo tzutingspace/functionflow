@@ -104,10 +104,10 @@ const JobTitle = ({ jobData, idx }) => {
   }
 
   return (
-    <JobTileWrapper style={{ backgroundColor: jobData.job_name === '' ? '#e95353' : '#f3ecda' }}>
+    <JobTileWrapper style={{ backgroundColor: jobData.job_name === '' ? '#f1ceced6' : '#f3ecda' }}>
       <JobName
         style={
-          ({ backgroundColor: jobData.job_name === '' ? '#e95353' : '#f3ecda' },
+          ({ backgroundColor: jobData.job_name === '' ? '#f1ceced6' : '#f3ecda' },
           { color: jobData.job_name.includes('untitled') ? 'grey' : '#20315b' })
         }
         type="text"

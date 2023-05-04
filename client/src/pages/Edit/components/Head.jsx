@@ -4,10 +4,13 @@ import styled from 'styled-components/macro';
 
 import io from 'socket.io-client';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import API from '../../../utils/api';
 import { WorkflowStateContext } from '..';
 import { AuthContext } from '../../../contexts/authContext';
-import ActionAlerts from './Alert.jsx';
+// import ActionAlerts from './Alert.jsx';
 import logo from './logo.png';
 
 const Wrapper = styled.div`
@@ -130,13 +133,32 @@ const Head = () => {
   async function deployWorkflow() {
     for (const job of isAllJobSave) {
       if (job === false) {
-        alert('您尚有 job 未存檔');
+        // alert('您尚有 job 未存檔');
+        toast('您尚有 job 未存檔', {
+          position: 'top-center',
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: false,
+          progress: undefined,
+          theme: 'dark',
+        });
         return;
       }
     }
 
     if (workflowJobs.length <= 1) {
-      alert('您尚未建立job');
+      // alert('您尚未建立job');
+      toast('您尚未建立job', {
+        position: 'top-center',
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      });
       return;
     }
 
@@ -166,6 +188,14 @@ const Head = () => {
     const result = await API.deployWorkflow(workflowJobs[0]['id'], deployObj);
     console.log('deploy結果', result);
     setIsDraft(false);
+    toast.success('已成功Depoly此workflow', {
+      position: 'top-right',
+      style: {
+        top: '100px',
+      },
+      autoClose: 1000,
+      theme: 'dark',
+    });
   }
 
   async function triggerWorkflow() {
@@ -173,57 +203,66 @@ const Head = () => {
     const id = workflowJobs[0]['id'];
     const socketId = user.name + user.id;
     const result = await API.triggerWorkflow(id, socketId, jwtToken);
-    console.log('Trigger 送出 response', result);
-    setIsTrigger(true);
+    console.log('Trigger 送出 response:', result);
 
+    toast.success('Trigger 已送出，請稍等結果', {
+      position: 'top-right',
+      style: {
+        top: '100px',
+      },
+      autoClose: 10000,
+      theme: 'dark',
+    });
+
+    // setIsTrigger(true);
     socket.emit('trigger', socketId);
     socket.on('triggerFinish', (data) => {
       console.log('後端emit資料過來', data);
-      // alert(`Trigger 已完成, 結果:${data.message}`);
-      setTriggerResult(() => {
-        return data.message;
+      toast.success(`Trigger 已完成, 結果:${data.message}`, {
+        position: 'top-right',
+        style: {
+          top: '100px',
+        },
+        autoClose: 2000,
+        theme: 'dark',
       });
-      setIsTriggerResultBack(true);
+      socket.off('triggerFinish');
+
+      // setTriggerResult(() => {
+      //   return data.message;
+      // });
+      // setIsTriggerResultBack(true);
     });
   }
 
   return (
-    <Wrapper>
-      <ActionAlerts
-        isOpen={isTrigger}
-        onClose={setIsTrigger}
-        message={'Trigger 已送出，請稍等結果'}
-      ></ActionAlerts>
-      {
-        <ActionAlerts
-          isOpen={isTriggerResultBack}
-          onClose={setIsTriggerResultBack}
-          message={`Trigger 已完成, 結果:${triggerResult}`}
-        ></ActionAlerts>
-      }
-      <WorkflowHeaderLeft>
-        <Logo to="/workflows"></Logo>
-        <HeadInput
-          onChange={(e) => changeHead(e.target.value)}
-          placeholder="Untitled Workflow"
-          value={workflowTitle}
-          id="setting-workflow-name"
-        ></HeadInput>
-        <WorkflowStatus>{isDraft ? 'draft' : 'active'}</WorkflowStatus>
-      </WorkflowHeaderLeft>
-      <WorkflowHeaderRight>
-        {isDraft ? (
-          <></>
-        ) : (
-          <TriggerButton type="button" onClick={() => triggerWorkflow()}>
-            Trigger
-          </TriggerButton>
-        )}
-        <DeployButton id="deploy-button" type="button" onClick={() => deployWorkflow()}>
-          Deploy
-        </DeployButton>
-      </WorkflowHeaderRight>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <WorkflowHeaderLeft>
+          <Logo to="/workflows"></Logo>
+          <HeadInput
+            onChange={(e) => changeHead(e.target.value)}
+            placeholder="Untitled Workflow"
+            value={workflowTitle}
+            id="setting-workflow-name"
+          ></HeadInput>
+          <WorkflowStatus>{isDraft ? 'draft' : 'active'}</WorkflowStatus>
+        </WorkflowHeaderLeft>
+        <WorkflowHeaderRight>
+          {isDraft ? (
+            <></>
+          ) : (
+            <TriggerButton type="button" onClick={() => triggerWorkflow()}>
+              Trigger
+            </TriggerButton>
+          )}
+          <DeployButton id="deploy-button" type="button" onClick={() => deployWorkflow()}>
+            Deploy
+          </DeployButton>
+        </WorkflowHeaderRight>
+      </Wrapper>
+      <ToastContainer />
+    </>
   );
 };
 

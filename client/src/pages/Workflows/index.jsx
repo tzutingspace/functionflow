@@ -4,6 +4,9 @@ import MainContent from './components/MainContent';
 import { AuthContext } from '../../contexts/authContext';
 import styled from 'styled-components';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Wrapper = styled.div`
   display: flex;
   height: 100vh;
@@ -35,6 +38,7 @@ const Workflows = () => {
           <Rightbar>
             <MainContent />
           </Rightbar>
+          <ToastContainer />
         </Wrapper>
       )}
     </>

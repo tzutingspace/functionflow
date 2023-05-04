@@ -80,7 +80,7 @@ const Edit = () => {
       // FIXME: 一開始就符合前端的資料格式?
       const workflowsData = data.data.map((item) => {
         setIsAllJobSave((pre) => {
-          return [...pre, false];
+          return [...pre, true]; // 修改為剛匯入時, 預設為 save 狀態
         });
         return { ...item, id: item.workflow_id || item.job_id }; //for react unique key;
       });

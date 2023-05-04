@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../utils/api';
-import { result } from 'lodash';
+// import { result } from 'lodash';
 
 export const AuthContext = createContext({
   isLogin: false,
@@ -26,7 +26,7 @@ export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // console.log('@authContext useEffect');
+    console.log('@authContext useEffect');
     const checkAuthStatus = async () => {
       const localJwtToken = localStorage.getItem('jwtToken');
       if (localJwtToken) {
@@ -35,7 +35,7 @@ export const AuthContextProvider = ({ children }) => {
           setJwtToken(localJwtToken);
           setUser(userData);
           setIsLogin(true);
-          navigate('/workflows'); //直接到使用者首頁
+          // navigate('/workflows');
         } catch (error) {
           console.log('@authContext useEffect, JWT驗證失敗');
           window.localStorage.removeItem('jwtToken');
