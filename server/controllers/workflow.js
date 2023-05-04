@@ -401,7 +401,7 @@ export const deployWorkflow = async (req, res, next) => {
 export const editWorkflow = async (req, res, next) => {
   console.log('@Edit Workflow controller...');
   const { workflowId } = req.params;
-  console.log(workflowId);
+  console.log('workflowId', workflowId);
 
   // 驗證id是否為數字
   if (!vaildInterger(workflowId)) {
@@ -410,7 +410,7 @@ export const editWorkflow = async (req, res, next) => {
 
   const data = await DBWorkflow.getWorkflowAndJobById(workflowId);
 
-  // console.log('data..........', data);
+  console.log('Edit workflow data...', data);
 
   if (data.length === 0) {
     return next(new CustomError('Not Found', 404));
@@ -421,7 +421,7 @@ export const editWorkflow = async (req, res, next) => {
   const every = data[0].trigger_interval_seconds / 60 || 60; // 如果之前沒填, 就給60分鐘
 
   // 處理只有 trigger 的 Workflow
-  if (data.length === 1) {
+  if (!data[0].job_qty) {
     const workflowObj = {
       workflow_id: data[0].workflow_id,
       workflow_name: data[0].workflow_name,
@@ -473,8 +473,5 @@ export const editWorkflow = async (req, res, next) => {
 
   // Combine the first object and job objects into a single array
   const result = [firstObj, ...jobObjs];
-
-  console.log(result);
-
   return res.json({ data: result });
 };
