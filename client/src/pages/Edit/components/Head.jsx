@@ -83,6 +83,8 @@ const TriggerButton = styled.div`
   border: none;
   cursor: pointer;
   border-radius: 20px; /* 圓弧造型 */
+  text-align: center;
+  width: 60px;
 `;
 
 const DeployButton = styled.div`
@@ -94,6 +96,24 @@ const DeployButton = styled.div`
   border: none;
   cursor: pointer;
   border-radius: 20px; /* 圓弧造型 */
+  text-align: center;
+  width: 60px;
+`;
+
+const BackButton = styled(Link)`
+  background-color: #20315b;
+  color: #dfd1aa;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px; /* 圓弧造型 */
+  margin-left: 16px;
+  margin-right: 10px;
+  width: 60px;
+  text-align: center;
+  text-decoration: none;
 `;
 
 const socket = io.connect(process.env.REACT_APP_SOCKET_URL);
@@ -110,10 +130,9 @@ const Head = () => {
 
   const [workflowTitle, setWorkflowTitle] = useState(workflowJobs[0].workflow_name);
 
-  const [triggerResult, setTriggerResult] = useState('');
-
-  const [isTrigger, setIsTrigger] = useState(false);
-  const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
+  // const [triggerResult, setTriggerResult] = useState('');
+  // const [isTrigger, setIsTrigger] = useState(false);
+  // const [isTriggerResultBack, setIsTriggerResultBack] = useState(false);
 
   // change workflow name
   function changeHead(value) {
@@ -134,13 +153,9 @@ const Head = () => {
     for (const job of isAllJobSave) {
       if (job === false) {
         // alert('您尚有 job 未存檔');
-        toast('您尚有 job 未存檔', {
+        toast.warn("You still have some jobs that haven't been saved.", {
           position: 'top-center',
-          autoClose: false,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: false,
-          progress: undefined,
+          autoClose: 2000,
           theme: 'dark',
         });
         return;
@@ -149,14 +164,9 @@ const Head = () => {
 
     if (workflowJobs.length <= 1) {
       // alert('您尚未建立job');
-      toast('您尚未建立job', {
+      toast.warn("You haven't created any jobs yet.", {
         position: 'top-center',
-        autoClose: false,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        autoClose: 2000,
         theme: 'dark',
       });
       return;
@@ -188,16 +198,17 @@ const Head = () => {
     const result = await API.deployWorkflow(workflowJobs[0]['id'], deployObj);
     console.log('deploy結果', result);
     setIsDraft(false);
-    toast.success('已成功Depoly此workflow', {
+    toast.success('This workflow has been successfully deployed.', {
       position: 'top-right',
       style: {
         top: '100px',
       },
-      autoClose: 1000,
+      autoClose: 2000,
       theme: 'dark',
     });
   }
 
+  // manual trigger workflow
   async function triggerWorkflow() {
     console.log('click trigger workflow...');
     const id = workflowJobs[0]['id'];
@@ -205,25 +216,28 @@ const Head = () => {
     const result = await API.triggerWorkflow(id, socketId, jwtToken);
     console.log('Trigger 送出 response:', result);
 
-    toast.success('Trigger 已送出，請稍等結果', {
-      position: 'top-right',
-      style: {
-        top: '100px',
-      },
-      autoClose: 10000,
-      theme: 'dark',
-    });
+    toast.success(
+      'The manual trigger has been submitted. Please wait for the result. You can navigate to other pages while waiting.',
+      {
+        position: 'top-right',
+        style: {
+          top: '100px',
+        },
+        autoClose: 10000,
+        theme: 'dark',
+      }
+    );
 
     // setIsTrigger(true);
     socket.emit('trigger', socketId);
     socket.on('triggerFinish', (data) => {
       console.log('後端emit資料過來', data);
-      toast.success(`Trigger 已完成, 結果:${data.message}`, {
+      toast.success(`The trigger has been completed, the result is: ${data.message}`, {
         position: 'top-right',
         style: {
           top: '100px',
         },
-        autoClose: 2000,
+        autoClose: 3000,
         theme: 'dark',
       });
       socket.off('triggerFinish');
@@ -259,6 +273,10 @@ const Head = () => {
           <DeployButton id="deploy-button" type="button" onClick={() => deployWorkflow()}>
             Deploy
           </DeployButton>
+          <BackButton to={`/instances/@${user.name}/${workflowTitle}/${workflowJobs[0].id}`}>
+            Back
+          </BackButton>
+          {console.log('dsdsasad', workflowTitle, user.name, workflowJobs[0].id)}
         </WorkflowHeaderRight>
       </Wrapper>
       <ToastContainer />

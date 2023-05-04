@@ -73,8 +73,6 @@ const Edit = () => {
     // Edit 舊 workflow
     const getWorkflowAndJob = async () => {
       // workflow Id 從 Params 來
-      // const localJwtToken = localStorage.getItem('jwtToken');
-      // console.log('@getWorkflowAndJob jwtToken', jwtToken);
       const data = await API.getWorkflowAndJob(workflowId, jwtToken);
 
       // FIXME: 一開始就符合前端的資料格式?
@@ -82,6 +80,15 @@ const Edit = () => {
         setIsAllJobSave((pre) => {
           return [...pre, true]; // 修改為剛匯入時, 預設為 save 狀態
         });
+        console.log('item', item);
+
+        // for 首次進入編輯即可depoly用
+        item.settingInfo['jobsInfo'] = {
+          ...item['settingInfo'],
+          function_id: item.function_id,
+          job_id: item.job_id,
+          job_name: item.job_name,
+        };
         return { ...item, id: item.workflow_id || item.job_id }; //for react unique key;
       });
       setWorkflowJobs(workflowsData);

@@ -3,6 +3,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import styled from 'styled-components/macro';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import API from '../../../utils/api';
 import Discord from '../../../components/Discord';
 import { formatInputDate } from '../../../utils/utils';
@@ -317,7 +320,12 @@ const JobConfig = ({ jobData, idx }) => {
       }
     }
     if (isEmpty) {
-      alert('您尚有選項未填寫');
+      // alert('您尚有選項未填寫');
+      toast.warn("There are still some options that haven't been filled out yet.", {
+        position: 'top-center',
+        autoClose: 2000,
+        theme: 'dark',
+      });
       return false;
     }
 
