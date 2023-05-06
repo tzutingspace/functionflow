@@ -7,6 +7,7 @@ import { AuthContext } from '../../contexts/authContext';
 import API from '../../utils/api';
 
 import { ImCheckmark, ImCancelCircle } from 'react-icons/im';
+import { FaRunning } from 'react-icons/fa';
 
 import { styled as muiStyled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
@@ -161,6 +162,13 @@ const LeftWorkflowSuccess = styled(ImCheckmark)`
   color: #66b566;
 `;
 
+const LeftWorkflowRunning = styled(FaRunning)`
+  height: 1.7rem;
+  width: 1.7rem;
+  padding: 0px;
+  color: #20315b;
+`;
+
 const LeftWorkflowError = styled(ImCancelCircle)`
   height: 1.7rem;
   width: 1.7rem;
@@ -193,7 +201,7 @@ const WorkflowTriggerTime = styled.div`
 // 右邊
 const RightArea = styled.div`
   box-sizing: border-box;
-  flex: 2;
+  flex: 3;
   margin: 0px;
   overflow-y: auto;
   height: 100vh;
@@ -209,7 +217,7 @@ const JobBlock = styled.div`
   border-radius: 8px;
   padding: 16px;
   background-color: #f8f8f8;
-  max-width: 65%;
+  max-width: 70%;
   margin-left: auto;
   margin-right: auto;
   margin-top: 0px;
@@ -230,14 +238,23 @@ const JobTilteStyled = styled.div`
 
 // 參考Build/components/Job/JobContent
 const JobContent = styled.div`
+  /* border: 1px solid purple; */
   width: 95%;
   margin: auto;
   margin-top: 1rem;
-  /* border: 1px solid black; */
+`;
+
+const WrapperSubItem = styled.div`
+  /* border: 1px solid blue; */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 0.5rem;
 `;
 
 const WrapperJobItem = styled.div`
-  /* border: 1px solid red; */
+  /* border: 1px solid yellow; */
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -250,22 +267,35 @@ const JobItemTitle = styled.div`
   box-sizing: border-box;
   bottom: auto;
   display: flex;
-  width: 10rem;
+  width: 12rem;
   color: #20315b;
-  font-weight: bold;
+  font-weight: 900;
   padding-bottom: 0.2rem;
-  font-size: 16px;
-  text-decoration: underline;
+  font-size: 18px;
+  /* text-decoration: underline; */
 `;
 
 const JobItemContent = styled.div`
   /* border: 1px solid red; */
   color: #20315b;
   font-weight: bold;
-  width: 65%;
-  /* flex-wrap: wrap; */
+  width: 80%;
+  flex-wrap: wrap;
   overflow-wrap: break-word; /* 兼容性更好的寫法，當單詞超出邊界時換行 */
   margin-left: auto;
+  display: flex;
+`;
+
+const JobResultListItem = styled.div`
+  /* border: 1px solid blue; */
+  color: #20315b;
+  font-weight: bold;
+  /* flex-wrap: wrap; */
+  display: flex;
+  /* overflow-x: auto; */
+  white-space: pre-line;
+  word-break: break-all;
+  font-size: 14px;
 `;
 
 const JobConfigWrapper = styled.div`
@@ -273,6 +303,7 @@ const JobConfigWrapper = styled.div`
   display: flex;
   flex-direction: row;
   /* background-color: yellow; */
+  /* border: 1px solid black; */
 `;
 
 const SettingTitle = styled.div`
@@ -281,12 +312,12 @@ const SettingTitle = styled.div`
   box-sizing: border-box;
   bottom: auto;
   display: flex;
-  /* margin-left: 1rem; */
-  width: 9rem;
+  margin-left: 1rem;
+  width: 11rem;
   color: #20315b;
   font-weight: bold;
   /* justify-content: center; */
-  align-items: center;
+  /* align-items: center; */
   /* line-height: 1rem; */
 `;
 
@@ -396,6 +427,30 @@ const MainContent = () => {
     setWorkflowStatus((prev) => !prev);
   };
 
+  const renderIncon = (status) => {
+    console.log(status);
+    if (status === 'finished') return <LeftWorkflowSuccess />;
+    if (status === 'queued') return <LeftWorkflowRunning />;
+    return <LeftWorkflowError />;
+  };
+
+  const renderContent = (val) => {
+    console.log('valval...', typeof val);
+    console.log('valval...', val);
+
+    if (Array.isArray(val)) {
+      return (
+        <JobItemContent>
+          {val.map((row) => {
+            return <JobResultListItem>{row.replaceAll('-', '•')}</JobResultListItem>;
+          })}
+        </JobItemContent>
+      );
+    } else {
+      return <JobItemContent>val</JobItemContent>;
+    }
+  };
+
   return (
     <Wrapper>
       <HeadWrapper>
@@ -422,11 +477,12 @@ const MainContent = () => {
               onClick={() => clickWorkflowInatance(wfi)}
             >
               <WorkflowInstanceStatusStyle>
-                {wfi.workflowInfo.status === 'finished' ? (
+                {renderIncon(wfi.workflowInfo.status)}
+                {/* {wfi.workflowInfo.status === 'finished' ? (
                   <LeftWorkflowSuccess />
                 ) : (
                   <LeftWorkflowError />
-                )}
+                )} */}
               </WorkflowInstanceStatusStyle>
               <WorkflowTriggerType>
                 {wfi.workflowInfo.trigger_type.toUpperCase()}
@@ -494,44 +550,37 @@ const MainContent = () => {
                         <JobItemContent>{jobsInstance.job_status}</JobItemContent>
                       </WrapperJobItem>
                     </JobConfigWrapper>
-                    <JobItemTitle>{`Job Setting`}</JobItemTitle>
-                    {jobsInstance.customer_input &&
-                      Object.entries(jobsInstance.customer_input).map(([title, val]) => {
-                        return (
-                          <JobConfigWrapper key={title}>
-                            <WrapperJobItem>
-                              <SettingTitle>{`${title}`}</SettingTitle>
-                              <JobItemContent>{`${val}`}</JobItemContent>
-                            </WrapperJobItem>
-                          </JobConfigWrapper>
-                        );
-                      })}
-                    <JobItemTitle>{`Result Output`}</JobItemTitle>
-                    {jobsInstance.result_output &&
-                      Object.entries(jobsInstance.result_output).map(([title, val]) => {
-                        return (
-                          <JobConfigWrapper key={title}>
-                            <WrapperJobItem>
-                              <SettingTitle>{`${title}`}</SettingTitle>
-                              <JobItemContent>{`${val}`}</JobItemContent>
-                              {/* {Array.isArray(val) ? (
-                                Object.entries(val[0]).map(([key, value]) => {
-                                  if (key === 'title') {
-                                    return (
-                                      <JobItemContent>{`${key}: ${value.slice(
-                                        0,
-                                        17
-                                      )}...`}</JobItemContent>
-                                    );
-                                  }
-                                })
-                              ) : (
+                    <WrapperSubItem>
+                      <JobItemTitle>{`Job Setting`}</JobItemTitle>
+                      {jobsInstance.customer_input &&
+                        Object.entries(jobsInstance.customer_input).map(([title, val]) => {
+                          return (
+                            <JobConfigWrapper key={title}>
+                              <WrapperJobItem>
+                                <SettingTitle>{`${title}`}</SettingTitle>
                                 <JobItemContent>{`${val}`}</JobItemContent>
-                              )} */}
-                            </WrapperJobItem>
-                          </JobConfigWrapper>
-                        );
-                      })}
+                              </WrapperJobItem>
+                            </JobConfigWrapper>
+                          );
+                        })}
+                    </WrapperSubItem>
+                    <WrapperSubItem>
+                      <JobItemTitle>{`Result Output`}</JobItemTitle>
+                      {jobsInstance.result_output &&
+                        Object.entries(jobsInstance.result_output).map(([title, val]) => {
+                          return (
+                            <JobConfigWrapper key={title}>
+                              <WrapperJobItem>
+                                <SettingTitle>{`${title}`}</SettingTitle>
+                                {/* <JobItemContent>{`${val}`}</JobItemContent> */}
+                                {console.log('valval...', typeof val)}
+                                {console.log('valval...', val)}
+                                {renderContent(val)}
+                              </WrapperJobItem>
+                            </JobConfigWrapper>
+                          );
+                        })}
+                    </WrapperSubItem>
                   </JobContent>
                 </JobBlock>
                 <BottomArea>

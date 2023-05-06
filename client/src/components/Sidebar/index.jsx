@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
 
 import { RiLogoutBoxRLine } from 'react-icons/ri';
@@ -88,6 +88,9 @@ const ItemSpan = styled.span`
   white-space: nowrap;
   margin: 0px 0px 0px 16px;
   padding: 0px;
+  &.active {
+    text-decoration: underline;
+  }
 `;
 
 const IconDiv = styled.div`
@@ -134,6 +137,15 @@ const BsBookIcon = styled(BsBook)`
 
 const Sidebar = () => {
   const { user, logout } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState('');
+
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log('你在哪裡', location.pathname);
+    const firstPath = location.pathname.split('/')[1];
+    setCurrentPage(firstPath);
+  }, [location]);
 
   return (
     <Wrapper>
@@ -145,7 +157,9 @@ const Sidebar = () => {
           <IconDiv>
             <FcWorkflowIcon></FcWorkflowIcon>
           </IconDiv>
-          <ItemSpan>Workflows</ItemSpan>
+          <ItemSpan className={currentPage === '/workflows' || '/instances' ? 'active' : ''}>
+            Workflows
+          </ItemSpan>
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>
@@ -153,15 +167,15 @@ const Sidebar = () => {
           <IconDiv>
             <MdManageAccountsIcon></MdManageAccountsIcon>
           </IconDiv>
-          <ItemSpan>Accounts</ItemSpan>
+          <ItemSpan className={currentPage === '/accounts' ? 'active' : ''}>Accounts</ItemSpan>
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>
-        <ItemWrapper to="/">
+        <ItemWrapper to="/workflows">
           <IconDiv>
             <BsBookIcon></BsBookIcon>
           </IconDiv>
-          <ItemSpan>Help & Docs</ItemSpan>
+          <ItemSpan className={currentPage === '/help' ? 'active' : ''}>Help & Docs</ItemSpan>
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>
