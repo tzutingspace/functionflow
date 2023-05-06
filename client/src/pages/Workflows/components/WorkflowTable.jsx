@@ -10,6 +10,9 @@ import { AuthContext } from '../../../contexts/authContext';
 import API from '../../../utils/api';
 import { formatDate } from '../../../utils/utils';
 
+import JoyRide from 'react-joyride';
+import { joyrideStyles, AddSteps, handleJoyrideCallbackAdd } from '../../../utils/joyride';
+
 const HeadWrapper = styled.div`
   background-color: #dfd1aaa3;
   color: #20315b;
@@ -102,6 +105,28 @@ const WorkflowTable = () => {
   const [toggleCleared, setToggleCleared] = useState(false);
 
   const { user, isLogin, jwtToken } = useContext(AuthContext);
+
+  const [joyrideState, setJoyrideState] = useState({
+    run: true,
+    steps: AddSteps,
+  });
+
+  // 導覽過, 就關閉
+  useEffect(() => {
+    const isTourTaken = localStorage.getItem('isTourTakenAdd');
+    // console.log('tourTaken', isTourTaken);
+    if (isTourTaken) {
+      setJoyrideState((prev) => {
+        prev.run = false;
+        return { ...prev };
+      });
+    } else {
+      setJoyrideState((prev) => {
+        prev.run = true;
+        return { ...prev };
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const getworkflows = async () => {
@@ -201,13 +226,26 @@ const WorkflowTable = () => {
   return (
     <>
       <HeadWrapper>
+        {console.log('object', AddSteps)}
+        <JoyRide
+          styles={joyrideStyles}
+          hideCloseButton
+          showProgress
+          showSkipButton
+          {...joyrideState}
+          callback={(data) => handleJoyrideCallbackAdd(data, joyrideState, setJoyrideState)}
+          // disableOverlayClose={true}
+          // disableCloseOnEsc={true}
+        />
         <HeadTitle>Workflows</HeadTitle>
         <HeadSearch
           placeholder="I am a search bar."
           type="text"
           onChange={handleFilter}
         ></HeadSearch>
-        <AddWorkflow to="/edit">New+</AddWorkflow>
+        <AddWorkflow to="/edit" id="add-workflow">
+          New+
+        </AddWorkflow>
       </HeadWrapper>
       {records && (
         <DataTable

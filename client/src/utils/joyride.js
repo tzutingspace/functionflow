@@ -126,3 +126,29 @@ export const handleJoyrideCallback = (data, joyrideState, setJoyrideState) => {
     localStorage.setItem('isTourTaken', true);
   }
 };
+
+export const AddSteps = [
+  {
+    title: 'Add Workflow',
+    content: 'Create your first Workflow.',
+    target: '#add-workflow',
+    placement: 'bottom',
+    disableBeacon: true,
+    hideBackButton: true,
+  },
+];
+
+export const handleJoyrideCallbackAdd = (data, joyrideState, setJoyrideState) => {
+  const { action, index, type, status } = data;
+
+  console.log('TYPE:', type, 'INDEX:', index, 'STATUS:', status, 'ACTION:', action);
+
+  if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    // 導覽結束
+    setJoyrideState({
+      ...joyrideState,
+      run: false,
+    });
+    localStorage.setItem('isTourTakenAdd', true);
+  }
+};
