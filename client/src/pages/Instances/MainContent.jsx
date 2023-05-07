@@ -447,7 +447,7 @@ const MainContent = () => {
         </JobItemContent>
       );
     } else {
-      return <JobItemContent>val</JobItemContent>;
+      return <JobItemContent>{val}</JobItemContent>;
     }
   };
 
