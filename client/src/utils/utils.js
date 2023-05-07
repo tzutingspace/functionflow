@@ -39,6 +39,18 @@ export function formatInputDate(dateString) {
   return formattedDateString;
 }
 
+export function getNowTime() {
+  // 當下電腦時間
+  const currentTime = new Date();
+  const year = String(currentTime.getFullYear()).padStart(4, '0');
+  const month = String(currentTime.getMonth() + 1).padStart(2, '0');
+  const date = String(currentTime.getDate()).padStart(2, '0');
+  const hours = String(currentTime.getHours()).padStart(2, '0');
+  const minutes = String(currentTime.getMinutes()).padStart(2, '0');
+  // console.log(`${year}-${month}-${date} ${hours}:${minutes}`);
+  return `${year}-${month}-${date} ${hours}:${minutes}`;
+}
+
 export function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

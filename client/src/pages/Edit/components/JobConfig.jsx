@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import API from '../../../utils/api';
 import Discord from '../../../components/Discord';
-import { formatInputDate } from '../../../utils/utils';
+import { formatInputDate, getNowTime } from '../../../utils/utils';
 import { TfiSave } from 'react-icons/tfi';
 import { WorkflowStateContext } from '..';
 
@@ -276,13 +276,13 @@ const JobConfig = ({ jobData, idx }) => {
             tempObj[item.name] = jobData.settingInfo.customer_input[item.name];
           }
         } else if (item.type === 'datetime-local') {
-          const currentTime = new Date();
-          const year = String(currentTime.getFullYear()).padStart(4, '0');
-          const month = String(currentTime.getMonth() + 1).padStart(2, '0');
-          const date = String(currentTime.getDate()).padStart(2, '0');
-          const hours = String(currentTime.getHours()).padStart(2, '0');
-          const minutes = String(currentTime.getMinutes()).padStart(2, '0');
-          tempObj[item.name] = `${year}-${month}-${date} ${hours}:${minutes}`;
+          // const currentTime = new Date();
+          // const year = String(currentTime.getFullYear()).padStart(4, '0');
+          // const month = String(currentTime.getMonth() + 1).padStart(2, '0');
+          // const date = String(currentTime.getDate()).padStart(2, '0');
+          // const hours = String(currentTime.getHours()).padStart(2, '0');
+          // const minutes = String(currentTime.getMinutes()).padStart(2, '0');
+          tempObj[item.name] = getNowTime();
           // 後端來的時間為UTC, 需要轉為當地時間
           if (jobData.settingInfo) {
             tempObj[item.name] = formatInputDate(jobData.settingInfo.customer_input[item.name]);
@@ -478,6 +478,7 @@ const JobConfig = ({ jobData, idx }) => {
               )}
               {item.type === 'datetime-local' && (
                 <ConfigureTime
+                  min={getNowTime()}
                   value={input[item.name]}
                   type="datetime-local"
                   onChange={(e) => changeJob(e, item)}
