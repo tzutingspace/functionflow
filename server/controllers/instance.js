@@ -31,7 +31,7 @@ export const searchInstancesHistory = async (req, res) => {
       customer_input: curr.customer_input,
       result_output: curr.result_output,
     };
-
+    // console.log('wfid', curr.wfi_id, 'jobinfo', jobInfo);
     acc[curr.wfi_id].jobsInfo.push(jobInfo);
     return acc;
   }, {});
@@ -45,6 +45,6 @@ export const searchInstancesHistory = async (req, res) => {
 
   // FIXME: 如果沒有instance 結果?, 前端處理?
 
-  console.log('@searchInstancesHistory controller output', output);
+  // console.log('@searchInstancesHistory controller output', output);
   return res.json({ data: output });
 };

@@ -134,7 +134,7 @@ export async function searchInstancesHistory(workflowId) {
     WHERE 
       wf.id = ?
     ORDER BY
-      wfi.execution_time DESC
+      wfi.execution_time DESC, jobi.id
     `,
     [workflowId]
   );
