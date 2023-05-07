@@ -30,7 +30,7 @@ async function getTools(requriement = {}) {
     condition.sql = 'WHERE title LIKE ?';
     condition.binding = [`%${requriement.keyword}%`];
   }
-  const toolsQuery = `SELECT * FROM \`functions\`${condition.sql} ORDER BY id`;
+  const toolsQuery = `SELECT * FROM \`functions\`${condition.sql} ORDER BY type`;
   const [rows] = await pool.query(toolsQuery, condition.binding);
   return rows;
 }
