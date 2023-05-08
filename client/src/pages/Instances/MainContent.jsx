@@ -442,7 +442,7 @@ const MainContent = () => {
       return (
         <JobItemContent>
           {val.map((row) => {
-            return <JobResultListItem>{row.replaceAll('-', '•')}</JobResultListItem>;
+            return <JobResultListItem>{row.replaceAll('- ', '• ')}</JobResultListItem>;
           })}
         </JobItemContent>
       );
