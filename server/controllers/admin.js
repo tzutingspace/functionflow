@@ -1,6 +1,6 @@
 import { insertFunction } from '../models/admin.js';
 
-export const createFunciton = async (req, res) => {
+export const createFunction = async (req, res) => {
   console.log('@controller createFunction');
   console.log('request Body', req.body);
 
