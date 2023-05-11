@@ -3,49 +3,42 @@ import * as DBWorkflow from '../models/workflow.js';
 import * as DBInstances from '../models/instance.js';
 import { validInteger, getNowTime } from '../utils/utli.js';
 import { putToSQS } from '../utils/putToSQS.js';
-import CustomError from '../utils/errors/customError.js';
+import BadRequestError from '../utils/errors/badRequestError.js';
 
 import { sendTriggerFinish } from '../utils/socketIO.js';
 
 export const manualTriggerWorkflow = async (req, res, next) => {
-  console.log('@controller manual Trigger');
-  // console.log('req body', req.body);
+  console.debug('@controller manual Trigger');
+
   const { id } = req.params;
   const { socketId } = req.body;
+
   if (!validInteger(id)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
-  // 抓出workflow 資訊
+
+  // get workflow info by id
   const workflowInfo = await DBWorkflow.getWorkflowById(id);
-
-  // 如果為空, 報錯
   if (!workflowInfo) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
-
-  // 如果為job_qty空, 報錯, 不可以 trigger 沒有 job 的 workflow
   if (!workflowInfo.job_qty) {
     return next(
-      new CustomError(
-        'Query Params Error(No JOb can be Trigger)',
-        StatusCodes.BAD_REQUEST
-      )
+      new BadRequestError('Query Params Error(No JOb can be Trigger)')
     );
   }
 
-  // 建立 workflow instances
-  workflowInfo.status = 'queued'; // 準備丟進queue
-  workflowInfo.execution_time = getNowTime(); // 全部改為UTC時間, 前端處理顯示當地時間
-  workflowInfo.manual_trigger = 't'; // 手動測試
+  // create workflow instances
+  workflowInfo.status = 'queued';
+  workflowInfo.execution_time = getNowTime(); // convert to UTC
+  workflowInfo.manual_trigger = 't';
   workflowInfo.end_time = null;
 
-  console.log('workflow', workflowInfo);
-
-  // 建立workflow instance and job instance , 並回傳job資訊
+  // create workflow instance and job instance
   const readyToQueueObj = await DBInstances.createInstances(workflowInfo);
+
   readyToQueueObj.target_queue = 'manualTriggerQueue';
   readyToQueueObj.socket_id = socketId;
-  console.log('建立instances回傳的結果', readyToQueueObj);
 
   // FIXME: SQS結果確認 testing 先關閉
   // await putToSQS(JSON.stringify(readyToQueueObj));
@@ -54,8 +47,11 @@ export const manualTriggerWorkflow = async (req, res, next) => {
 };
 
 export const handleTriggerFinish = (req, res) => {
-  console.log('@triggerFinish req.body', req.body);
+  console.debug('@triggerFinish req.body', req.body);
+
   const { socketId, data } = req.body;
+
   sendTriggerFinish(socketId, data);
-  res.send({ data: 'accept' });
+
+  return res.send({ data: 'accept' });
 };

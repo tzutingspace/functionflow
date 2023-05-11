@@ -4,31 +4,21 @@ import jwt from 'jsonwebtoken';
 
 import { userProvider } from '../config/userProvider.js';
 
-// convert to UTC
-// 預設目前進來的時間都是Asia/Taipei
+// Asia/Taipei convert to UTC
 export function convertLocalToUTC(localTime, timezone = 'Asia/Taipei') {
-  // 將本地時間解析為 Moment.js 對象
+  // localTime to Moment.js
   const localDatetime = moment.tz(localTime, timezone);
-  // 將本地時間轉換為 UTC 時間
   const utcDatetime = localDatetime.clone().utc();
 
-  console.log('轉換後的時間,', utcDatetime.format('YYYY-MM-DD HH:mm:ss'));
+  console.debug('轉換後的時間,', utcDatetime.format('YYYY-MM-DD HH:mm:ss'));
   return utcDatetime;
 }
 
-// 取得現在時間
 export function getNowTime() {
   // const dt0 = moment.utc().tz('UTC');
-  return moment.utc().tz('UTC').format('YYYY-MM-DD HH:mm:ss');
+  return moment.utc().format('YYYY-MM-DD HH:mm:ss');
 }
 
-export function calculateTime(inputTime, internalSeconds) {
-  const interval = moment.duration(parseInt(internalSeconds, 10), 'seconds');
-  const executeTime = moment(inputTime);
-  return executeTime.clone().add(interval).format('YYYY-MM-DD HH:mm:ss');
-}
-
-// 確認為正整數(0-9)
 export function validInteger(sting) {
   const regexNumber = /^[0-9]*$/;
   return regexNumber.test(sting);
@@ -53,19 +43,16 @@ export function validatePassword(inputText) {
   return pwdFormat.test(inputText);
 }
 
-// 產生 hashPassword
 export async function hashPassword(plaintextPassword) {
   // reference: https://www.makeuseof.com/nodejs-bcrypt-hash-verify-salt-password/
   const saltRounds = 10;
   return bcrypt.hash(plaintextPassword, saltRounds);
 }
 
-// compare password
 export async function comparePassword(plaintextPassword, hash) {
   return bcrypt.compare(plaintextPassword, hash);
 }
 
-// 產生JWT可寫為非同步
 export function createJWT(user) {
   return new Promise((resolve, reject) => {
     jwt.sign(
