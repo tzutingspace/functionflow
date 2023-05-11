@@ -1,12 +1,13 @@
-import CustomError from '../utils/errors/customError.js';
+import ConflictError from '../utils/errors/conflictError.js';
 import BadRequestError from '../utils/errors/badRequestError.js';
 import UnauthorizedError from '../utils/errors/unauthorizedError.js';
 
 import * as DBUser from '../models/user.js';
 
 import {
-  ValidateEmail,
-  ValidatePassword,
+  validateUserProvider,
+  validateEmail,
+  validatePassword,
   comparePassword,
   hashPassword,
   createJWT,
@@ -14,45 +15,45 @@ import {
 
 export const signup = async (req, res, next) => {
   console.debug('@controller signup');
-  const { name, email, password } = req.body;
+  const { name, email, password, provider } = req.body;
 
   if (!req.is('application/json')) {
     return next(new BadRequestError('Please use the correct content-type.'));
   }
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !provider) {
     return next(
       new BadRequestError(
-        'Please provide complete information (name, email, password).'
+        'Please provide complete information (name, email, password, provider).'
       )
     );
   }
 
-  if (!ValidateEmail(email)) {
+  if (!validateUserProvider(provider)) {
+    return next(new BadRequestError('Provider is not valid'));
+  }
+
+  if (!validateEmail(email)) {
     return next(new BadRequestError('Email is not valid'));
   }
 
-  if (!ValidatePassword(password)) {
+  if (!validatePassword(password)) {
     return next(new BadRequestError('Password must be 6-16 characters'));
   }
 
   if (await DBUser.getUser(email)) {
-    return next(
-      new UnauthorizedError('This email has already been registered.')
-    );
+    return next(new ConflictError('This email has already been registered.'));
   }
 
   const hashResult = await hashPassword(password);
 
   let createResult;
   try {
-    createResult = await DBUser.createUser(name, email, hashResult, 'native');
+    createResult = await DBUser.createUser(name, email, hashResult, provider);
   } catch (err) {
-    console.error('error', err);
     if (err.errno === 1062 && err.sqlState === '23000') {
-      return next(
-        new UnauthorizedError('This email has already been registered.')
-      );
+      console.error('@signup controller, db has same email user', err);
+      return next(new ConflictError('This email has already been registered.'));
     }
   }
   delete createResult.password;
@@ -74,28 +75,28 @@ export const login = async (req, res, next) => {
 
   const { email, password, provider } = req.body;
 
-  if (!provider || provider !== 'native') {
-    return next(new BadRequestError('Please provide the provider.', 400));
+  if (!provider || !validateUserProvider(provider)) {
+    return next(new BadRequestError('Please use the correct provider.'));
   }
 
   let outputResult;
   if (provider === 'native') {
     // 1. check email and password exist and validate email
-    if (!email || !password || !ValidateEmail(email)) {
-      return next(new CustomError('Invalid email or password', 400));
+    if (!email || !password || !validateEmail(email)) {
+      return next(new BadRequestError('Invalid email or password'));
     }
 
     // 2. check user exist
     const user = await DBUser.getUser(email);
     if (!user) {
-      return next(new CustomError('This email is not registered.', 403));
+      return next(new UnauthorizedError('This email is not registered.'));
     }
 
     // 3. check password is correct
     const compareResult = await comparePassword(password, user.password);
     if (!compareResult) {
       console.debug('user input password is not correct.');
-      return next(new CustomError('This Password is not correct!', 403));
+      return next(new UnauthorizedError('This Password is not correct!'));
     }
     delete user.password;
     outputResult = user;

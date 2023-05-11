@@ -21,6 +21,6 @@ export async function createUser(name, email, password, provider) {
     `,
     [name, email, password, provider]
   );
-  console.log('@model createUser, Result:', result);
+  console.debug('@model createUser, Result:', result);
   return getUser(email);
 }

@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 import CustomError from './customError.js';
 
-class UnauthorizedError extends CustomError {
+class ConflictError extends CustomError {
   constructor(message) {
     super(message);
-    this.statusCode = StatusCodes.UNAUTHORIZED;
+    this.statusCode = StatusCodes.CONFLICT;
   }
 }
 
-export default UnauthorizedError;
+export default ConflictError;
