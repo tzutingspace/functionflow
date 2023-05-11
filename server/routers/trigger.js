@@ -2,7 +2,10 @@ import { Router } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
 
 import { verifyJWT } from '../middlewares/verifyJWT.js';
-import { manualTriggerWorkflow } from '../controllers/trigger.js';
+import {
+  manualTriggerWorkflow,
+  handleTriggerFinish,
+} from '../controllers/trigger.js';
 
 const router = Router();
 
@@ -11,5 +14,7 @@ router.post(
   verifyJWT,
   wrapAsync(manualTriggerWorkflow)
 );
+
+router.post('/trigger-finish', wrapAsync(handleTriggerFinish));
 
 export { router };

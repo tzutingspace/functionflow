@@ -1,12 +1,12 @@
 import express, { json } from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
 
 import dotenv from 'dotenv';
 import StatusCodes from 'http-status-codes';
 import cors from 'cors';
 
-import CustomError from './utils/customError.js';
+import { createSocketIO } from './utils/socketIO.js';
+import CustomError from './utils/errors/customError.js';
 
 // ROUTER
 import { router as user } from './routers/user.js';
@@ -21,23 +21,24 @@ dotenv.config();
 
 const app = express();
 
+// Set up Server
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: process.env.IP_LOCALTION,
-    methods: ['GET', 'POST'],
-  },
-});
+
+createSocketIO(server);
 
 const PORT = process.env.PORT || 8080;
-app.use(cors());
+app.use(
+  cors({
+    origin: [process.env.IP_LOCALTION],
+  })
+);
 
 // middleware for 解析 request form (body-parser)
 app.use(express.urlencoded({ extended: false }));
 app.use(json());
 
-// for load-blancer health check
-app.get('/', (req, res) => {
+// for load-balancer health check
+app.get('/health', (req, res) => {
   res.json({ data: 200 });
 });
 app.use('/admin', admin);
@@ -47,28 +48,6 @@ app.use('/api', tool);
 app.use('/api', trigger);
 app.use('/api', instance);
 app.use('/api/oauth2', OAuth);
-
-io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
-  socket.on('trigger', (socketId) => {
-    socket.join(socketId);
-    console.log(`User joined room, Scoket Id: ${socketId}`);
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnect: ${socket.id}`);
-  });
-});
-
-// FIXME: 應該要寫成另一個file
-// trigger success
-app.post('/triggerFinish', (req, res) => {
-  console.log('@app triggerFinish, req.body', req.body);
-  const { socketId, data } = req.body;
-  io.to(socketId).emit('triggerFinish', { message: data });
-  res.send({ data: 'accept' });
-});
 
 // Not Found
 app.use((req, res, next) => {
