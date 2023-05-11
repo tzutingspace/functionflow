@@ -43,7 +43,7 @@ export const signup = async (req, res, next) => {
   }
 
   const hashResult = await hashPassword(password);
-  // 記得處理非同步問題，if mysql errno===1062 要顯示已註冊(寫在async handler)
+
   let createResult;
   try {
     createResult = await DBUser.createUser(name, email, hashResult, 'native');
@@ -54,7 +54,6 @@ export const signup = async (req, res, next) => {
         new UnauthorizedError('This email has already been registered.')
       );
     }
-    return next(new CustomError('Server Error'), 500);
   }
   delete createResult.password;
   const JWT = await createJWT(createResult);
@@ -68,7 +67,6 @@ export const signup = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  console.debug('@controller login');
   console.debug('@controller login request Body: ', req.body);
   if (!req.is('application/json')) {
     return next(new BadRequestError('Please use the correct content-type.'));
@@ -77,12 +75,7 @@ export const login = async (req, res, next) => {
   const { email, password, provider } = req.body;
 
   if (!provider || provider !== 'native') {
-    return next(
-      new BadRequestError(
-        'Please provide the provider (only accept native).',
-        400
-      )
-    );
+    return next(new BadRequestError('Please provide the provider.', 400));
   }
 
   let outputResult;

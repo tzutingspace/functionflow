@@ -6,8 +6,6 @@ import { signup, login, getProfile } from '../controllers/user.js';
 
 const router = Router();
 
-router.get('/', (req, res) => res.json({ data: 'user route....' }));
-
 router.post('/signup', wrapAsync(signup));
 
 router.post('/login', wrapAsync(login));
