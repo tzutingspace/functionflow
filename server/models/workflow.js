@@ -1,6 +1,9 @@
+/* eslint-disable no-await-in-loop */
 import pool from '../utils/db.js';
 
 // 取得 workflowById
+
+// FIXME: user_id 是否回傳並判斷
 export async function getWorkflowById(id) {
   const [rows] = await pool.query(
     `
@@ -12,7 +15,8 @@ export async function getWorkflowById(id) {
       next_execute_time,
       schedule_interval,
       trigger_interval_seconds,
-      job_qty
+      job_qty,
+      user_id 
     FROM 
       workflows 
     WHERE
@@ -23,9 +27,24 @@ export async function getWorkflowById(id) {
 }
 
 // 取得 workflows by userId
-export async function getWorkflowByUser(id) {
+export async function getWorkflowsByUser(id) {
   const [rows] = await pool.query(
-    `SELECT * FROM workflows WHERE user_id = ? AND (status='draft' OR status='active' OR status='inactive') ORDER by created_at DESC`,
+    `
+    SELECT
+        id,
+        name,
+        updated_at,
+        status,
+        start_time,
+        job_qty
+    FROM workflows
+    WHERE
+        user_id = ?
+        AND (
+            status IN ('draft', 'active', 'inactive')
+        )
+    ORDER by id DESC
+    `,
     [id]
   );
   return rows;
@@ -37,8 +56,7 @@ export async function initWorkflow(userId) {
     `INSERT INTO workflows(user_id) VALUES (?)`,
     [userId]
   );
-  const workflowId = result.insertId;
-  return workflowId;
+  return result.insertId;
 }
 
 // update workflow
@@ -131,6 +149,7 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
       [workflowId]
     );
     // 因為有id FK, 需要一個一個刪
+    // FIXME: for Loop
     deleteId.forEach(async ({ id }) => {
       await conn.query('DELETE FROM jobs WHERE id = ?', [id]);
     });
@@ -171,11 +190,16 @@ export async function deleteWorkflows(workflowIds) {
   const conn = await pool.getConnection();
 
   // FIXME: 是否要改成for loop?
-  workflowIds.map(async (workflowId) => {
+
+  // workflowIds.map(async (workflowId) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const workflowId of workflowIds) {
     try {
       console.log('workflowId', workflowId);
+      // eslint-disable-next-line no-await-in-loop
       await conn.query('START TRANSACTION');
       // 刪除所有對應Job
+      // eslint-disable-next-line no-await-in-loop
       const [jobIds] = await conn.query(
         'SELECT id FROM jobs WHERE workflow_id = ? ORDER BY id DESC',
         [workflowId]
@@ -184,14 +208,17 @@ export async function deleteWorkflows(workflowIds) {
 
       console.log('jobIds', jobIds);
 
-      jobIds.map(async ({ id }) => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const { id } of jobIds) {
+        // jobIds.map(async ({ id }) => {
         console.log('jobId', id);
+        // eslint-disable-next-line no-await-in-loop
         await conn.query('DELETE FROM jobs WHERE id = ?', [id]);
-      });
+      }
 
       // 刪除workflow
       // FIXME: 是否完全刪除
-      await conn.query('UPDATE workflows SET status="delete"  WHERE id = ?', [
+      await conn.query('UPDATE workflows SET status="delete" WHERE id = ?', [
         workflowId,
       ]);
       await conn.query('COMMIT');
@@ -201,7 +228,9 @@ export async function deleteWorkflows(workflowIds) {
     } finally {
       await conn.release();
     }
-  });
+  }
+
+  // FIXME: return???
 
   return '開發中';
 }

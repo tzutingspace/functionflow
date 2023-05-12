@@ -2,7 +2,7 @@ import { Router } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
 import { verifyJWT } from '../middlewares/verifyJWT.js';
 import {
-  getWorkflowByUser,
+  getWorkflowsByUser,
   initWorkflow,
   updateWorkflow,
   updataWorkflowStatus,
@@ -15,11 +15,11 @@ import {
 
 const router = Router();
 
-// usersId
-router.get('/workflow/user/:id', verifyJWT, wrapAsync(getWorkflowByUser));
+// get workflows by userId
+router.get('/workflows', verifyJWT, wrapAsync(getWorkflowsByUser));
 
-// FIXME: RESTFULL?
-router.get('/workflowandjob/:workflowId', verifyJWT, wrapAsync(editWorkflow));
+// Create (init) workflow
+router.post('/workflow', verifyJWT, wrapAsync(initWorkflow));
 
 // FIXME: update要驗證身份
 router.put('/workflow/:id', wrapAsync(updateWorkflow));
@@ -27,9 +27,8 @@ router.put('/workflow/:id', wrapAsync(updateWorkflow));
 // FIXME:  workflow/:id/status
 router.put('/workflow/status/:id', wrapAsync(updataWorkflowStatus));
 
-// 初始化workflow
-// FIXME: 用CREATE
-router.post('/workflow', verifyJWT, wrapAsync(initWorkflow));
+// FIXME: RESTFULL?
+router.get('/workflow-and-job/:workflowId', verifyJWT, wrapAsync(editWorkflow));
 
 // FIXME: 驗證身份?
 router.post('/job', wrapAsync(createJob));

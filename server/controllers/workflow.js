@@ -10,24 +10,17 @@ import BadRequestError from '../utils/errors/badRequestError.js';
 
 import { triggerFunctionMap } from '../config/triggerFunction.js';
 
-// FIXME: by userID >> workflowS
-export const getWorkflowByUser = async (req, res, next) => {
-  console.log('@controller getWorkflowByUser');
+export const getWorkflowsByUser = async (req, res) => {
+  console.debug('@controller getWorkflowsByUser');
   const { id } = req.user;
-  if (!validInteger(id)) {
-    return next(new BadRequestError('Query Params Error'));
-  }
-  const workflow = await DBWorkflow.getWorkflowByUser(id);
-
-  console.log('workflow', workflow);
-
-  return res.json({ data: workflow });
+  const workflows = await DBWorkflow.getWorkflowsByUser(id);
+  return res.json({ data: workflows });
 };
 
 // Init a new Workflow
 export const initWorkflow = async (req, res) => {
   console.log('@controller initWorkflow');
-  // FIXME: 身份驗證後需修改
+  // user id from jwt
   const userId = req.user.id;
   const workflowId = await DBWorkflow.initWorkflow(userId);
   return res.json({ data: workflowId });
