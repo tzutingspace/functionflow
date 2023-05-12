@@ -24,7 +24,7 @@ const API = {
     return res.data.data;
   },
   async getProfile(jwt) {
-    // console.log('@api, getprofile token', jwt);
+    // console.log('@api, getProfile token', jwt);
     const res = await axios.get(`${this.hostname}/user/profile`, {
       headers: {
         'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const API = {
     });
     return res.data;
   },
-  // 抓取intances 紀錄
+  // 抓取 instances 紀錄
   async getInstance(workflowId, jwt) {
     console.log('@get Instance', workflowId);
     const res = await axios.get(`${this.hostname}/instance/${workflowId}`, {
@@ -117,15 +117,15 @@ const API = {
     return res.data;
   },
   async getTriggerConfigs(id) {
-    const res = await axios.get(`${this.hostname}/trigger/${id}`);
+    const res = await axios.get(`${this.hostname}/triggers/${id}`);
     return res.data;
   },
-  async getTools(typer = '') {
+  async getTools(typer = 'all') {
     const res = await axios.get(`${this.hostname}/tools/${typer}`);
     return res.data;
   },
   async getConfigs(id) {
-    const res = await axios.get(`${this.hostname}/tool/${id}`);
+    const res = await axios.get(`${this.hostname}/tools/${id}`);
     return res.data;
   },
 
