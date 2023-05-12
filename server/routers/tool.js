@@ -12,10 +12,13 @@ const router = Router();
 
 router.get('/triggers', wrapAsync(getTriggers));
 
-router.get('/trigger/:id', wrapAsync(searchTrigger));
+router.get('/triggers/:id', wrapAsync(searchTrigger));
 
-router.get('/tools/:type?', wrapAsync(getTools));
+router.get(
+  '/tools/:type(all|getData|sendData|filterData)',
+  wrapAsync(getTools)
+);
 
-router.get('/tool/:id', wrapAsync(searchTool));
+router.get('/tools/:id', wrapAsync(searchTool));
 
 export { router };

@@ -2,26 +2,29 @@ import { StatusCodes } from 'http-status-codes';
 import date from 'date-and-time';
 import * as DBWorkflow from '../models/workflow.js';
 import * as DBTool from '../models/tool.js';
-import { vaildInterger, convertLocalToUTC } from '../utils/utli.js';
-import CustomError from '../utils/customError.js';
+import { validInteger, convertLocalToUTC } from '../utils/utli.js';
+import CustomError from '../utils/errors/customError.js';
 
 import { triggerFunctionMap } from '../config/triggerFunction.js';
 
 // Get old Workflow (Only workflow)
+// FIXME: by workflowID >> a workflow
+// 需驗證身分
 export const getWorkflow = async (req, res, next) => {
   console.log('@controller getWorkflow');
   const { id } = req.params;
-  if (!vaildInterger(id)) {
+  if (!validInteger(id)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
   const workflow = await DBWorkflow.getWorkflowById(id);
   return res.json({ data: workflow });
 };
 
+// FIXME: by userID >> workflowS
 export const getWorkflowByUser = async (req, res, next) => {
   console.log('@controller getWorkflowByUser');
   const { id } = req.user;
-  if (!vaildInterger(id)) {
+  if (!validInteger(id)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
   const workflow = await DBWorkflow.getWorkflowByUser(id);
@@ -47,7 +50,7 @@ export const updateWorkflow = async (req, res, next) => {
   const { workflowInfo } = req.body;
   const workflowId = req.params.id;
   // 驗證id是否為數字
-  if (!vaildInterger(workflowId)) {
+  if (!validInteger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
@@ -92,6 +95,9 @@ export const updateWorkflow = async (req, res, next) => {
     nextExecuteTime = date.addDays(startTime, 7);
   } else if (triggerInfo.name === 'monthly') {
     nextExecuteTime = date.addMonths(startTime, 1);
+  } else {
+    // FIXME: input invaildation
+    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
   console.log('計算出來的下次執行時間', nextExecuteTime);
@@ -123,7 +129,7 @@ export const updataWorkflowStatus = async (req, res, next) => {
   const workflowId = req.params.id;
   const { changeStatus } = req.body;
   // 驗證id是否為數字
-  if (!vaildInterger(workflowId)) {
+  if (!validInteger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
   // 沒有給 changeStatus
@@ -268,11 +274,11 @@ export const createJob = async (req, res, next) => {
   const insertJobSeq = jobsInfo.sequence;
   const workflowId = workflowInfo.id;
 
-  if (!vaildInterger(insertJobSeq)) {
+  if (!validInteger(insertJobSeq)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
-  if (!vaildInterger(workflowId)) {
+  if (!validInteger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
   // FIXME: 如果create 的資料會影響下面的sequence??
@@ -297,12 +303,12 @@ export const updateJob = async (req, res, next) => {
   const updateJobSeq = jobsInfo.sequence;
   const jobId = req.params.id;
 
-  if (!vaildInterger(updateJobSeq)) {
+  if (!validInteger(updateJobSeq)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
   // 驗證id是否為數字
-  if (!vaildInterger(jobId)) {
+  if (!validInteger(jobId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
@@ -328,7 +334,7 @@ export const deployWorkflow = async (req, res, next) => {
   const workflowId = req.params.id;
 
   // 驗證id是否為數字
-  if (!vaildInterger(workflowId)) {
+  if (!validInteger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
@@ -394,6 +400,7 @@ export const deployWorkflow = async (req, res, next) => {
     necessaryInfo,
     jobsInfo
   );
+  // FIXME: return ??
   return res.json({ data: result });
 };
 
@@ -404,7 +411,7 @@ export const editWorkflow = async (req, res, next) => {
   console.log('workflowId', workflowId);
 
   // 驗證id是否為數字
-  if (!vaildInterger(workflowId)) {
+  if (!validInteger(workflowId)) {
     return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
   }
 
