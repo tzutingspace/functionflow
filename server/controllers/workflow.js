@@ -3,29 +3,19 @@ import date from 'date-and-time';
 import * as DBWorkflow from '../models/workflow.js';
 import * as DBTool from '../models/tool.js';
 import { validInteger, convertLocalToUTC } from '../utils/utli.js';
+
 import CustomError from '../utils/errors/customError.js';
 
-import { triggerFunctionMap } from '../config/triggerFunction.js';
+import BadRequestError from '../utils/errors/badRequestError.js';
 
-// Get old Workflow (Only workflow)
-// FIXME: by workflowID >> a workflow
-// 需驗證身分
-export const getWorkflow = async (req, res, next) => {
-  console.log('@controller getWorkflow');
-  const { id } = req.params;
-  if (!validInteger(id)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
-  const workflow = await DBWorkflow.getWorkflowById(id);
-  return res.json({ data: workflow });
-};
+import { triggerFunctionMap } from '../config/triggerFunction.js';
 
 // FIXME: by userID >> workflowS
 export const getWorkflowByUser = async (req, res, next) => {
   console.log('@controller getWorkflowByUser');
   const { id } = req.user;
   if (!validInteger(id)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
   const workflow = await DBWorkflow.getWorkflowByUser(id);
 
@@ -51,7 +41,7 @@ export const updateWorkflow = async (req, res, next) => {
   const workflowId = req.params.id;
   // 驗證id是否為數字
   if (!validInteger(workflowId)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
 
   // TODO:驗證此user是否有此id的修改權限
@@ -62,7 +52,7 @@ export const updateWorkflow = async (req, res, next) => {
 
   // 沒有這個 trigger function
   if (!triggerInfo) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
 
   // 假設前端來的時間是台灣時間, 需轉成UTC時間再計算
@@ -97,7 +87,7 @@ export const updateWorkflow = async (req, res, next) => {
     nextExecuteTime = date.addMonths(startTime, 1);
   } else {
     // FIXME: input invaildation
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
 
   console.log('計算出來的下次執行時間', nextExecuteTime);
