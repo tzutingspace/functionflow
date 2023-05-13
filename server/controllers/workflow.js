@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import date from 'date-and-time';
 import * as DBWorkflow from '../models/workflow.js';
 import * as DBTool from '../models/tool.js';
 import { validInteger, convertLocalToUTC } from '../utils/utli.js';
@@ -34,34 +33,21 @@ export const initWorkflow = async (req, res) => {
 export const updateWorkflow = async (req, res, next) => {
   console.debug('@controller updateWorkflow', req.body);
 
-  const userId = req.user.id;
+  // const userId = req.user.id;
   const workflowId = req.params.id;
   const { workflowInfo } = req.body;
   const triggerSetting = workflowInfo.jobsInfo;
 
-  if (!validInteger(workflowId)) {
-    return next(new BadRequestError('Query Params Error'));
-  }
-
-  // Verify this user has permission to modify this workflow.
-  const workflowResult = await DBWorkflow.getWorkflowById(workflowId, userId);
-  if (!workflowResult) {
-    return next(new BadRequestError('No such workflow exists.'));
-  }
-
   // Verify that the workflow trigger function is correct.
-  const [triggerInfo] = await DBTool.getTriggers({
-    id: workflowInfo.trigger_function_id,
-  });
+  const triggerId = workflowInfo.trigger_function_id;
+  const [triggerInfo] = await DBTool.getTriggers({ id: triggerId });
   if (!triggerInfo) {
     return next(new BadRequestError('Query Params Error'));
   }
 
-  // FIXME: 假設前端來的時間是台灣時間, 需轉成UTC時間再計算
   const startTime = new Date(
     convertLocalToUTC(workflowInfo.start_time, 'Asia/Taipei')
   );
-  console.debug('@controller time', startTime);
 
   const triggerIntervalSeconds =
     (triggerIntervalConvert[triggerSetting.interval] ||
@@ -96,193 +82,103 @@ export const updateWorkflow = async (req, res, next) => {
   return res.json({ data: result });
 };
 
-// active or inactive workflow
-// FIXME: 不和 update 共用, 因為可能需要幫他修改 execution_time >> 需要去確認 DB 的 trigger 模式是什麼
-// inactive >> active 計算方式可能會不一樣
+// switch active or inactive workflow
+// different with update controller, cause start time data from db
 export const changeWorkflowStatus = async (req, res, next) => {
   console.log('@updateWorkflowStatus controller');
   console.log('request Body', req.body);
   const workflowId = req.params.id;
   const { changeStatus } = req.body;
+  const workflow = req.workflowDatabaseResult;
 
-  // 驗證id是否為數字
-  if (!validInteger(workflowId)) {
+  if (!['active', 'inactive'].includes(changeStatus)) {
     return next(new BadRequestError('Query Params Error'));
   }
 
-  // 沒有給 changeStatus
-  if (!changeStatus) {
-    return next(new BadRequestError('Query Params Error'));
-  }
-
-  // 確認是否有該 workflow
-  const workflow = await DBWorkflow.getWorkflowById(workflowId, req.user.id);
-  if (!workflow) {
-    return next(new BadRequestError('Query Params Error'));
-  }
-  // 檢查是否有設定trigger
-  if (!workflow.trigger_type) {
+  // Check the trigger and jobs set up.
+  if (!workflow.trigger_type || !workflow.job_qty) {
     return next(
-      new BadRequestError('Query Params Error(trigger type undefined)')
+      new BadRequestError('Missing information(trigger or job undefined)')
     );
-  }
-  // 檢查是否有設定job
-  if (!workflow.job_qty) {
-    return next(new BadRequestError('Query Params Error(empty job)'));
   }
 
   // calculate next execution time
   const startTime = new Date(workflow.start_time);
-
-  console.log('workflow', workflow);
   const nextExecuteTime = calculateNextExecutionTime(
     workflow.schedule_interval,
     workflow.trigger_interval_seconds,
     startTime
   );
 
-  console.log('nextExecuteTime', nextExecuteTime);
+  console.log('calculate nextExecuteTime', nextExecuteTime);
 
   // update DB data
   const updateResult = await DBWorkflow.updateWorkflow(workflowId, {
     status: changeStatus,
     next_execute_time: nextExecuteTime,
   });
-  console.log('active...更新結果', updateResult);
   return res.json({ data: updateResult });
 };
 
 // DELETE Workflows
 export const deleteWorkflows = async (req, res) => {
-  console.log('@controller deployWorkflow');
-  console.log('@delete workflows', req.body);
-  const { id } = req.body;
-  const [result] = await DBWorkflow.deleteWorkflows(id);
-  return res.json({ data: result });
-};
+  console.debug('@delete workflows controller', req.body);
+  const userId = req.user.id;
+  const { ids } = req.body;
 
-// CREATE JOB
-export const createJob = async (req, res, next) => {
-  console.log('@controller createJob');
-  console.log('request Body', req.body);
-  const { workflowInfo, jobsInfo } = req.body;
-  const insertJobSeq = jobsInfo.sequence;
-  const workflowId = workflowInfo.id;
+  await Promise.all(
+    ids.map(async (workflowId) => {
+      const result = await DBWorkflow.deleteWorkflow(workflowId, userId);
+      if (result === 1) {
+        DBWorkflow.deletejobs(workflowId);
+      }
+    })
+  );
 
-  if (!validInteger(insertJobSeq)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
-
-  if (!validInteger(workflowId)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
-  // FIXME: 如果create 的資料會影響下面的sequence??
-
-  const necessaryInfo = {
-    name: jobsInfo.job_name,
-    function_id: jobsInfo.function_id,
-    sequence: jobsInfo.sequence,
-    customer_input: JSON.stringify(jobsInfo.customer_input),
-  };
-
-  const result = await DBWorkflow.createJob(workflowId, necessaryInfo);
-
-  return res.json({ data: result });
-};
-
-// UPDATE JOB
-export const updateJob = async (req, res, next) => {
-  console.log('@controller updateJob');
-  console.log('request Body', req.body);
-  const { jobsInfo } = req.body;
-  const updateJobSeq = jobsInfo.sequence;
-  const jobId = req.params.id;
-
-  if (!validInteger(updateJobSeq)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
-
-  // 驗證id是否為數字
-  if (!validInteger(jobId)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
-
-  // TODO:驗證此user是否有此id的修改權限
-  // TODO:過濾Job可修改資訊
-  const necessaryInfo = {
-    name: jobsInfo.job_name,
-    function_id: jobsInfo.function_id,
-    sequence: jobsInfo.sequence,
-    customer_input: JSON.stringify(jobsInfo.customer_input),
-  };
-
-  // 更新資料
-  const result = await DBWorkflow.updateJob(jobId, necessaryInfo);
-  return res.json({ data: result });
+  return res.json({ data: 'finish delete' });
 };
 
 // DEPLOY ALL WORKFLOW
 export const deployWorkflow = async (req, res, next) => {
-  console.log('@controller deployWorkflow');
-  console.log('request Body', req.body);
+  console.log('@controller deployWorkflow', req.body);
+
   const { workflowInfo, jobsInfo } = req.body;
+  const triggerSetting = workflowInfo.jobsInfo;
   const workflowId = req.params.id;
 
-  // 驗證id是否為數字
-  if (!validInteger(workflowId)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
-
-  // 確認此 workflow trigger function 是否正確
-  const id = workflowInfo.trigger_function_id;
-  const [triggerInfo] = await DBTool.getTriggers({ id });
-
-  // 沒有這個 trigger function
+  // Verify that the workflow trigger function is correct.
+  const triggerId = workflowInfo.trigger_function_id;
+  const [triggerInfo] = await DBTool.getTriggers({ id: triggerId });
   if (!triggerInfo) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
 
-  // 處理下次執行時間
-  // const startTime = new Date(workflowInfo.start_time);
+  const startTime = new Date(
+    convertLocalToUTC(workflowInfo.start_time, 'Asia/Taipei')
+  );
 
-  // 假設前端來的時間是台灣時間, 需轉成UTC時間再計算
-  const startTime = new Date(convertLocalToUTC(workflowInfo.start_time));
+  const triggerIntervalSeconds =
+    (triggerIntervalConvert[triggerSetting.interval] ||
+      triggerIntervalConvert[triggerInfo.name]) * (triggerSetting.every || 1);
 
-  let triggerIntervalSeconds;
-  let nextExecuteTime;
-  if (triggerInfo.name === 'custom') {
-    if (workflowInfo.jobsInfo.interval === 'hour') {
-      console.log(workflowInfo.jobsInfo.every);
-      triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60 * 60;
-      nextExecuteTime = date.addHours(
-        startTime,
-        parseInt(workflowInfo.jobsInfo.every, 10)
-      );
-    } else if (workflowInfo.jobsInfo.interval === 'minute') {
-      triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60;
-      nextExecuteTime = date.addMinutes(
-        startTime,
-        parseInt(workflowInfo.jobsInfo.every, 10)
-      );
-    }
-  } else if (triggerInfo.name === 'daily') {
-    triggerIntervalSeconds = 86400;
-    nextExecuteTime = date.addDays(startTime, 1);
-  } else if (triggerInfo.name === 'weekly') {
-    triggerIntervalSeconds = 86400 * 7;
-    nextExecuteTime = date.addDays(startTime, 7);
-  } else if (triggerInfo.name === 'monthly') {
-    nextExecuteTime = date.addMonths(startTime, 1);
-  }
+  console.log('trigger type...', triggerInfo.name, triggerSetting.interval);
+  console.log('triggerIntervalSeconds', triggerIntervalSeconds);
 
-  // TODO: 如果是API???
+  const nextExecuteTime = calculateNextExecutionTime(
+    triggerSetting.interval || triggerInfo.name,
+    triggerIntervalSeconds,
+    startTime
+  );
+
+  console.log('計算出來的下次執行時間', nextExecuteTime);
+  // TODO: if use API
 
   // 僅留可update項目, undefined 先記錄, model會filter
   const necessaryInfo = {
     name: workflowInfo.name,
     status: workflowInfo.status || 'active',
     start_time: startTime,
-    next_execute_time: nextExecuteTime, // date.format(nextExecuteTime, 'YYYY-MM-DD HH:mm:ss'),
+    next_execute_time: nextExecuteTime,
     trigger_type: triggerInfo.type,
     trigger_interval_seconds: triggerIntervalSeconds,
     trigger_api_route: workflowInfo.trigger_api_route,
