@@ -1,8 +1,8 @@
 import { insertFunction } from '../models/admin.js';
 
 export const createFunction = async (req, res) => {
-  console.log('@controller createFunction');
-  console.log('request Body', req.body);
+  console.debug('@controller createFunction');
+  console.debug('request Body', req.body);
 
   const { functionInfo } = req.body;
   functionInfo.template_input = JSON.stringify(functionInfo.template_input);

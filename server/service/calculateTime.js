@@ -1,7 +1,5 @@
 import date from 'date-and-time';
 
-import moment from 'moment-timezone';
-
 export const triggerIntervalConvert = {
   minute: 60,
   hour: 60 * 60,

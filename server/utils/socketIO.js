@@ -12,15 +12,15 @@ export const createSocketIO = (server) => {
   });
 
   io.on('connection', (socket) => {
-    console.log(`User connected: ${socket.id}`);
+    console.debug(`User connected: ${socket.id}`);
 
     socket.on('trigger', (socketId) => {
       socket.join(socketId);
-      console.log(`User joined room, Socket Id: ${socketId}`);
+      console.debug(`User joined room, Socket Id: ${socketId}`);
     });
 
     socket.on('disconnect', () => {
-      console.log(`User disconnect: ${socket.id}`);
+      console.debug(`User disconnect: ${socket.id}`);
     });
   });
 };

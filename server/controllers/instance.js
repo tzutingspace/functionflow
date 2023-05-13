@@ -2,12 +2,11 @@ import * as DBInstances from '../models/instance.js';
 
 export const searchInstancesHistory = async (req, res) => {
   console.log('@searchInstancesHistory controller');
-  const { workflowId } = req.params;
+  const { id } = req.params;
 
-  const result = await DBInstances.searchInstancesHistory(workflowId);
+  const result = await DBInstances.searchInstancesHistory(id);
 
-  console.log('DB結果', result);
-  const tempObj = result.reduce((acc, curr) => {
+  const reduceInstancesObj = result.reduce((acc, curr) => {
     if (!acc[curr.wfi_id]) {
       acc[curr.wfi_id] = {
         workflowInfo: {
@@ -23,6 +22,7 @@ export const searchInstancesHistory = async (req, res) => {
         jobsInfo: [],
       };
     }
+
     const jobInfo = {
       jobId: curr.job_id,
       sequence: curr.sequence,
@@ -31,20 +31,17 @@ export const searchInstancesHistory = async (req, res) => {
       customer_input: curr.customer_input,
       result_output: curr.result_output,
     };
-    // console.log('wfid', curr.wfi_id, 'jobinfo', jobInfo);
+
     acc[curr.wfi_id].jobsInfo.push(jobInfo);
     return acc;
   }, {});
 
-  const output = Object.values(tempObj)
+  const outputInstancesInfo = Object.values(reduceInstancesObj)
     .map((info) => info)
     .sort(
       (a, b) =>
         b.workflowInfo.workflowInstanceId - a.workflowInfo.workflowInstanceId
     );
 
-  // FIXME: 如果沒有instance 結果?, 前端處理?
-
-  // console.log('@searchInstancesHistory controller output', output);
-  return res.json({ data: output });
+  return res.json({ data: outputInstancesInfo });
 };

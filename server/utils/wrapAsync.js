@@ -1,4 +1,4 @@
-import CustomError from './errors/customError.js';
+import ServerError from './errors/serverError.js';
 
 // reference: https://thecodebarbarian.com/80-20-guide-to-express-error-handling
 function wrapAsync(cb) {
@@ -8,7 +8,7 @@ function wrapAsync(cb) {
     } catch (err) {
       // 傳到 app 的 error 來處理
       console.error('@wrapAsync Error', err);
-      return next(new CustomError('Server Error', 500));
+      return next(new ServerError('Server Error'));
     }
   };
 }

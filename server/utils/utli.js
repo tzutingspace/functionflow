@@ -15,7 +15,6 @@ export function convertLocalToUTC(localTime, timezone = 'Asia/Taipei') {
 }
 
 export function getNowTime() {
-  // const dt0 = moment.utc().tz('UTC');
   return moment.utc().format('YYYY-MM-DD HH:mm:ss');
 }
 

@@ -6,11 +6,12 @@ import StatusCodes from 'http-status-codes';
 import cors from 'cors';
 
 import { createSocketIO } from './utils/socketIO.js';
-import CustomError from './utils/errors/customError.js';
+import NotFoundError from './utils/errors/notFoundError.js';
 
 // ROUTER
 import { router as user } from './routers/user.js';
 import { router as workflow } from './routers/workflow.js';
+import { router as job } from './routers/job.js';
 import { router as instance } from './routers/instance.js';
 import { router as tool } from './routers/tool.js';
 import { router as trigger } from './routers/trigger.js';
@@ -19,13 +20,8 @@ import { router as OAuth } from './routers/OAuth.js';
 
 dotenv.config();
 
+// Set up Express
 const app = express();
-
-// Set up Server
-const server = createServer(app);
-
-createSocketIO(server);
-
 const PORT = process.env.PORT || 8080;
 app.use(
   cors({
@@ -33,10 +29,11 @@ app.use(
   })
 );
 
-// middleware for 解析 request form (body-parser)
+// body-parser
 app.use(express.urlencoded({ extended: false }));
 app.use(json());
 
+// Express Router
 // for load-balancer health check
 app.get('/health', (req, res) => {
   res.json({ data: 200 });
@@ -44,6 +41,7 @@ app.get('/health', (req, res) => {
 app.use('/admin', admin);
 app.use('/api/user', user);
 app.use('/api', workflow);
+app.use('/api', job);
 app.use('/api', tool);
 app.use('/api', trigger);
 app.use('/api', instance);
@@ -51,11 +49,10 @@ app.use('/api/oauth2', OAuth);
 
 // Not Found
 app.use((req, res, next) => {
-  console.log('request 路徑：', req.originalUrl);
-  next(new CustomError('Not Found', 404));
+  console.error('request path:', req.originalUrl);
+  next(new NotFoundError('Not Found'));
 });
 
-// 處理ERROR (Error handler) Express 全域錯誤處理
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error('ERROR HANDLER LOG: ', err);
@@ -67,6 +64,10 @@ app.use((err, req, res, next) => {
     data: { message: customError.message, status: customError.statusCode },
   });
 });
+
+// Set up Server and Socket
+const server = createServer(app);
+createSocketIO(server);
 
 server.listen(PORT, () =>
   console.log(`The application is running on on port ${PORT}`)

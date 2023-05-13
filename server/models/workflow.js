@@ -77,8 +77,7 @@ export async function updateWorkflow(
   sqlParams.bindings.push(workflowId);
 
   const workflowUpdate = `
-  UPDATE workflows SET ${sqlParams.sql.join(', ')} WHERE id = ?
-  `;
+      UPDATE workflows SET ${sqlParams.sql.join(', ')} WHERE id = ?`;
 
   const [result] = await conn.query(workflowUpdate, sqlParams.bindings);
   console.debug(`update workflow id-${workflowId} result: `, result);
@@ -101,7 +100,8 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
       // need to sequence the jobs to obtain the next job ID
       // eslint-disable-next-line no-await-in-loop
       const [jobResult] = await conn.query(
-        `INSERT INTO jobs(workflow_id, name, function_id, sequence, depends_job_id, customer_input) 
+        `INSERT INTO 
+          jobs(workflow_id, name, function_id, sequence, depends_job_id, customer_input) 
           VALUES (?, ?, ?, ?, ?, ?)`,
         [
           workflowId,
@@ -139,9 +139,12 @@ export async function deleteWorkflow(workflowId, userId) {
 // delete jobs by workflow Id
 export async function deletejobs(workflowId) {
   console.debug('@delete jobs model, workflow Id', workflowId);
-  const [result] = await pool.query(`DELETE FROM jobs WHERE workflow_id = ?`, [
-    workflowId,
-  ]);
+  const [result] = await pool.query(
+    `
+      DELETE FROM jobs WHERE workflow_id = ?
+    `,
+    [workflowId]
+  );
   return result.affectedRows;
 }
 

@@ -1,7 +1,5 @@
-import { StatusCodes } from 'http-status-codes';
-import * as DBWorkflow from '../models/workflow.js';
 import * as DBInstances from '../models/instance.js';
-import { validInteger, getNowTime } from '../utils/utli.js';
+import { getNowTime } from '../utils/utli.js';
 import { putToSQS } from '../utils/putToSQS.js';
 import BadRequestError from '../utils/errors/badRequestError.js';
 
@@ -10,22 +8,11 @@ import { sendTriggerFinish } from '../utils/socketIO.js';
 export const manualTriggerWorkflow = async (req, res, next) => {
   console.debug('@controller manual Trigger');
 
-  const { id } = req.params;
   const { socketId } = req.body;
+  const workflowInfo = req.workflowDatabaseResult;
 
-  if (!validInteger(id)) {
-    return next(new BadRequestError('Query Params Error'));
-  }
-
-  // get workflow info by id
-  const workflowInfo = await DBWorkflow.getWorkflowById(id);
-  if (!workflowInfo) {
-    return next(new BadRequestError('Query Params Error'));
-  }
   if (!workflowInfo.job_qty) {
-    return next(
-      new BadRequestError('Query Params Error(No JOb can be Trigger)')
-    );
+    return next(new BadRequestError('No Job can be triggerd'));
   }
 
   // create workflow instances
@@ -36,6 +23,10 @@ export const manualTriggerWorkflow = async (req, res, next) => {
 
   // create workflow instance and job instance
   const readyToQueueObj = await DBInstances.createInstances(workflowInfo);
+
+  if (!readyToQueueObj) {
+    return next(new BadRequestError('Create instances encountered an error'));
+  }
 
   readyToQueueObj.target_queue = 'manualTriggerQueue';
   readyToQueueObj.socket_id = socketId;

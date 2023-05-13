@@ -17,10 +17,10 @@ const router = Router();
 // get workflows by userId
 router.get('/workflows', verifyJWT, wrapAsync(getWorkflowsByUser));
 
-// Create (init) workflow
+// create (init) workflow
 router.post('/workflow', verifyJWT, wrapAsync(initWorkflow));
 
-// Update workflow (trigger info...)
+// update workflow (trigger info...)
 router.put(
   '/workflow/:id',
   verifyJWT,
@@ -28,7 +28,7 @@ router.put(
   wrapAsync(updateWorkflow)
 );
 
-// Switch workflow status(active , inactive)
+// switch workflow status(active , inactive)
 router.put(
   '/workflow/:id/status',
   verifyJWT,
@@ -44,7 +44,7 @@ router.put(
   wrapAsync(deployWorkflow)
 );
 
-// FIXME: RESTFULL?
+// get workflow and job (for edit)
 router.get(
   '/workflow-and-job/:id',
   verifyJWT,
@@ -52,6 +52,7 @@ router.get(
   wrapAsync(getWorkflowAndJob)
 );
 
+// delete workflows
 router.delete('/workflows', verifyJWT, wrapAsync(deleteWorkflows));
 
 export { router };

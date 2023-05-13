@@ -3,19 +3,26 @@ import pool from '../utils/db.js';
 // create instances (wf and job)
 // TODO: 與lambda 介面要一樣
 export async function createInstances(workflowInfo) {
-  // 建立 workflows_instances
+  // 1.create workflows_instances
   const conn = await pool.getConnection();
-  const readyToQueueObj = {};
-  readyToQueueObj.workflow = workflowInfo;
+  const readyToQueueObj = { workflow: workflowInfo };
 
   try {
-    await conn.query('START TRANSACTION'); // FIXME: 有必要嗎？
+    await conn.query('START TRANSACTION');
 
-    // 建立 wf instance
     const [wfInstanceResult] = await conn.query(
-      `INSERT INTO workflows_instances
-        (workflow_id, \`status\`, trigger_type, execution_time, manual_trigger, end_time)
-      VALUES(?, ?, ?, ?, ?, ?)`,
+      `
+      INSERT INTO
+          workflows_instances (
+              workflow_id,
+              status,
+              trigger_type,
+              execution_time,
+              manual_trigger,
+              end_time
+          )
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
       [
         workflowInfo.id,
         workflowInfo.status,
@@ -25,13 +32,13 @@ export async function createInstances(workflowInfo) {
         workflowInfo.end_time,
       ]
     );
-    const wfInstanceId = wfInstanceResult.insertId;
-    console.log('建立的wf instance ID:', wfInstanceId);
-    readyToQueueObj.workflow.wf_instance_id = wfInstanceId;
+    console.debug('建立的wf instance ID:', wfInstanceResult.insertId);
+    readyToQueueObj.workflow.wf_instance_id = wfInstanceResult.insertId;
 
-    // 取得該筆 workflow 所有的jobs
+    // get this workflow all jobs
     const [jobsDetail] = await conn.query(
-      `SELECT 
+      `
+      SELECT 
         jobs.id, 
         jobs.name, 
         jobs.sequence, 
@@ -42,46 +49,50 @@ export async function createInstances(workflowInfo) {
       FROM \`jobs\` 
         INNER JOIN \`functions\` ON jobs.function_id = \`functions\`.id 
       WHERE workflow_id = ? 
-      ORDER BY sequence`,
+      ORDER BY sequence
+      `,
       [workflowInfo.id]
     );
-    console.log('所有jobs', jobsDetail);
-    // 建立job instances
+
+    // ready create job instances
     readyToQueueObj.steps = {};
     readyToQueueObj.ready_execute_job = [];
     let prevJobInstanceId = null;
 
-    // 建立 jobs_instances
-    // FIXME:
-    // eslint-disable-next-line no-restricted-syntax
     for (const job of jobsDetail) {
-      console.log('建立job instances', job);
       job.status = 'waiting';
       job.depends_job_instance_id = prevJobInstanceId;
-      // 雖然沒資料, 但為了後續ㄧ致性
-      job.start_time = null;
-      job.end_time = null;
-      job.result_output = null;
+      // // 雖然沒資料, 但為了後續ㄧ致性
+      // job.start_time = null;
+      // job.end_time = null;
+      // job.result_output = null;
       job.customer_input = JSON.stringify(job.customer_input); // FIXME: 和lambda不同, python 取出為string?
       job.config_output = JSON.stringify(job.config_output);
 
-      // 第一個JOB
+      // put first job to step_now
       if (job.sequence === 1) {
         readyToQueueObj.step_now = job.name;
       }
 
-      // 建立job instance
-      // 有依序的需求
+      // need serial (prevJobInstanceId)
       // eslint-disable-next-line no-await-in-loop
       const [jobinstanceResult] = await conn.query(
-        `INSERT INTO 
-          jobs_instances 
-            (workflow_instance_id, name, status, sequence, customer_input,
-            config_output, depends_job_instance_id, function_name) 
-          VALUES (?, ?, ?,  ?, ?,
-             ?, ?, ?)`,
+        `
+        INSERT INTO
+          jobs_instances (
+            workflow_instance_id,
+            name,
+            status,
+            sequence,
+            customer_input,
+            config_output,
+            depends_job_instance_id,
+            function_name
+          )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `,
         [
-          wfInstanceId,
+          wfInstanceResult.insertId,
           job.name,
           job.status,
           job.sequence,
@@ -94,19 +105,18 @@ export async function createInstances(workflowInfo) {
       job.id = jobinstanceResult.insertId;
       prevJobInstanceId = jobinstanceResult.insertId;
 
-      // 將資料寫到readyToQueueObj
-      const jobName = job.name;
-      readyToQueueObj.ready_execute_job.push(jobName);
-      readyToQueueObj.steps[jobName] = job;
+      // put data to readyToQueueObj
+      readyToQueueObj.ready_execute_job.push(job.name);
+      readyToQueueObj.steps[job.name] = job;
     }
     await conn.query('COMMIT');
   } catch (error) {
     await conn.query('ROLLBACK');
-    console.log('建立instances 出現錯誤', error);
+    console.log('Create instances encountered an error', error);
+    return false;
   } finally {
     await conn.release();
   }
-
   return readyToQueueObj;
 }
 

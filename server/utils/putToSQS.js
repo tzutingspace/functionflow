@@ -9,21 +9,17 @@ export const putToSQS = async (msg) => {
   });
 
   const input = {
-    // SendMessageRequest
-    QueueUrl: process.env.QUEUE_URL_MANUAL_TRIGGER, // required
-    MessageBody: msg, // required
+    QueueUrl: process.env.QUEUE_URL_MANUAL_TRIGGER,
+    MessageBody: msg,
     DelaySeconds: Number('30'),
   };
+
   try {
-    // console.log('insqs input', input);
     const command = new SendMessageCommand(input);
-    // console.log('command', command);
     const response = await client.send(command);
-    console.log('SQS回傳的結果', response);
-    // process data.
+    console.debug('SQS server response', response);
   } catch (error) {
-    // error handling.
     const { requestId, cfId, extendedRequestId } = error.$$metadata;
-    console.log('SQS錯誤訊息', { requestId, cfId, extendedRequestId });
+    console.error('SQS Error message', { requestId, cfId, extendedRequestId });
   }
 };

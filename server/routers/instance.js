@@ -2,14 +2,15 @@ import { Router } from 'express';
 
 import wrapAsync from '../utils/wrapAsync.js';
 import { verifyJWT } from '../middlewares/verifyJWT.js';
+import { verifyWorkflowOwner } from '../middlewares/verifyWorkflowOwner.js';
 import { searchInstancesHistory } from '../controllers/instance.js';
 
 const router = Router();
 
-// FIXME: RESTFULL?
 router.get(
-  '/instance/:workflowId',
+  '/instances/:id',
   verifyJWT,
+  wrapAsync(verifyWorkflowOwner),
   wrapAsync(searchInstancesHistory)
 );
 
