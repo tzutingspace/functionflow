@@ -1,9 +1,6 @@
-import { StatusCodes } from 'http-status-codes';
 import * as DBWorkflow from '../models/workflow.js';
 import * as DBTool from '../models/tool.js';
-import { validInteger, convertLocalToUTC } from '../utils/utli.js';
-
-import CustomError from '../utils/errors/customError.js';
+import { convertLocalToUTC } from '../utils/utli.js';
 
 import BadRequestError from '../utils/errors/badRequestError.js';
 
@@ -13,7 +10,7 @@ import {
   triggerIntervalConvert,
 } from '../service/calculateTime.js';
 
-// get all workflow info by userId
+// get all workflows info by userId
 export const getWorkflowsByUser = async (req, res) => {
   console.debug('@controller getWorkflowsByUser');
   const { id } = req.user;
@@ -33,7 +30,6 @@ export const initWorkflow = async (req, res) => {
 export const updateWorkflow = async (req, res, next) => {
   console.debug('@controller updateWorkflow', req.body);
 
-  // const userId = req.user.id;
   const workflowId = req.params.id;
   const { workflowInfo } = req.body;
   const triggerSetting = workflowInfo.jobsInfo;
@@ -53,16 +49,11 @@ export const updateWorkflow = async (req, res, next) => {
     (triggerIntervalConvert[triggerSetting.interval] ||
       triggerIntervalConvert[triggerInfo.name]) * (triggerSetting.every || 1);
 
-  console.log('trigger type...', triggerInfo.name, triggerSetting.interval);
-  console.log('triggerIntervalSeconds', triggerIntervalSeconds);
-
   const nextExecuteTime = calculateNextExecutionTime(
     triggerSetting.interval || triggerInfo.name,
     triggerIntervalSeconds,
     startTime
   );
-
-  console.log('計算出來的下次執行時間', nextExecuteTime);
 
   // TODO: if use API
 
@@ -82,8 +73,7 @@ export const updateWorkflow = async (req, res, next) => {
   return res.json({ data: result });
 };
 
-// switch active or inactive workflow
-// different with update controller, cause start time data from db
+// switch active or inactive workflow ; different with update controller, cause start time data from db
 export const changeWorkflowStatus = async (req, res, next) => {
   console.log('@updateWorkflowStatus controller');
   console.log('request Body', req.body);
@@ -109,8 +99,6 @@ export const changeWorkflowStatus = async (req, res, next) => {
     workflow.trigger_interval_seconds,
     startTime
   );
-
-  console.log('calculate nextExecuteTime', nextExecuteTime);
 
   // update DB data
   const updateResult = await DBWorkflow.updateWorkflow(workflowId, {
@@ -161,19 +149,15 @@ export const deployWorkflow = async (req, res, next) => {
     (triggerIntervalConvert[triggerSetting.interval] ||
       triggerIntervalConvert[triggerInfo.name]) * (triggerSetting.every || 1);
 
-  console.log('trigger type...', triggerInfo.name, triggerSetting.interval);
-  console.log('triggerIntervalSeconds', triggerIntervalSeconds);
-
   const nextExecuteTime = calculateNextExecutionTime(
     triggerSetting.interval || triggerInfo.name,
     triggerIntervalSeconds,
     startTime
   );
 
-  console.log('計算出來的下次執行時間', nextExecuteTime);
-  // TODO: if use API
+  // TODO: if use API?
 
-  // 僅留可update項目, undefined 先記錄, model會filter
+  // update項目, undefined 先記錄, model會filter
   const necessaryInfo = {
     name: workflowInfo.name,
     status: workflowInfo.status || 'active',
@@ -191,72 +175,46 @@ export const deployWorkflow = async (req, res, next) => {
     necessaryInfo,
     jobsInfo
   );
-  // FIXME: return ??
+  if (!result) {
+    return next(BadRequestError('Deploy failed'));
+  }
+
   return res.json({ data: result });
 };
 
 // Edit Workflow 用
-export const editWorkflow = async (req, res, next) => {
-  console.log('@Edit Workflow controller...');
-  const { workflowId } = req.params;
-  console.log('workflowId', workflowId);
+export const getWorkflowAndJob = async (req, res) => {
+  const { id } = req.params; // workflowId
 
-  // 驗證id是否為數字
-  if (!validInteger(workflowId)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
-  }
+  const data = await DBWorkflow.getWorkflowAndJobById(id);
 
-  const data = await DBWorkflow.getWorkflowAndJobById(workflowId);
+  console.debug('get workflow and job data...', data);
 
-  console.log('Edit workflow data...', data);
-
-  if (data.length === 0) {
-    return next(new CustomError('Not Found', 404));
-  }
-
-  // 轉換custom 時間
-  // FIXME: 除了custom, 其他範例的話 要給前端every時間嗎？
-  const every = data[0].trigger_interval_seconds / 60 || 60; // 如果之前沒填, 就給60分鐘
-
-  // 處理只有 trigger 的 Workflow
-  if (!data[0].job_qty) {
-    const workflowObj = {
-      workflow_id: data[0].workflow_id,
-      workflow_name: data[0].workflow_name,
-      trigger_function_id: triggerFunctionMap[data[0].schedule_interval] || 3, // 如果之前沒填, 就給custom
-      status: data[0].status,
-      settingInfo: {
-        job_qty: data[0].job_qty,
-        start_time: data[0].start_time, // date.format(data[0].start_time, 'YYYY-MM-DD HH:mm:ss'), // mysql取得的為UTC時間
-        trigger_type: data[0].trigger_type,
-        customer_input: {
-          start_time: data[0].start_time, // daily, weekly, monthly 都只要start_time即可
-          every,
-          interval: 'minute', // FIXME: 先轉成minute, create 的時候沒有紀錄
-        },
-      },
-    };
-
-    return res.json({ data: [workflowObj] });
-  }
-
-  // Create the first object
-  const firstObj = {
+  // Create the workflowInfoObject
+  const workflowInfoObject = {
     workflow_id: data[0].workflow_id,
     workflow_name: data[0].workflow_name,
-    trigger_function_id: triggerFunctionMap[data[0].schedule_interval], // trigger_funcition數量不多, 利用constant轉換
+    // If it was not filled before, then give 'custom'
+    trigger_function_id:
+      triggerFunctionMap[data[0].schedule_interval] ||
+      triggerFunctionMap.custom,
     status: data[0].status,
     settingInfo: {
       job_qty: data[0].job_qty,
-      start_time: data[0].start_time, // date.format(data[0].start_time, 'YYYY-MM-DD HH:mm:ss'),
+      start_time: data[0].start_time,
       trigger_type: data[0].trigger_type,
       customer_input: {
-        start_time: data[0].start_time, // daily, weekly, monthly 都只要start_time即可
-        every,
-        interval: 'minute', // FIXME: 先轉成minute, create 的時候沒有紀錄
+        start_time: data[0].start_time,
+        every: data[0].trigger_interval_seconds / 60 || 60, // If it was not filled before, then give 60 minutes.
+        interval: 'minute', // Convert to minutes first, database is no record at the time of creation.
       },
     },
   };
+
+  // Handling workflows that only have triggers set up
+  if (!data[0].job_id) {
+    return res.json({ data: [workflowInfoObject] });
+  }
 
   // Create an array of job objects
   const jobObjs = data.map((job) => ({
@@ -270,6 +228,5 @@ export const editWorkflow = async (req, res, next) => {
   }));
 
   // Combine the first object and job objects into a single array
-  const result = [firstObj, ...jobObjs];
-  return res.json({ data: result });
+  return res.json({ data: [workflowInfoObject, ...jobObjs] });
 };

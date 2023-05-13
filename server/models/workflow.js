@@ -94,17 +94,10 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
     await updateWorkflow(workflowId, necessaryInfo, conn);
 
     // delete all relate jobs
-    const [deleteIds] = await conn.query(
-      'SELECT id FROM jobs WHERE workflow_id = ? ORDER BY id DESC',
-      [workflowId]
-    );
-    deleteIds.forEach(({ id }) => {
-      conn.query('DELETE FROM jobs WHERE id = ?', [id]);
-    });
+    await conn.query(`DELETE FROM jobs WHERE workflow_id = ?`, [workflowId]);
 
     // re-ceate all jobs (serial)
     for (let i = 1; i <= necessaryInfo.job_qty; i++) {
-      console.log('weqwewqewq', i);
       // need to sequence the jobs to obtain the next job ID
       // eslint-disable-next-line no-await-in-loop
       const [jobResult] = await conn.query(
@@ -121,14 +114,16 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
       );
       dependsJobId = jobResult.insertId;
     }
+
     await conn.query('COMMIT');
   } catch (error) {
     await conn.query('ROLLBACK');
-    console.error('Deploy 出現錯誤', error);
+    console.error('Error occurred during deploy workflow', error);
+    return false;
   } finally {
     await conn.release();
   }
-  return workflowId;
+  return true;
 }
 
 // delete workflow
@@ -172,6 +167,7 @@ export async function getWorkflowAndJobById(id) {
     FROM workflows as wf
         LEFT JOIN jobs ON wf.id = jobs.workflow_id
     WHERE wf.id = ?
+    ORDER BY jobs.sequence
     `,
     [id]
   );

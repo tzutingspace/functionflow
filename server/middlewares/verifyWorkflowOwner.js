@@ -5,10 +5,12 @@ import * as DBWorkflow from '../models/workflow.js';
 
 export const verifyWorkflowOwner = async (req, res, next) => {
   console.debug('@verifyWorkflowOwner middleware');
+  console.debug('req.params', req.params);
+  console.debug('req.body', req.body);
 
   const userId = req.user.id;
   const { workflowInfo } = req.body;
-  const workflowId = workflowInfo.id || req.params.id;
+  const workflowId = workflowInfo ? workflowInfo.id : req.params.id;
 
   console.debug('workflowId:', workflowId);
 

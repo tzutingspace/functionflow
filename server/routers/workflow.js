@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import wrapAsync from '../utils/wrapAsync.js';
 import { verifyJWT } from '../middlewares/verifyJWT.js';
+import { verifyWorkflowOwner } from '../middlewares/verifyWorkflowOwner.js';
 import {
   getWorkflowsByUser,
   initWorkflow,
   updateWorkflow,
-  updataWorkflowStatus,
-  createJob,
-  updateJob,
+  changeWorkflowStatus,
   deployWorkflow,
   deleteWorkflows,
-  editWorkflow,
+  getWorkflowAndJob,
 } from '../controllers/workflow.js';
 
 const router = Router();
@@ -21,22 +20,38 @@ router.get('/workflows', verifyJWT, wrapAsync(getWorkflowsByUser));
 // Create (init) workflow
 router.post('/workflow', verifyJWT, wrapAsync(initWorkflow));
 
-// FIXME: update要驗證身份
-router.put('/workflow/:id', wrapAsync(updateWorkflow));
+// Update workflow (trigger info...)
+router.put(
+  '/workflow/:id',
+  verifyJWT,
+  wrapAsync(verifyWorkflowOwner),
+  wrapAsync(updateWorkflow)
+);
 
-// FIXME:  workflow/:id/status
-router.put('/workflow/status/:id', wrapAsync(updataWorkflowStatus));
+// Switch workflow status(active , inactive)
+router.put(
+  '/workflow/:id/status',
+  verifyJWT,
+  wrapAsync(verifyWorkflowOwner),
+  wrapAsync(changeWorkflowStatus)
+);
+
+// deploy all workflow
+router.put(
+  '/workflow/:id/deploy',
+  verifyJWT,
+  wrapAsync(verifyWorkflowOwner),
+  wrapAsync(deployWorkflow)
+);
 
 // FIXME: RESTFULL?
-router.get('/workflow-and-job/:workflowId', verifyJWT, wrapAsync(editWorkflow));
+router.get(
+  '/workflow-and-job/:id',
+  verifyJWT,
+  wrapAsync(verifyWorkflowOwner),
+  wrapAsync(getWorkflowAndJob)
+);
 
-// FIXME: 驗證身份?
-router.post('/job', wrapAsync(createJob));
-
-router.put('/job/:id', wrapAsync(updateJob));
-
-router.put('/workflow/deploy/:id', wrapAsync(deployWorkflow));
-
-router.delete('/workflows', wrapAsync(deleteWorkflows));
+router.delete('/workflows', verifyJWT, wrapAsync(deleteWorkflows));
 
 export { router };
