@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 
-import CustomError from '../utils/customError.js';
+import CustomError from '../utils/errors/customError.js';
 
 export function verifyJWT(req, res, next) {
-  console.log('@verifyJWT middleware');
+  console.debug('@verifyJWT middleware');
   // console.log('@verifyJWT header', req.headers);
   if (!req.headers.authorization) {
     return next(new CustomError('No token', 401));
