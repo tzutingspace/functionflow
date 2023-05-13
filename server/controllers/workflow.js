@@ -9,7 +9,12 @@ import CustomError from '../utils/errors/customError.js';
 import BadRequestError from '../utils/errors/badRequestError.js';
 
 import { triggerFunctionMap } from '../config/triggerFunction.js';
+import {
+  calculateNextExecutionTime,
+  triggerIntervalConvert,
+} from '../service/calculateTime.js';
 
+// get all workflow info by userId
 export const getWorkflowsByUser = async (req, res) => {
   console.debug('@controller getWorkflowsByUser');
   const { id } = req.user;
@@ -17,82 +22,70 @@ export const getWorkflowsByUser = async (req, res) => {
   return res.json({ data: workflows });
 };
 
-// Init a new Workflow
+// Init a new workflow
 export const initWorkflow = async (req, res) => {
-  console.log('@controller initWorkflow');
-  // user id from jwt
-  const userId = req.user.id;
-  const workflowId = await DBWorkflow.initWorkflow(userId);
+  console.debug('@controller initWorkflow');
+  const { id } = req.user; // user id from jwt
+  const workflowId = await DBWorkflow.initWorkflow(id);
   return res.json({ data: workflowId });
 };
 
-// Update a Workflow (內容更新)
+// Update a Workflow (like trigger type...)
 export const updateWorkflow = async (req, res, next) => {
-  console.log('@controller updateWorkflow');
-  console.log('request Body', req.body);
-  const { workflowInfo } = req.body;
+  console.debug('@controller updateWorkflow', req.body);
+
+  const userId = req.user.id;
   const workflowId = req.params.id;
-  // 驗證id是否為數字
+  const { workflowInfo } = req.body;
+  const triggerSetting = workflowInfo.jobsInfo;
+
   if (!validInteger(workflowId)) {
     return next(new BadRequestError('Query Params Error'));
   }
 
-  // TODO:驗證此user是否有此id的修改權限
+  // Verify this user has permission to modify this workflow.
+  const workflowResult = await DBWorkflow.getWorkflowById(workflowId, userId);
+  if (!workflowResult) {
+    return next(new BadRequestError('No such workflow exists.'));
+  }
 
-  // 確認此 workflow trigger function 是否正確
-  const id = workflowInfo.trigger_function_id;
-  const [triggerInfo] = await DBTool.getTriggers({ id });
-
-  // 沒有這個 trigger function
+  // Verify that the workflow trigger function is correct.
+  const [triggerInfo] = await DBTool.getTriggers({
+    id: workflowInfo.trigger_function_id,
+  });
   if (!triggerInfo) {
     return next(new BadRequestError('Query Params Error'));
   }
 
-  // 假設前端來的時間是台灣時間, 需轉成UTC時間再計算
-  // const startTime = new Date(workflowInfo.start_time);
-  const startTime = new Date(convertLocalToUTC(workflowInfo.start_time));
-  console.log('@controller time', startTime);
+  // FIXME: 假設前端來的時間是台灣時間, 需轉成UTC時間再計算
+  const startTime = new Date(
+    convertLocalToUTC(workflowInfo.start_time, 'Asia/Taipei')
+  );
+  console.debug('@controller time', startTime);
 
-  let triggerIntervalSeconds;
-  let nextExecuteTime;
-  if (triggerInfo.name === 'custom') {
-    if (workflowInfo.jobsInfo.interval === 'hour') {
-      triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60 * 60;
-      nextExecuteTime = date.addHours(
-        startTime,
-        parseInt(workflowInfo.jobsInfo.every, 10)
-      );
-    } else if (workflowInfo.jobsInfo.interval === 'minute') {
-      triggerIntervalSeconds = workflowInfo.jobsInfo.every * 60;
-      console.log('minute', workflowInfo.jobsInfo.every);
-      nextExecuteTime = date.addMinutes(
-        startTime,
-        parseInt(workflowInfo.jobsInfo.every, 10)
-      );
-    }
-  } else if (triggerInfo.name === 'daily') {
-    triggerIntervalSeconds = 86400;
-    nextExecuteTime = date.addDays(startTime, 1);
-  } else if (triggerInfo.name === 'weekly') {
-    triggerIntervalSeconds = 86400 * 7;
-    nextExecuteTime = date.addDays(startTime, 7);
-  } else if (triggerInfo.name === 'monthly') {
-    nextExecuteTime = date.addMonths(startTime, 1);
-  } else {
-    // FIXME: input invaildation
-    return next(new BadRequestError('Query Params Error'));
-  }
+  const triggerIntervalSeconds =
+    (triggerIntervalConvert[triggerSetting.interval] ||
+      triggerIntervalConvert[triggerInfo.name]) * (triggerSetting.every || 1);
+
+  console.log('trigger type...', triggerInfo.name, triggerSetting.interval);
+  console.log('triggerIntervalSeconds', triggerIntervalSeconds);
+
+  const nextExecuteTime = calculateNextExecutionTime(
+    triggerSetting.interval || triggerInfo.name,
+    triggerIntervalSeconds,
+    startTime
+  );
 
   console.log('計算出來的下次執行時間', nextExecuteTime);
 
-  // TODO: 如果是API???
+  // TODO: if use API
 
-  // // 僅留可update項目, undefined 先記錄, model會filter
+  // 僅留可update項目, undefined 先記錄, model會filter
   const necessaryInfo = {
     name: workflowInfo.name,
     status: workflowInfo.status,
-    start_time: startTime, // workflowInfo.start_time,
-    next_execute_time: nextExecuteTime, // date.format(nextExecuteTime, 'YYYY-MM-DD HH:mm:ss'),
+    start_time: startTime,
+    next_execute_time: nextExecuteTime,
     trigger_type: triggerInfo.type,
     trigger_interval_seconds: triggerIntervalSeconds,
     trigger_api_route: workflowInfo.trigger_api_route,
@@ -106,132 +99,51 @@ export const updateWorkflow = async (req, res, next) => {
 // active or inactive workflow
 // FIXME: 不和 update 共用, 因為可能需要幫他修改 execution_time >> 需要去確認 DB 的 trigger 模式是什麼
 // inactive >> active 計算方式可能會不一樣
-export const updataWorkflowStatus = async (req, res, next) => {
+export const changeWorkflowStatus = async (req, res, next) => {
   console.log('@updateWorkflowStatus controller');
   console.log('request Body', req.body);
   const workflowId = req.params.id;
   const { changeStatus } = req.body;
+
   // 驗證id是否為數字
   if (!validInteger(workflowId)) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
+
   // 沒有給 changeStatus
   if (!changeStatus) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
-  // 確認是否有該 worflow
-  const workflow = await DBWorkflow.getWorkflowById(workflowId);
-  console.log('目前workflow狀況', workflow);
 
+  // 確認是否有該 workflow
+  const workflow = await DBWorkflow.getWorkflowById(workflowId, req.user.id);
   if (!workflow) {
-    return next(new CustomError('Query Params Error', StatusCodes.BAD_REQUEST));
+    return next(new BadRequestError('Query Params Error'));
   }
-
-  // active >> inactive 直接關閉
-  if (changeStatus === 'inactive') {
-    const updateResult = await DBWorkflow.updateWorkflow(workflowId, {
-      status: changeStatus,
-    });
-    console.log('更新結果', updateResult);
-
-    return res.json({ data: updateResult.info });
-  }
-  // draft & inactive >> active
-
   // 檢查是否有設定trigger
   if (!workflow.trigger_type) {
     return next(
-      new CustomError(
-        'Query Params Error(trigger type undefined)',
-        StatusCodes.BAD_REQUEST
-      )
+      new BadRequestError('Query Params Error(trigger type undefined)')
     );
   }
   // 檢查是否有設定job
   if (!workflow.job_qty) {
-    return next(
-      new CustomError('Query Params Error(empty job)', StatusCodes.BAD_REQUEST)
-    );
+    return next(new BadRequestError('Query Params Error(empty job)'));
   }
 
-  // 如果是trigger type schedule 要重新計算下次 execution_time
-  const currentDate = new Date();
-  console.log('當下時間', currentDate);
+  // calculate next execution time
   const startTime = new Date(workflow.start_time);
-  let nextExecuteTime;
-  // 計算最接近當下的基準日期
-  const newDate = new Date(
-    Date.UTC(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentDate.getDate(),
-      startTime.getUTCHours(),
-      startTime.getUTCMinutes(),
-      startTime.getUTCSeconds(),
-      startTime.getUTCMilliseconds()
-    )
+
+  console.log('workflow', workflow);
+  const nextExecuteTime = calculateNextExecutionTime(
+    workflow.schedule_interval,
+    workflow.trigger_interval_seconds,
+    startTime
   );
 
-  // console.log('newDate', newDate);
-  if (workflow.schedule_interval === 'custom') {
-    // 'custom' >> 將日期變成當下日期後計算
-    nextExecuteTime = date.addSeconds(
-      newDate,
-      parseInt(workflow.trigger_interval_seconds, 10)
-    );
-    // FIXME: 可以直接計算嗎？
-    while (nextExecuteTime < currentDate) {
-      nextExecuteTime = date.addSeconds(
-        nextExecuteTime,
-        parseInt(workflow.trigger_interval_seconds, 10)
-      );
-    }
-  } else if (workflow.schedule_interval === 'daily') {
-    // nextExecuteTime = date.addDays(newDate, 1);
-    // console.log('@daily', nextExecuteTime);
-    // 如果 nextExecuteTime 已過當下時間,
-    if (nextExecuteTime < currentDate) {
-      nextExecuteTime = date.addDays(nextExecuteTime, 1);
-    }
-  } else if (workflow.schedule_interval === 'weekly') {
-    // 計算出距離今天最近的同星期的日期
-    const targetDayOfWeek = startTime.getDay(); // 取得星期幾
-    const nowDayOfWeek = currentDate.getDay(); // 取得今天是星期幾
-
-    const daysUntilNextTargetDay = (targetDayOfWeek + 7 - nowDayOfWeek) % 7; // 計算距離今天最近的同星期的日期還有幾天
-
-    nextExecuteTime = new Date(
-      currentDate.getTime() + daysUntilNextTargetDay * 24 * 60 * 60 * 1000
-    );
-
-    // 將時間設定為原本的時間
-    nextExecuteTime.setUTCHours(startTime.getUTCHours());
-    nextExecuteTime.setUTCMinutes(startTime.getUTCMinutes());
-    nextExecuteTime.setUTCSeconds(startTime.getUTCSeconds());
-    nextExecuteTime.setUTCMilliseconds(startTime.getUTCMilliseconds());
-
-    // 如果 nextExecuteTime 已過當下時間,
-    if (nextExecuteTime < currentDate) {
-      nextExecuteTime = date.addDays(nextExecuteTime, 7);
-    }
-  } else if (workflow.schedule_interval === 'monthly') {
-    // 計算出距離今天最近的月份日期
-    const startMonth = startTime.getMonth(); // 開始日期的月份
-    const nowMonth = currentDate.getMonth(); // 現在的月份
-    const monthDiff = nowMonth - startMonth; // 計算月份差距
-    nextExecuteTime = date.addMonths(startTime, monthDiff);
-
-    // console.log('當下時間', currentDate);
-    // console.log('下次執行時間', nextExecuteTime);
-
-    // 如果 nextExecuteTime 已過當下時間,
-    if (nextExecuteTime < currentDate) {
-      nextExecuteTime = date.addMonths(nextExecuteTime, 1);
-    }
-  }
   console.log('nextExecuteTime', nextExecuteTime);
 
-  // 更新資料庫資料
+  // update DB data
   const updateResult = await DBWorkflow.updateWorkflow(workflowId, {
     status: changeStatus,
     next_execute_time: nextExecuteTime,
