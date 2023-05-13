@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import {  useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 
@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import API from '../../../utils/api';
 import { WorkflowStateContext } from '..';
 import { AuthContext } from '../../../contexts/authContext';
-// import ActionAlerts from './Alert.jsx';
 import logo from './logo.png';
 
 const Wrapper = styled.div`
@@ -64,8 +63,6 @@ const WorkflowStatus = styled.div`
   color: #20315b; /* 文字顏色 */
   margin-right: 16px; /* 右邊間距 */
   font-weight: bold;
-  padding: 10px 16px;
-  width: 40px;
   border: none;
   text-align: center;
   width: auto;
@@ -73,13 +70,12 @@ const WorkflowStatus = styled.div`
 
 const TriggerButton = styled.div`
   margin-left: 16px;
-  padding: 8px 20px; /* 內邊距 */
   margin-right: 16px; /* 右邊間距 */
   background-color: #6acf91;
   color: #fff;
   font-size: 18px;
   font-weight: bold;
-  padding: 10px 16px;
+  padding: 10px 16px; /* 內邊距 */
   border: none;
   cursor: pointer;
   border-radius: 20px; /* 圓弧造型 */
@@ -179,7 +175,7 @@ const Head = () => {
       return acc;
     }, {});
 
-    console.log('Depoly 確認目前workflowJobs: ', workflowJobs);
+    console.log('Deploy 確認目前workflowJobs: ', workflowJobs);
 
     const deployObj = {
       workflowInfo: {
@@ -277,7 +273,6 @@ const Head = () => {
           <BackButton to={`/instances/@${user.name}/${workflowTitle}/${workflowJobs[0].id}`}>
             Back
           </BackButton>
-          {console.log('dsdsasad', workflowTitle, user.name, workflowJobs[0].id)}
         </WorkflowHeaderRight>
       </Wrapper>
       <ToastContainer />

@@ -13,7 +13,6 @@ export async function createJob(workflowId, necessaryInfo = {}) {
       necessaryInfo.customer_input,
     ]
   );
-  console.debug(`新增Job 成功 ID 為`, result.insertId);
   return result.insertId;
 }
 

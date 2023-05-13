@@ -86,7 +86,6 @@ export async function updateWorkflow(
 
 // deploy workflow and jobs
 export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
-  let dependsJobId;
   const conn = await pool.getConnection();
   try {
     await conn.query('START TRANSACTION');
@@ -95,7 +94,8 @@ export async function deployWorkflow(workflowId, necessaryInfo, jobsInfo) {
     // delete all relate jobs
     await conn.query(`DELETE FROM jobs WHERE workflow_id = ?`, [workflowId]);
 
-    // re-ceate all jobs (serial)
+    // re-create all jobs (serial)
+    let dependsJobId;
     for (let i = 1; i <= necessaryInfo.job_qty; i++) {
       // need to sequence the jobs to obtain the next job ID
       // eslint-disable-next-line no-await-in-loop
@@ -136,8 +136,8 @@ export async function deleteWorkflow(workflowId, userId) {
   return result.changedRows;
 }
 
-// delete jobs by workflow Id
-export async function deletejobs(workflowId) {
+// delete jobs by workflow id
+export async function deleteJobs(workflowId) {
   console.debug('@delete jobs model, workflow Id', workflowId);
   const [result] = await pool.query(
     `

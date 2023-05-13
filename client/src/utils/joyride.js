@@ -1,4 +1,4 @@
-import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
+import  { ACTIONS, STATUS } from 'react-joyride';
 
 export const joyrideStyles = {
   options: {
@@ -68,7 +68,7 @@ export const Steps = [
     hideBackButton: true,
   },
   {
-    title: 'Depoly',
+    title: 'Deploy',
     content: 'Once you have finished setting up your workflow, please deploy it.',
     target: '#deploy-button',
     placement: 'bottom',

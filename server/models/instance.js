@@ -76,7 +76,7 @@ export async function createInstances(workflowInfo) {
 
       // need serial (prevJobInstanceId)
       // eslint-disable-next-line no-await-in-loop
-      const [jobinstanceResult] = await conn.query(
+      const [jobInstanceResult] = await conn.query(
         `
         INSERT INTO
           jobs_instances (
@@ -102,8 +102,8 @@ export async function createInstances(workflowInfo) {
           job.function_name,
         ]
       );
-      job.id = jobinstanceResult.insertId;
-      prevJobInstanceId = jobinstanceResult.insertId;
+      job.id = jobInstanceResult.insertId;
+      prevJobInstanceId = jobInstanceResult.insertId;
 
       // put data to readyToQueueObj
       readyToQueueObj.ready_execute_job.push(job.name);

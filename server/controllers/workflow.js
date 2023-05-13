@@ -75,8 +75,8 @@ export const updateWorkflow = async (req, res, next) => {
 
 // switch active or inactive workflow ; different with update controller, cause start time data from db
 export const changeWorkflowStatus = async (req, res, next) => {
-  console.log('@updateWorkflowStatus controller');
-  console.log('request Body', req.body);
+  console.debug('@updateWorkflowStatus controller');
+  console.debug('request Body', req.body);
   const workflowId = req.params.id;
   const { changeStatus } = req.body;
   const workflow = req.workflowDatabaseResult;
@@ -118,7 +118,7 @@ export const deleteWorkflows = async (req, res) => {
     ids.map(async (workflowId) => {
       const result = await DBWorkflow.deleteWorkflow(workflowId, userId);
       if (result === 1) {
-        DBWorkflow.deletejobs(workflowId);
+        DBWorkflow.deleteJobs(workflowId);
       }
     })
   );

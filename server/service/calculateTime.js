@@ -20,7 +20,7 @@ export const calculateNextExecutionTime = (
   const currentDate = new Date();
 
   if (startTime > currentDate) {
-    console.log('startTime 為未來時間, 表示下次執行時間是starttime');
+    console.log('startTime 為未來時間, 表示下次執行時間是start time');
     return startTime;
   }
 
@@ -35,8 +35,8 @@ export const calculateNextExecutionTime = (
     return nextExecuteTime;
   }
 
-  console.log('startTime 為過去時間, 計算下次執行時間');
-  console.log('startime:', startTime, 'currentDate:', currentDate);
+  console.log('start time 為過去時間, 計算下次執行時間');
+  console.log('star time:', startTime, 'currentDate:', currentDate);
   console.log('差距(s)', (currentDate - startTime) / 1000);
   const timeDiffIntervalCount = Math.ceil(
     (currentDate - startTime) / 1000 / triggerIntervalSeconds

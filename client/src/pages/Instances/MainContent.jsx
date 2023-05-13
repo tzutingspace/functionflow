@@ -158,21 +158,21 @@ const LeftWorkflowItems = styled.div`
 const LeftWorkflowSuccess = styled(ImCheckmark)`
   height: 1.7rem;
   width: 1.7rem;
-  padding: 0px;
+  padding: 0;
   color: #66b566;
 `;
 
 const LeftWorkflowRunning = styled(FaRunning)`
   height: 1.7rem;
   width: 1.7rem;
-  padding: 0px;
+  padding: 0;
   color: #20315b;
 `;
 
 const LeftWorkflowError = styled(ImCancelCircle)`
   height: 1.7rem;
   width: 1.7rem;
-  padding: 0px;
+  padding: 0;
   color: red;
 `;
 
@@ -202,7 +202,7 @@ const WorkflowTriggerTime = styled.div`
 const RightArea = styled.div`
   box-sizing: border-box;
   flex: 3;
-  margin: 0px;
+  margin: 0;
   overflow-y: auto;
   height: 100vh;
   padding-top: 1rem;
@@ -220,12 +220,12 @@ const JobBlock = styled.div`
   max-width: 70%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
 `;
 
-// 參考Build/components/Job/JobTilteStyled
-const JobTilteStyled = styled.div`
+// 參考Build/components/Job/JobTitleStyled
+const JobTitleStyled = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   margin-top: 0;
@@ -334,18 +334,18 @@ const BottomArea = styled.div`
   position: relative;
 `;
 
-// 參考Build/components/Block/Emptydiv
-const Emptydiv = styled.div`
+// 參考Build/components/Block/EmptyDiv
+const EmptyDiv = styled.div`
   box-sizing: border-box;
   display: block;
   height: 1.5rem;
   padding-left: 1px;
   padding-right: 1px;
   width: 3px;
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
   background-color: #20315b;
   border-width: 0;
   border-style: solid;
@@ -358,8 +358,8 @@ const MainContent = () => {
   const { loading, jwtToken } = useContext(AuthContext);
 
   // 主要顯示
-  const [workflowHistory, setworkflowHistory] = useState([]);
-  const [workflowInstance, setworkflowInstance] = useState();
+  const [workflowHistory, setWorkflowHistory] = useState([]);
+  const [workflowInstance, setWorkflowInstance] = useState();
 
   // workflow status
   const [workflowStatus, setWorkflowStatus] = useState(false);
@@ -395,7 +395,7 @@ const MainContent = () => {
       if (!instances[0].workflowInfo.workflowInstanceId) return;
 
       // set workflow history 紀錄 , 左邊用
-      setworkflowHistory(() => instances);
+      setWorkflowHistory(() => instances);
 
       // set instances 狀況 右邊使用
       setworkflowInstance(() => instances[0]);
@@ -405,8 +405,8 @@ const MainContent = () => {
   }, [loading]);
 
   // 顯示右邊項目
-  const clickWorkflowInatance = (wfi) => {
-    setworkflowInstance(() => {
+  const clickWorkflowInstance = (wfi) => {
+    setWorkflowInstance(() => {
       return { ...wfi };
     });
   };
@@ -427,7 +427,7 @@ const MainContent = () => {
     setWorkflowStatus((prev) => !prev);
   };
 
-  const renderIncon = (status) => {
+  const renderIcon = (status) => {
     console.log(status);
     if (status === 'finished') return <LeftWorkflowSuccess />;
     if (status === 'queued') return <LeftWorkflowRunning />;
@@ -435,8 +435,6 @@ const MainContent = () => {
   };
 
   const renderContent = (val) => {
-    console.log('valval...', typeof val);
-    console.log('valval...', val);
 
     if (Array.isArray(val)) {
       return (
@@ -474,10 +472,10 @@ const MainContent = () => {
           {workflowHistory.map((wfi) => (
             <LeftWorkflowItems
               key={wfi.workflowInfo.workflowInstanceId}
-              onClick={() => clickWorkflowInatance(wfi)}
+              onClick={() => clickWorkflowInstance(wfi)}
             >
               <WorkflowInstanceStatusStyle>
-                {renderIncon(wfi.workflowInfo.status)}
+                {renderIcon(wfi.workflowInfo.status)}
                 {/* {wfi.workflowInfo.status === 'finished' ? (
                   <LeftWorkflowSuccess />
                 ) : (
@@ -485,10 +483,10 @@ const MainContent = () => {
                 )} */}
               </WorkflowInstanceStatusStyle>
               <WorkflowTriggerType>
-                {wfi.workflowInfo.trigger_type.toUpperCase()}
+                {wfi.workflowInfo.triggerType.toUpperCase()}
               </WorkflowTriggerType>
               <WorkflowTriggerTime>
-                {formatDate(wfi.workflowInfo.execution_time)}
+                {formatDate(wfi.workflowInfo.executionTime)}
               </WorkflowTriggerTime>
             </LeftWorkflowItems>
           ))}
@@ -497,7 +495,7 @@ const MainContent = () => {
           {workflowInstance && (
             <>
               <JobBlock>
-                <JobTilteStyled>Trigger</JobTilteStyled>
+                <JobTitleStyled>Trigger</JobTitleStyled>
                 <JobContent>
                   <JobConfigWrapper>
                     <WrapperJobItem>
@@ -511,7 +509,7 @@ const MainContent = () => {
                     <WrapperJobItem>
                       <JobItemTitle>Type</JobItemTitle>
                       <JobItemContent>
-                        {workflowInstance.workflowInfo.trigger_type.toLowerCase()}
+                        {workflowInstance.workflowInfo.triggerType.toLowerCase()}
                       </JobItemContent>
                     </WrapperJobItem>
                   </JobConfigWrapper>
@@ -519,7 +517,7 @@ const MainContent = () => {
                     <WrapperJobItem>
                       <JobItemTitle>Manual Trigger</JobItemTitle>
                       <JobItemContent>
-                        {workflowInstance.workflowInfo.manual_trigger === 't' ? 'true' : 'false'}
+                        {workflowInstance.workflowInfo.manualTrigger === 't' ? 'true' : 'false'}
                       </JobItemContent>
                     </WrapperJobItem>
                   </JobConfigWrapper>
@@ -527,33 +525,33 @@ const MainContent = () => {
                     <WrapperJobItem>
                       <JobItemTitle>Execution Time</JobItemTitle>
                       <JobItemContent>
-                        {formatDate(workflowInstance.workflowInfo.execution_time)}
+                        {formatDate(workflowInstance.workflowInfo.executionTime)}
                       </JobItemContent>
                     </WrapperJobItem>
                   </JobConfigWrapper>
                 </JobContent>
               </JobBlock>
               <BottomArea>
-                <Emptydiv></Emptydiv>
+                <EmptyDiv></EmptyDiv>
               </BottomArea>
             </>
           )}
           {workflowInstance &&
             workflowInstance.jobsInfo.map((jobsInstance) => (
-              <div key={jobsInstance.jobname}>
+              <div key={jobsInstance.jobName}>
                 <JobBlock>
-                  <JobTilteStyled>{jobsInstance.jobname}</JobTilteStyled>
+                  <JobTitleStyled>{jobsInstance.jobName}</JobTitleStyled>
                   <JobContent>
                     <JobConfigWrapper>
                       <WrapperJobItem>
                         <JobItemTitle>Job Status</JobItemTitle>
-                        <JobItemContent>{jobsInstance.job_status}</JobItemContent>
+                        <JobItemContent>{jobsInstance.jobStatus}</JobItemContent>
                       </WrapperJobItem>
                     </JobConfigWrapper>
                     <WrapperSubItem>
                       <JobItemTitle>{`Job Setting`}</JobItemTitle>
-                      {jobsInstance.customer_input &&
-                        Object.entries(jobsInstance.customer_input).map(([title, val]) => {
+                      {jobsInstance.customerInput &&
+                        Object.entries(jobsInstance.customerInput).map(([title, val]) => {
                           return (
                             <JobConfigWrapper key={title}>
                               <WrapperJobItem>
@@ -566,15 +564,12 @@ const MainContent = () => {
                     </WrapperSubItem>
                     <WrapperSubItem>
                       <JobItemTitle>{`Result Output`}</JobItemTitle>
-                      {jobsInstance.result_output &&
-                        Object.entries(jobsInstance.result_output).map(([title, val]) => {
+                      {jobsInstance.resultOutput &&
+                        Object.entries(jobsInstance.resultOutput).map(([title, val]) => {
                           return (
                             <JobConfigWrapper key={title}>
                               <WrapperJobItem>
                                 <SettingTitle>{`${title}`}</SettingTitle>
-                                {/* <JobItemContent>{`${val}`}</JobItemContent> */}
-                                {console.log('valval...', typeof val)}
-                                {console.log('valval...', val)}
                                 {renderContent(val)}
                               </WrapperJobItem>
                             </JobConfigWrapper>
@@ -584,7 +579,7 @@ const MainContent = () => {
                   </JobContent>
                 </JobBlock>
                 <BottomArea>
-                  <Emptydiv></Emptydiv>
+                  <EmptyDiv></EmptyDiv>
                 </BottomArea>
               </div>
             ))}

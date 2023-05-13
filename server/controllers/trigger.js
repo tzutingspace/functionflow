@@ -12,7 +12,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   const workflowInfo = req.workflowDatabaseResult;
 
   if (!workflowInfo.job_qty) {
-    return next(new BadRequestError('No Job can be triggerd'));
+    return next(new BadRequestError('No Job can be triggered'));
   }
 
   // create workflow instances

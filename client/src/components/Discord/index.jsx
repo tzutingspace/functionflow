@@ -1,12 +1,9 @@
 import styled from 'styled-components/macro';
 import { useState, useCallback } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AuthContext } from '../../contexts/authContext';
 import api from '../../utils/api';
 
 import discordLogo from './discord-logo.png';
 
-// const CLIENT_ID = '1091689250522681374'; old
 const CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
 const REDIRECT_URI = process.env.REACT_APP_DISCORD_REDIRECT_URI;
 const SCOPE = process.env.REACT_APP_DISCORD_SCOPE;
@@ -18,24 +15,24 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: stretch;
   min-height: 60px;
-  border: 0px;
-  padding-bottom: 0px;
-  margin-bottom: 0px;
+  border: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
   justify-content: center;
 `;
 
 const Placeholder = styled.span`
   padding-left: 6px;
   opacity: 0.5;
-  border: 0px;
+  border: 0;
 `;
 
-const DiscodLogo = styled.img`
+const DiscordLogo = styled.img`
   height: 14px;
   min-height: 14px;
   width: 14px;
   min-width: 14px;
-  border: 0px;
+  border: 0;
 `;
 
 const OAuthButton = styled.button`
@@ -109,7 +106,7 @@ const Discord = ({ item, setInput }) => {
       ) : (
         <Wrapper>
           <OAuthButton onClick={handleAuthorizeClick}>
-            <DiscodLogo src={discordLogo}></DiscodLogo>
+            <DiscordLogo src={discordLogo}></DiscordLogo>
             <Placeholder>Connect a Discord Account</Placeholder>
           </OAuthButton>
         </Wrapper>

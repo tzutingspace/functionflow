@@ -16,9 +16,8 @@ import { AuthContext } from '../../../contexts/authContext';
 
 const JobConfigWrapper = styled.div`
   /* border: solid 1px blue; */
-  margin-top: 0px;
-  margin: 0px 20px;
-  padding: 0px 20px;
+  margin: 0 20px;
+  padding: 0 20px;
 `;
 
 const FunctionWrapper = styled.div`
@@ -178,7 +177,7 @@ const ReturnValueWrapper = styled.div`
 `;
 
 const ReturnValueTitle = styled.div`
-  padding: 0px 10px 4px 0px;
+  padding: 0 10px 4px 0;
   font-size: 18px;
   color: #20315b;
   font-weight: bold;
@@ -191,7 +190,7 @@ const ReturnValueSet = styled.div`
 `;
 
 const ReturnTitleName = styled.div`
-  padding: 0px 10px 0px 10px;
+  padding: 0 10px 0 10px;
   font-size: 14px;
   border: none;
   color: #20315b;
@@ -199,7 +198,7 @@ const ReturnTitleName = styled.div`
 `;
 
 const ReturnValue = styled.div`
-  padding: 0px 10px 0px 10px;
+  padding: 0 10px 0 10px;
   font-size: 14px;
   border: none;
   color: #20315b;
@@ -207,13 +206,13 @@ const ReturnValue = styled.div`
 `;
 
 const ReturnValueResult = styled.div`
-  padding: 0px 10px 0px 10px;
+  padding: 0 10px 0 10px;
   font-size: 14px;
   color: #20315b;
 `;
 
 const ValueCopy = styled.div`
-  padding: 0px 10px 0px 10px;
+  padding: 0 10px 0 10px;
   font-size: 14px;
   color: #b6abab;
   border: none;
@@ -228,14 +227,14 @@ const JobConfig = ({ jobData, idx }) => {
   const { workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
     useContext(WorkflowStateContext);
 
-  const { loading, jwtToken } = useContext(AuthContext);
+  const {  jwtToken } = useContext(AuthContext);
 
   // 紀錄是否save過(only for job button)
   // const [isSave, setIsSave] = useState(false);
 
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
-  const { name, external_name, description, template_input, template_output } = jobConfigData; // 取值
+  const {  external_name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
   const [copied, setCopied] = useState(false); // 複製用
 
@@ -264,7 +263,7 @@ const JobConfig = ({ jobData, idx }) => {
       // 判斷類別
       const tempObj = {};
       tempConfig.template_input.forEach((item) => {
-        // console.log('檢查 jobconfig', item);
+        // console.log('檢查 job config', item);
         if (item.type === 'list') {
           tempObj[item.name] = item.list[0];
           // edit 專用
@@ -292,8 +291,7 @@ const JobConfig = ({ jobData, idx }) => {
             tempObj[item.name] = formatInputDate(jobData.settingInfo.customer_input[item.name]);
           }
         } else if (item.type === 'number') {
-          const displayNumber = item.min < 0 ? 1 : item.min;
-          tempObj[item.name] = displayNumber;
+          tempObj[item.name] = item.min < 0 ? 1 : item.min;
           if (jobData.settingInfo) {
             tempObj[item.name] = jobData.settingInfo.customer_input[item.name];
           }

@@ -72,7 +72,7 @@ const Edit = () => {
   useEffect(() => {
     // Edit 舊 workflow
     const getWorkflowAndJob = async () => {
-      // workflow Id 從 Params 來
+      // workflow id 從 Params 來
       const data = await API.getWorkflowAndJob(workflowId, jwtToken);
 
       // FIXME: 一開始就符合前端的資料格式?
@@ -82,7 +82,7 @@ const Edit = () => {
         });
         console.log('item', item);
 
-        // for 首次進入編輯即可depoly用
+        // for 首次進入編輯即可 deploy 用
         item.settingInfo['jobsInfo'] = {
           ...item['settingInfo'],
           function_id: item.function_id,
@@ -161,8 +161,6 @@ const Edit = () => {
           setJoyrideState,
         }}
       >
-        {console.log('@最外層, 所有的workflow資訊', workflowJobs)}
-        {console.log('@最外層, 所有isAllJobSave資訊', isAllJobSave)}
         {workflowLoading && <Loading type="spinningBubbles" color="#313538" />}
         {!workflowLoading && (
           <>

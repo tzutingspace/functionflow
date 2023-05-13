@@ -23,8 +23,8 @@ const Main = styled.div`
   display: flex;
   flex-direction: row;
   max-width: 2048px;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   height: 100%;
 
   overflow: hidden;
@@ -46,7 +46,7 @@ const LeftInnerBlock = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 0px;
+  margin: 0;
   width: 60%;
   /* max-width: 320px; */
   padding: 10px 20px 50px 20px;
@@ -84,14 +84,14 @@ const FormContent = styled.div`
 `;
 
 const Home = () => {
-  const [defaultForm, setDefaulForm] = useState('signup');
+  const [defaultForm, setDefaultForm] = useState('signup');
   const { setErrorMessage, isLogin } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   const handlerFormSwitch = (form) => {
     setErrorMessage('');
-    setDefaulForm(form);
+    setDefaultForm(form);
   };
 
   // 已登入過的用戶進行跳轉

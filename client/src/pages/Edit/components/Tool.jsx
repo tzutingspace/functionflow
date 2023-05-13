@@ -22,7 +22,7 @@ const ToolButton = styled.button`
   width: 90%;
   margin-left: 2rem;
   margin-bottom: 6px;
-  border: 0px;
+  border: 0;
   cursor: pointer;
 `;
 

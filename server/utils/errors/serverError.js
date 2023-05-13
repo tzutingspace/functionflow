@@ -4,7 +4,7 @@ import CustomError from './customError.js';
 class ServerError extends CustomError {
   constructor(message) {
     super(message);
-    this.statusCode = StatusCodes.ServerError;
+    this.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
   }
 }
 

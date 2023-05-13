@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
 
 import MainContent from './MainContent';
 import Sidebar from '../../components/Sidebar';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Wrapper = styled.div`
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
-const Rightbar = styled.div`
+const RightBar = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -24,9 +24,9 @@ const Instances = () => {
   return (
     <Wrapper>
       <Sidebar />
-      <Rightbar>
+      <RightBar>
         <MainContent />
-      </Rightbar>
+      </RightBar>
       <ToastContainer />
     </Wrapper>
   );

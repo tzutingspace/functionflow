@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { useContext, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
-import { FaTrash } from 'react-icons/fa';
 import { IoTrashOutline } from 'react-icons/io5';
 import { WorkflowStateContext } from '..';
 
@@ -11,14 +10,14 @@ import Job from './Job';
 const TriggerDiv = styled.div`
   position: relative;
   border: 12px solid #20315b;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0 0;
   margin-left: auto;
   margin-right: auto;
   left: -18px;
   bottom: 1.1rem;
   z-index: 1;
   width: calc(100% + 13px);
-  padding-bottom: 0px;
+  padding-bottom: 0;
 `;
 
 const Wrapper = styled.div`
@@ -67,17 +66,14 @@ const ButtonArea = styled.div`
   position: relative;
 `;
 
-const Emptydiv = styled.div`
+const EmptyDiv = styled.div`
   box-sizing: border-box;
   display: block;
   height: 60px;
   padding-left: 1px;
   padding-right: 1px;
   width: 3px;
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin: 0 0 0 0 ;
   background-color: #20315b;
   border-width: 0;
   border-style: solid;
@@ -93,15 +89,14 @@ const AddButtonNew = styled(AiOutlinePlusCircle)`
   flex-wrap: nowrap;
   height: 40px;
   justify-content: center;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   top: 10px;
   position: absolute;
   width: 40px;
   color: #20315b;
   background-color: white;
-  border-color: transparent;
-  border: 0px;
+  border: 0 transparent;
   z-index: 1;
   cursor: pointer;
   &:hover {
@@ -119,15 +114,15 @@ const Block = ({ jobData, idx }) => {
   function addJob() {
     // 建立新job object
     const uuid = uuidv4();
-    const newjob = { job_name: `untitled_${uuid.substring(0, 8)}`, id: uuid }; //本次新加的用uuid
+    const newJob = { job_name: `untitled_${uuid.substring(0, 8)}`, id: uuid }; //本次新加的用uuid
 
     // 重新Set workflow Chain
     setWorkflowJobs((prev) => {
       const index = prev.findIndex((job) => job.id === jobData.id);
       if (index !== -1) {
-        return [...prev.slice(0, index + 1), newjob, ...prev.slice(index + 1)];
+        return [...prev.slice(0, index + 1), newJob, ...prev.slice(index + 1)];
       }
-      return [...prev, newjob];
+      return [...prev, newJob];
     });
 
     // 重新Set save job 狀況紀錄
@@ -177,7 +172,7 @@ const Block = ({ jobData, idx }) => {
         <Job idx={idx} jobData={jobData} />
       </Wrapper>
       <ButtonArea id={`add-job-button-${idx}`}>
-        <Emptydiv></Emptydiv>
+        <EmptyDiv></EmptyDiv>
         <AddButtonNew type="button" onClick={() => addJob()}></AddButtonNew>
       </ButtonArea>
     </>

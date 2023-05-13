@@ -32,7 +32,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const WeclomeMessage = styled.div`
+const WelcomeMessage = styled.div`
   color: #dfd1aa;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -58,10 +58,10 @@ const ItemGroup = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   list-style: none;
-  margin: 0;
+  margin: 1.2rem 0 0 0;
   padding: 0;
   flex-grow: 1;
-  margin-top: 1.2rem;
+  //margin-top: 1.2rem;
 `;
 
 const ItemWrapper = styled(Link)`
@@ -86,8 +86,8 @@ const ItemSpan = styled.span`
   line-height: 40px;
   tab-size: 4;
   white-space: nowrap;
-  margin: 0px 0px 0px 16px;
-  padding: 0px;
+  margin: 0 0 0 16px;
+  padding: 0;
   &.active {
     text-decoration: underline;
   }
@@ -96,8 +96,8 @@ const ItemSpan = styled.span`
 const IconDiv = styled.div`
   width: 40px;
   height: 40px;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   align-items: center;
   display: flex;
   justify-content: center;
@@ -150,7 +150,7 @@ const Sidebar = () => {
   return (
     <Wrapper>
       <ItemGroup>
-        <WeclomeMessage>{`Hi, ${user.name}`}</WeclomeMessage>
+        <WelcomeMessage>{`Hi, ${user.name}`}</WelcomeMessage>
       </ItemGroup>
       <ItemGroup>
         <ItemWrapper to="/workflows">

@@ -4,7 +4,7 @@ import MainContent from './components/MainContent';
 import { AuthContext } from '../../contexts/authContext';
 import styled from 'styled-components';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Wrapper = styled.div`
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
-const Rightbar = styled.div`
+const RightBar = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -35,9 +35,9 @@ const Workflows = () => {
       ) : (
         <Wrapper>
           <Sidebar />
-          <Rightbar>
+          <RightBar>
             <MainContent />
-          </Rightbar>
+          </RightBar>
           <ToastContainer />
         </Wrapper>
       )}

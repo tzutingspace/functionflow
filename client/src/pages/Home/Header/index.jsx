@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from './logo.png';
@@ -12,7 +11,7 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   background-color: #f9f9f9;
 `;
 
@@ -43,31 +42,10 @@ const Logo = styled(Link)`
   margin-right: 16px;
 `;
 
-const HeadButton = styled(Link)`
-  margin-left: 16px;
-  padding: 8px 20px; /* 內邊距 */
-  margin-right: 20px; /* 右邊間距 */
-  background-color: #20315b;
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px 16px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  border-radius: 20px; /* 圓弧造型 */
-`;
 
 const HomeHead = () => {
   const { isLogin } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (isLogin) {
-  //     navigate('/workflows');
-  //   }
-  //   return;
-  // }, [isLogin]);
 
   return (
     <Header>

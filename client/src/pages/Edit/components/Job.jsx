@@ -2,7 +2,7 @@ import styled from 'styled-components/macro';
 import JobTitle from './JobTitle';
 import Tool from './Tool';
 
-const JobTilteStyled = styled.div`
+const JobTitleStyled = styled.div`
   font-size: 32px;
   font-weight: bold;
   margin-top: 0;
@@ -14,8 +14,7 @@ const JobTilteStyled = styled.div`
 
 const JobContent = styled.div`
   width: 90%;
-  margin: auto;
-  margin-top: 20px;
+  margin: 20px auto auto auto;
 `;
 
 const TriggerStyled = styled.div`
@@ -28,13 +27,13 @@ const TriggerStyled = styled.div`
 const Job = ({ idx, jobData }) => {
   return (
     <>
-      <JobTilteStyled>
+      <JobTitleStyled>
         {idx ? (
           <JobTitle jobData={jobData} idx={idx}></JobTitle>
         ) : (
           <TriggerStyled>Trigger</TriggerStyled>
         )}
-      </JobTilteStyled>
+      </JobTitleStyled>
       <JobContent id={`input-content-${idx}`}>
         <Tool idx={idx} jobData={jobData} />
       </JobContent>

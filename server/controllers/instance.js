@@ -14,10 +14,10 @@ export const searchInstancesHistory = async (req, res) => {
           workflowId: curr.wf_id,
           workflowJobsQty: curr.wf_jobs_qty,
           status: curr.wfi_status,
-          trigger_type: curr.trigger_type,
-          manual_trigger: curr.manual_trigger,
+          triggerType: curr.trigger_type,
+          manualTrigger: curr.manual_trigger,
           workflowInstanceId: curr.wfi_id,
-          execution_time: curr.execution_time,
+          executionTime: curr.execution_time,
         },
         jobsInfo: [],
       };
@@ -26,10 +26,10 @@ export const searchInstancesHistory = async (req, res) => {
     const jobInfo = {
       jobId: curr.job_id,
       sequence: curr.sequence,
-      jobname: curr.job_name,
-      job_status: curr.job_status,
-      customer_input: curr.customer_input,
-      result_output: curr.result_output,
+      jobName: curr.job_name,
+      jobStatus: curr.job_status,
+      customerInput: curr.customer_input,
+      resultOutput: curr.result_output,
     };
 
     acc[curr.wfi_id].jobsInfo.push(jobInfo);

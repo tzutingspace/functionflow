@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { AuthContext } from '../../../contexts/authContext';
 
-import { ValidUsername, ValidateEmail, ValidatePassword } from '../../../utils/utils';
+import {  ValidateEmail, ValidatePassword } from '../../../utils/utils';
 
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
@@ -50,7 +50,6 @@ const LogInButton = styled.button`
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   color: #20315b;
-  font-size: 14px;
   letter-spacing: 1px;
   overflow: hidden;
   padding: 14px 8px;

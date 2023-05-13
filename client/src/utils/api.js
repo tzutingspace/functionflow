@@ -73,9 +73,8 @@ const API = {
   },
   async changeWorkflowStatus(workflowId, changeStatus, jwt) {
     console.log('changeStatus', changeStatus);
-    const id = workflowId;
     const res = await axios.put(
-      `${this.hostname}/workflow/${id}/status`,
+      `${this.hostname}/workflow/${workflowId}/status`,
       { changeStatus },
       {
         headers: {

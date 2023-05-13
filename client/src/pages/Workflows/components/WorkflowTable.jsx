@@ -29,8 +29,7 @@ const HeadTitle = styled.div`
 
 const HeadSearch = styled.input`
   width: 300px;
-  padding-right: 50px;
-  margin: 0px 4px;
+  margin: 0 4px;
   border: 2px solid #20315b;
   border-radius: 8px;
   padding: 8px 20px; /* 內邊距 */
@@ -54,7 +53,6 @@ const AddWorkflow = styled(Link)`
 
 const DeleteButton = styled.button`
   margin-left: 16px;
-  padding: 8px 20px; /* 內邊距 */
   margin-right: 20px; /* 右邊間距 */
   background-color: #d61e2d;
   color: #fff;
@@ -98,7 +96,7 @@ const WorkflowName = styled(Link)`
 `;
 
 const WorkflowTable = () => {
-  const [workflowdata, setWorkflowdata] = useState([]); // 全部資訊
+  const [workflowData, setWorkflowData] = useState([]); // 全部資訊
   const [records, setRecords] = useState([]); //顯示
 
   const [selectedRows, setSelectedRows] = useState([]);
@@ -129,19 +127,19 @@ const WorkflowTable = () => {
   }, []);
 
   useEffect(() => {
-    const getworkflows = async () => {
+    const getWorkflows = async () => {
       const { data } = await API.getWorkflowByUser(jwtToken);
       console.log('axios回來的data', data);
-      setWorkflowdata(data);
+      setWorkflowData(data);
       setRecords(data);
     };
 
     if (isLogin) {
-      getworkflows();
+      getWorkflows();
     }
   }, [isLogin]);
 
-  const colums = [
+  const columns = [
     {
       name: 'NAME',
       selector: (row) => row.name,
@@ -175,7 +173,7 @@ const WorkflowTable = () => {
   ];
 
   const handleFilter = (event) => {
-    const newData = workflowdata.filter((row) => {
+    const newData = workflowData.filter((row) => {
       return (
         row.name.toLowerCase().includes(event.target.value.toLowerCase()) ||
         row.status.toLowerCase().includes(event.target.value.toLowerCase())
@@ -224,7 +222,6 @@ const WorkflowTable = () => {
   return (
     <>
       <HeadWrapper>
-        {console.log('object', AddSteps)}
         <JoyRide
           styles={joyrideStyles}
           hideCloseButton
@@ -248,7 +245,7 @@ const WorkflowTable = () => {
       {records && (
         <DataTable
           title="Your Workflows"
-          columns={colums}
+          columns={columns}
           data={records}
           selectableRows
           fixedHeader
