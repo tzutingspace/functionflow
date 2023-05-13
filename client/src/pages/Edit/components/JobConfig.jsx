@@ -12,6 +12,8 @@ import { formatInputDate, getNowTime } from '../../../utils/utils';
 import { TfiSave } from 'react-icons/tfi';
 import { WorkflowStateContext } from '..';
 
+import { AuthContext } from '../../../contexts/authContext';
+
 const JobConfigWrapper = styled.div`
   /* border: solid 1px blue; */
   margin-top: 0px;
@@ -226,6 +228,8 @@ const JobConfig = ({ jobData, idx }) => {
   const { workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
     useContext(WorkflowStateContext);
 
+  const { loading, jwtToken } = useContext(AuthContext);
+
   // 紀錄是否save過(only for job button)
   // const [isSave, setIsSave] = useState(false);
 
@@ -339,7 +343,8 @@ const JobConfig = ({ jobData, idx }) => {
       waitingSaveData['trigger_function_id'] = jobData['trigger_function_id'];
       waitingSaveData['job_number'] = workflowJobs.length - 1;
       waitingSaveData['jobsInfo'] = input;
-      const res = await API.updateWorkflow(waitingSaveData);
+
+      const res = await API.updateWorkflow(waitingSaveData, jwtToken);
       console.log('idx==0, res:', res);
     } else {
       // JOB
@@ -353,7 +358,7 @@ const JobConfig = ({ jobData, idx }) => {
       };
       if (!workflowJobs[idx]['settingInfo']) {
         // 新增JOB
-        const res = await API.createJob(waitingSaveData);
+        const res = await API.createJob(waitingSaveData, jwtToken);
         // 取得新加的jobId
         waitingSaveData['jobsInfo']['job_id'] = res['data'];
         console.log('create a job. res:', res);
@@ -362,7 +367,7 @@ const JobConfig = ({ jobData, idx }) => {
         console.log('更新job', workflowJobs[idx]);
         // edit 專用
         const jobId = workflowJobs[idx]['job_id'];
-        const res = await API.updateJob(jobId, waitingSaveData);
+        const res = await API.updateJob(jobId, waitingSaveData, jwtToken);
         waitingSaveData['jobsInfo']['job_id'] = jobId; // FIXME: 要更新嗎？
         console.log('update a job. res:', res);
       }

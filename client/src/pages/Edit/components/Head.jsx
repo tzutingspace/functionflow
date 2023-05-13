@@ -183,6 +183,7 @@ const Head = () => {
 
     const deployObj = {
       workflowInfo: {
+        id: workflowJobs[0]['id'],
         name: workflowTitle,
         status: 'active',
         start_time: workflowJobs[0]['settingInfo']['start_time'],
@@ -195,7 +196,7 @@ const Head = () => {
     };
 
     console.log('deploy Obj', deployObj);
-    const result = await API.deployWorkflow(workflowJobs[0]['id'], deployObj);
+    const result = await API.deployWorkflow(workflowJobs[0]['id'], deployObj, jwtToken);
     console.log('deploy結果', result);
     setIsDraft(false);
     toast.success('This workflow has been successfully deployed.', {

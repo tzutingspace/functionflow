@@ -130,9 +130,7 @@ const WorkflowTable = () => {
 
   useEffect(() => {
     const getworkflows = async () => {
-      const userId = user.id;
-      console.log('userId', userId);
-      const { data } = await API.getWorkflowByUser(userId, jwtToken);
+      const { data } = await API.getWorkflowByUser(jwtToken);
       console.log('axios回來的data', data);
       setWorkflowdata(data);
       setRecords(data);
@@ -207,7 +205,7 @@ const WorkflowTable = () => {
 
               const deleteIds = selectedRows.map((workflow) => workflow.id);
 
-              await API.deleteWorkflows({ id: deleteIds }, jwtToken);
+              await API.deleteWorkflows({ ids: deleteIds }, jwtToken);
             },
           },
           {

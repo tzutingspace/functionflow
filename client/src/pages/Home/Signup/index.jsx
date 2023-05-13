@@ -21,7 +21,6 @@ const Text = styled.div`
 
 const InputInline = styled.div`
   position: relative;
-  left: 0px;
   display: flex;
   align-items: center;
   margin-top: 12px;
@@ -51,8 +50,6 @@ const SignupButton = styled.button`
   border: none;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  color: #20315b;
-  font-size: 14px;
   letter-spacing: 1px;
   overflow: hidden;
   padding: 14px 8px;

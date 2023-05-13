@@ -45,9 +45,49 @@ const API = {
   // 新增或更新workflow and Job
   async createWorkflow(jwt) {
     console.log('@API', jwt);
-    //FIXME: post 可以不給data？
-    const data = { data: 'empty' };
-    const res = await axios.post(`${this.hostname}/workflow`, data, {
+    const res = await axios.post(
+      `${this.hostname}/workflow`,
+      { data: null },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+    return res.data;
+  },
+  async updateWorkflow(workflowInfo, jwt) {
+    const id = workflowInfo.id;
+    const res = await axios.put(
+      `${this.hostname}/workflow/${id}`,
+      { workflowInfo },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+    return res.data;
+  },
+  async changeWorkflowStatus(workflowId, changeStatus, jwt) {
+    console.log('changeStatus', changeStatus);
+    const id = workflowId;
+    const res = await axios.put(
+      `${this.hostname}/workflow/${id}/status`,
+      { changeStatus },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+    return res.data;
+  },
+  async createJob(jobInfo, jwt) {
+    const res = await axios.post(`${this.hostname}/job`, jobInfo, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
@@ -55,27 +95,22 @@ const API = {
     });
     return res.data;
   },
-  async updateWorkflow(workflowInfo) {
-    const id = workflowInfo.id;
-    const res = await axios.put(`${this.hostname}/workflow/${id}`, { workflowInfo });
+  async updateJob(jobId, jobInfo, jwt) {
+    const res = await axios.put(`${this.hostname}/job/${jobId}`, jobInfo, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     return res.data;
   },
-  async updateWorkflowStatus(workflowId, changeStatus) {
-    console.log('changeStatus', changeStatus);
-    const id = workflowId;
-    const res = await axios.put(`${this.hostname}/workflow/status/${id}`, { changeStatus });
-    return res.data;
-  },
-  async createJob(jobInfo) {
-    const res = await axios.post(`${this.hostname}/job`, jobInfo);
-    return res.data;
-  },
-  async updateJob(jobId, jobInfo) {
-    const res = await axios.put(`${this.hostname}/job/${jobId}`, jobInfo);
-    return res.data;
-  },
-  async deployWorkflow(workflowId, workflowInfo) {
-    const res = await axios.put(`${this.hostname}/workflow/depoly/${workflowId}`, workflowInfo);
+  async deployWorkflow(workflowId, workflowInfo, jwt) {
+    const res = await axios.put(`${this.hostname}/workflow/${workflowId}/deploy`, workflowInfo, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     return res.data;
   },
   async deleteWorkflows(workflowIds, jwt) {
@@ -92,7 +127,7 @@ const API = {
 
   // Edit 先前的workflow
   async getWorkflowAndJob(workflowId, jwt) {
-    const res = await axios.get(`${this.hostname}/workflowandjob/${workflowId}`, {
+    const res = await axios.get(`${this.hostname}/workflow-and-job/${workflowId}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
@@ -103,7 +138,7 @@ const API = {
   // 抓取 instances 紀錄
   async getInstance(workflowId, jwt) {
     console.log('@get Instance', workflowId);
-    const res = await axios.get(`${this.hostname}/instance/${workflowId}`, {
+    const res = await axios.get(`${this.hostname}/instances/${workflowId}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
@@ -129,9 +164,8 @@ const API = {
     return res.data;
   },
 
-  //FIXME: userID 要從JWT給 DEMO 暫時寫成/:id
-  async getWorkflowByUser(userId, jwt) {
-    const res = await axios.get(`${this.hostname}/workflow/user/${userId}`, {
+  async getWorkflowByUser(jwt) {
+    const res = await axios.get(`${this.hostname}/workflows`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,

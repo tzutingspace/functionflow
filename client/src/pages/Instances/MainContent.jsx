@@ -120,7 +120,7 @@ const LeftArea = styled.div`
   align-items: stretch;
   box-sizing: border-box;
   display: flex;
-  flex-basis: 0%;
+  flex-basis: 0;
   flex-direction: column;
   flex-wrap: 1;
   flex-shrink: 1;
@@ -422,7 +422,7 @@ const MainContent = () => {
     console.log('workflowId', workflowid);
     console.log('workflowStatus', workflowStatus);
     const changeWorkflowStatus = !workflowStatus ? 'active' : 'inactive';
-    const res = await API.updateWorkflowStatus(workflowid, changeWorkflowStatus);
+    const res = await API.changeWorkflowStatus(workflowid, changeWorkflowStatus, jwtToken);
     console.log(res);
     setWorkflowStatus((prev) => !prev);
   };

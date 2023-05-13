@@ -19,7 +19,7 @@ const Text = styled.div`
 
 const InputInline = styled.div`
   position: relative;
-  left: 0px;
+  left: 0;
   display: flex;
   align-items: center;
   margin-top: 12px;
