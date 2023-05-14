@@ -75,7 +75,6 @@ const Edit = () => {
       // workflow id 從 Params 來
       const data = await API.getWorkflowAndJob(workflowId, jwtToken);
 
-      // FIXME: 一開始就符合前端的資料格式?
       const workflowsData = data.data.map((item) => {
         setIsAllJobSave((pre) => {
           return [...pre, true]; // 修改為剛匯入時, 預設為 save 狀態

@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import API from '../../../utils/api';
 import Discord from '../../../components/Discord';
-import { formatInputDate, getNowTime } from '../../../utils/utils';
+import { formatDate, getNowTime } from '../../../utils/utils';
 import { TfiSave } from 'react-icons/tfi';
 import { WorkflowStateContext } from '..';
 
@@ -288,7 +288,7 @@ const JobConfig = ({ jobData, idx }) => {
           tempObj[item.name] = getNowTime();
           // 後端來的時間為UTC, 需要轉為當地時間
           if (jobData.settingInfo) {
-            tempObj[item.name] = formatInputDate(jobData.settingInfo.customer_input[item.name]);
+            tempObj[item.name] = formatDate(jobData.settingInfo.customer_input[item.name]);
           }
         } else if (item.type === 'number') {
           tempObj[item.name] = item.min < 0 ? 1 : item.min;

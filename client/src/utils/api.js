@@ -154,8 +154,8 @@ const API = {
     const res = await axios.get(`${this.hostname}/triggers/${id}`);
     return res.data;
   },
-  async getTools(typer = 'all') {
-    const res = await axios.get(`${this.hostname}/tools/${typer}`);
+  async getTools(type = 'all') {
+    const res = await axios.get(`${this.hostname}/tools/${type}`);
     return res.data;
   },
   async getConfigs(id) {
