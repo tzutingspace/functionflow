@@ -11,7 +11,7 @@ import {
   comparePassword,
   hashPassword,
   createJWT,
-} from '../utils/utli.js';
+} from '../utils/utils.js';
 
 export const signup = async (req, res, next) => {
   console.debug('@controller signup');

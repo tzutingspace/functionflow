@@ -8,10 +8,8 @@ const { DISCORD_CLIENT_ID, DISCORD_OAUTH_SECRET, DISCORD_REDIRECT_URI } =
   process.env;
 
 export const OAuth = async (req, res) => {
-  console.log('@controller OAuth');
-  console.log('@OAuth query', req.query);
+  console.debug('@controller OAuth', req.query);
 
-  console.log(DISCORD_CLIENT_ID, DISCORD_OAUTH_SECRET, DISCORD_REDIRECT_URI);
   const { code } = req.query;
   const url = 'https://discord.com/api/v10/oauth2/token';
 
@@ -35,6 +33,7 @@ export const OAuth = async (req, res) => {
   const { guild } = response.data;
   const systemChannelId = guild.system_channel_id;
   return res.json({ data: { systemChannelId } });
+
   // 向 Discord API 發送 GET 請求以獲取已授權用戶的資訊
   // 暫時用不到
   // const userResponse = await axios.get('https://discord.com/api/users/@me', {

@@ -1,5 +1,5 @@
 import * as DBTool from '../models/tool.js';
-import { validInteger } from '../utils/utli.js';
+import { validInteger } from '../utils/utils.js';
 import BadRequestError from '../utils/errors/badRequestError.js';
 
 export const getTriggers = async (req, res) => {
@@ -22,6 +22,7 @@ export const searchTrigger = async (req, res, next) => {
 
 export const getTools = async (req, res) => {
   console.debug('@controller getTools');
+
   const { type } = req.params;
   const tools = await DBTool.getTools(type === 'all' ? {} : { type });
   return res.json({ data: tools });

@@ -1,5 +1,5 @@
 import * as DBInstances from '../models/instance.js';
-import { getNowTime } from '../utils/utli.js';
+import { getNowTime } from '../utils/utils.js';
 import { putToSQS } from '../utils/putToSQS.js';
 import BadRequestError from '../utils/errors/badRequestError.js';
 
@@ -31,9 +31,7 @@ export const manualTriggerWorkflow = async (req, res, next) => {
   readyToQueueObj.target_queue = 'manualTriggerQueue';
   readyToQueueObj.socket_id = socketId;
 
-  // FIXME: SQS結果確認 testing 先關閉
-  // await putToSQS(JSON.stringify(readyToQueueObj));
-  // 放進sqs test run
+  await putToSQS(JSON.stringify(readyToQueueObj));
   return res.json({ data: readyToQueueObj });
 };
 

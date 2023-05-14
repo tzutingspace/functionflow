@@ -1,6 +1,6 @@
 import * as DBWorkflow from '../models/workflow.js';
 import * as DBTool from '../models/tool.js';
-import { convertLocalToUTC } from '../utils/utli.js';
+import { convertLocalToUTC } from '../utils/utils.js';
 
 import BadRequestError from '../utils/errors/badRequestError.js';
 

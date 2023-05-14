@@ -1,5 +1,4 @@
-import { validInteger } from '../utils/utli.js';
-
+import { validInteger } from '../utils/utils.js';
 import BadRequestError from '../utils/errors/badRequestError.js';
 import * as DBWorkflow from '../models/workflow.js';
 

@@ -1,5 +1,5 @@
 import * as DBJob from '../models/job.js';
-import { validInteger } from '../utils/utli.js';
+import { validInteger } from '../utils/utils.js';
 
 import BadRequestError from '../utils/errors/badRequestError.js';
 

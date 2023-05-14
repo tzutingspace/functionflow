@@ -22,10 +22,11 @@ dotenv.config();
 
 // Set up Express
 const app = express();
+
 const PORT = process.env.PORT || 8080;
 app.use(
   cors({
-    origin: [process.env.IP_LOCALTION],
+    origin: [process.env.IP_LOCATION],
   })
 );
 
@@ -36,7 +37,7 @@ app.use(json());
 // Express Router
 // for load-balancer health check
 app.get('/health', (req, res) => {
-  res.json({ data: 200 });
+  res.status(200).json({ data: 200 });
 });
 app.use('/admin', admin);
 app.use('/api/user', user);
