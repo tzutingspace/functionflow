@@ -8,7 +8,7 @@ import { triggerFunctionMap } from '../config/triggerFunction.js';
 import {
   calculateNextExecutionTime,
   triggerIntervalConvert,
-} from '../service/calculateTime.js';
+} from '../services/calculateTime.js';
 
 // get all workflows info by userId
 export const getWorkflowsByUser = async (req, res) => {
