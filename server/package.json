@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage --detectOpenHandles",
     "start": "nodemon index.js"
   },
   "author": "tzuting",
