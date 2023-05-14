@@ -7,7 +7,7 @@ export const createSocketIO = (server) => {
 
   io = new Server(server, {
     cors: {
-      origin: process.env.IP_LOCALTION,
+      origin: process.env.IP_LOCATION,
     },
   });
 
