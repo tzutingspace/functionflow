@@ -1,4 +1,4 @@
-import {  useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 
@@ -148,7 +148,6 @@ const Head = () => {
   async function deployWorkflow() {
     for (const job of isAllJobSave) {
       if (job === false) {
-        // alert('您尚有 job 未存檔');
         toast.warn("You still have some jobs that haven't been saved.", {
           position: 'top-center',
           autoClose: 2000,
@@ -159,7 +158,6 @@ const Head = () => {
     }
 
     if (workflowJobs.length <= 1) {
-      // alert('您尚未建立job');
       toast.warn("You haven't created any jobs yet.", {
         position: 'top-center',
         autoClose: 2000,

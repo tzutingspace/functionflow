@@ -14,6 +14,9 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Wrapper = styled.div`
   flex: 1;
   background-color: #fff;
@@ -398,7 +401,7 @@ const MainContent = () => {
       setWorkflowHistory(() => instances);
 
       // set instances 狀況 右邊使用
-      setworkflowInstance(() => instances[0]);
+      setWorkflowInstance(() => instances[0]);
     };
     if (loading) return;
     getInstances();
@@ -416,7 +419,14 @@ const MainContent = () => {
     console.log('switch....');
     console.log('你有這筆workflow的資訊嗎?', workflowInstance);
     if (isEmptyWorkflow.current) {
-      alert('此workflow尚未有對應的job, 請建立workflow在調整');
+      toast.warn(
+        'This workflow does not have a corresponding job yet. Please create a job before making adjustments.',
+        {
+          position: 'top-center',
+          autoClose: 2000,
+          theme: 'dark',
+        }
+      );
       return;
     }
     console.log('workflowId', workflowid);
@@ -435,7 +445,6 @@ const MainContent = () => {
   };
 
   const renderContent = (val) => {
-
     if (Array.isArray(val)) {
       return (
         <JobItemContent>

@@ -227,14 +227,14 @@ const JobConfig = ({ jobData, idx }) => {
   const { workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
     useContext(WorkflowStateContext);
 
-  const {  jwtToken } = useContext(AuthContext);
+  const { jwtToken } = useContext(AuthContext);
 
   // 紀錄是否save過(only for job button)
   // const [isSave, setIsSave] = useState(false);
 
   // jobConfig紀錄
   const [jobConfigData, setJobConfigData] = useState({}); //jobConfig state
-  const {  external_name, description, template_input, template_output } = jobConfigData; // 取值
+  const { external_name, description, template_input, template_output } = jobConfigData; // 取值
   const [input, setInput] = useState({}); //input state
   const [copied, setCopied] = useState(false); // 複製用
 
@@ -322,7 +322,6 @@ const JobConfig = ({ jobData, idx }) => {
       }
     }
     if (isEmpty) {
-      // alert('您尚有選項未填寫');
       toast.warn("There are still some options that haven't been filled out yet.", {
         position: 'top-center',
         autoClose: 2000,
