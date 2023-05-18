@@ -4,7 +4,7 @@ import { convertLocalToUTC } from '../utils/utils.js';
 
 import BadRequestError from '../utils/errors/badRequestError.js';
 
-import { triggerFunctionMap } from '../config/triggerFunction.js';
+import { triggerFunctionMap } from '../configs/triggerFunction.js';
 import {
   calculateNextExecutionTime,
   triggerIntervalConvert,

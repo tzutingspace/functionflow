@@ -32,7 +32,7 @@ export async function createInstances(workflowInfo) {
         workflowInfo.end_time,
       ]
     );
-    console.debug('建立的wf instance ID:', wfInstanceResult.insertId);
+    console.debug('create wf-instance ID:', wfInstanceResult.insertId);
     readyToQueueObj.workflow.wf_instance_id = wfInstanceResult.insertId;
 
     // get this workflow all jobs

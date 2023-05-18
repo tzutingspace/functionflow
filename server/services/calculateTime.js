@@ -15,7 +15,7 @@ export const calculateNextExecutionTime = (
   startTime,
   currentDate = new Date()
 ) => {
-  // console.debug('@calculate next execution time');
+  console.debug('@services calculate next execution time');
   console.debug('scheduleType', scheduleType);
   console.debug('triggerIntervalSeconds', triggerIntervalSeconds);
   console.debug('startTime', startTime);
@@ -30,15 +30,9 @@ export const calculateNextExecutionTime = (
   if (scheduleType === 'monthly') {
     const monthDiff = currentDate.getMonth() - startTime.getMonth() || 1;
     let nextExecuteTime = moment(startTime).add(monthDiff, 'M').toDate();
-    // let nextExecuteTime = date.addMonths(startTime, monthDiff);
-    // console.debug('@startTime is past and is monthly');
-    // console.debug('monthDiff', monthDiff);
-    // console.debug('currentDate', currentDate);
-    // console.debug('nextExecuteTime', nextExecuteTime);
 
     // If the nextExecuteTime is already past the current time.
     if (nextExecuteTime < currentDate) {
-      // nextExecuteTime = date.addMonths(nextExecuteTime, 1);
       nextExecuteTime = moment(nextExecuteTime).add(1, 'M').toDate();
     }
     return nextExecuteTime;

@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { userProvider } from '../config/userProvider.js';
+import { userProvider } from '../configs/userProvider.js';
 
 // Asia/Taipei convert to UTC
 export function convertLocalToUTC(localTime, timezone = 'Asia/Taipei') {

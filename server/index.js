@@ -1,11 +1,11 @@
 import express, { json } from 'express';
-import { createServer } from 'http';
+// import { createServer } from 'http';
 
 import dotenv from 'dotenv';
 import StatusCodes from 'http-status-codes';
 import cors from 'cors';
 
-import { createSocketIO } from './utils/socketIO.js';
+// import { createSocketIO } from './utils/socketIO.js';
 import NotFoundError from './utils/errors/notFoundError.js';
 
 // ROUTER
@@ -23,7 +23,7 @@ dotenv.config();
 // Set up Express
 const app = express();
 
-const PORT = process.env.PORT || 8080;
+// const PORT = process.env.PORT || 8080;
 app.use(
   cors({
     origin: [process.env.IP_LOCATION],
@@ -66,10 +66,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Set up Server and Socket
-const server = createServer(app);
-createSocketIO(server);
+export default app;
 
-server.listen(PORT, () =>
-  console.log(`The application is running on on port ${PORT}`)
-);
+// // Set up Server and Socket
+// const server = createServer(app);
+// createSocketIO(server);
+
+// server.listen(PORT, () =>
+//   console.log(`The application is running on on port ${PORT}`)
+// );

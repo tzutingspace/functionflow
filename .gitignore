@@ -7,7 +7,7 @@
 
 # vscode
 .vscode/*
-!.vscode/settings.json
+.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
@@ -50,3 +50,4 @@ public/assets/blogs
 
 # testing
 0-mytest/*
+*/coverage/*
