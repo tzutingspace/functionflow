@@ -19,6 +19,10 @@ This projects contains:
 - Build workflow
 - Manual Trigger
 
+demo create workflow and manual trigger
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/30GcBc9nyIo/0.jpg)](https://www.youtube.com/watch?v=30GcBc9nyIo)
+<!-- https://youtu.be/Xbw6ejCxQPM -->
+
 ## Database Schema 
 ![image](./images/sql_db_schema.png)
 ## Architecture 
