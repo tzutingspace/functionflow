@@ -224,7 +224,7 @@ const ValueCopy = styled.div`
 `;
 
 const JobConfig = ({ jobData, idx }) => {
-  const { workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave } =
+  const { workflowJobs, setWorkflowJobs, isAllJobSave, setIsAllJobSave, jobNameValid } =
     useContext(WorkflowStateContext);
 
   const { jwtToken } = useContext(AuthContext);
@@ -517,7 +517,16 @@ const JobConfig = ({ jobData, idx }) => {
             );
           })}
       </ReturnValueWrapper>
-      {!isAllJobSave[idx] && (
+      {!isAllJobSave[idx] && jobNameValid ? (
+        <SaveButtonDiv id={`save-button-${idx}`} onClick={() => saveJob()}>
+          <SaveButton></SaveButton>
+        </SaveButtonDiv>
+      ) : (
+        <CantSaveButtonDiv>
+          <CantSaveButton></CantSaveButton>
+        </CantSaveButtonDiv>
+      )}
+      {/* {!isAllJobSave[idx] && (
         <SaveButtonDiv id={`save-button-${idx}`} onClick={() => saveJob()}>
           <SaveButton></SaveButton>
         </SaveButtonDiv>
@@ -526,7 +535,7 @@ const JobConfig = ({ jobData, idx }) => {
         <CantSaveButtonDiv>
           <CantSaveButton></CantSaveButton>
         </CantSaveButtonDiv>
-      )}
+      )} */}
     </JobConfigWrapper>
   );
 };

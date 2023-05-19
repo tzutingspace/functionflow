@@ -84,7 +84,7 @@ const FormContent = styled.div`
 `;
 
 const Home = () => {
-  const [defaultForm, setDefaultForm] = useState('signup');
+  const [defaultForm, setDefaultForm] = useState('login');
   const { setErrorMessage, isLogin } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -106,10 +106,10 @@ const Home = () => {
         <LeftArea>
           <LeftInnerBlock>
             <FormContent>
-              {defaultForm === 'signup' ? (
-                <Signup onFormSwitch={handlerFormSwitch} />
-              ) : (
+              {defaultForm === 'login' ? (
                 <Login onFormSwitch={handlerFormSwitch} />
+              ) : (
+                <Signup onFormSwitch={handlerFormSwitch} />
               )}
             </FormContent>
           </LeftInnerBlock>

@@ -30,6 +30,8 @@ export const WorkflowStateContext = createContext({
   setIsAllJobSave: () => {},
   workflowJobs: [],
   setWorkflowJobs: () => {},
+  jobNameValid: true,
+  setJobNameValid: () => {},
   joyrideState: {},
   setJoyrideState: () => {},
 });
@@ -40,6 +42,8 @@ const Edit = () => {
   const [isDraft, _setIsDraft] = useState(true);
   const [isAllJobSave, setIsAllJobSave] = useState([]);
   const [workflowJobs, setWorkflowJobs] = useState([{ name: 'Trigger', id: uuidv4() }]);
+
+  const [jobNameValid, setJobNameValid] = useState(true);
 
   const [joyrideState, setJoyrideState] = useState({
     run: true,
@@ -158,6 +162,8 @@ const Edit = () => {
           setIsAllJobSave,
           joyrideState,
           setJoyrideState,
+          jobNameValid,
+          setJobNameValid,
         }}
       >
         {workflowLoading && <Loading type="spinningBubbles" color="#313538" />}

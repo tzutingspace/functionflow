@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { AuthContext } from '../../../contexts/authContext';
 
-import {  ValidateEmail, ValidatePassword } from '../../../utils/utils';
+import { ValidateEmail, ValidatePassword } from '../../../utils/utils';
 
 const Loading = styled(ReactLoading)`
   margin-top: 50px;
@@ -87,8 +87,8 @@ const UserAlert = styled.div`
 
 const Login = ({ onFormSwitch }) => {
   const { login, loading, ErrorMessage, setErrorMessage } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('testuser@gmail.com');
+  const [password, setPassword] = useState('123456');
 
   const handleLogin = () => {
     if (!ValidateEmail(email) || !email) {

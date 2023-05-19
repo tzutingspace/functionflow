@@ -1,6 +1,8 @@
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import { WorkflowStateContext } from '..';
 import styled from 'styled-components/macro';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 //https://www.csscodelab.com/google-like-css-input-box-placeholder-shown/
 const JobTileWrapper = styled.label`
@@ -37,6 +39,7 @@ const JobName = styled.input`
   font-size: 32px;
   font-weight: 900;
   background: #f3ecda; //rgba(0, 0, 0, 0.02);
+  background: rgba(0, 0, 0, 0);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
   color: #20315b;
   transition: all 0.15s ease;
@@ -85,14 +88,34 @@ function replaceNonAlphabeticCharacters(inputString) {
 }
 
 const JobTitle = ({ jobData, idx }) => {
-  const { setWorkflowJobs, setIsAllJobSave } = useContext(WorkflowStateContext);
+  const { workflowJobs, setWorkflowJobs, setIsAllJobSave, jobNameValid, setJobNameValid } =
+    useContext(WorkflowStateContext);
+  // const [jobNameValid, setJobNameValid] = useState(true);
 
   // 修改個別JOB名稱
   function changeJobName(e) {
     const inputValue = replaceNonAlphabeticCharacters(e.target.value);
+
+    if (inputValue === '') {
+      setJobNameValid(false);
+    } else {
+      setJobNameValid(true);
+    }
+
     setWorkflowJobs((prev) => {
       const index = prev.findIndex((job) => job.id === jobData.id);
       if (index !== -1) {
+        // 確認 job name 不可重複
+        for (let i = 0; i < workflowJobs.length; i++) {
+          if (i !== index && workflowJobs[i]['job_name'] === inputValue) {
+            setJobNameValid(false);
+            toast.warn("The job name can't the same.", {
+              position: 'top-center',
+              autoClose: 2000,
+              theme: 'dark',
+            });
+          }
+        }
         prev[index]['job_name'] = inputValue;
       }
       return [...prev];
@@ -104,10 +127,10 @@ const JobTitle = ({ jobData, idx }) => {
   }
 
   return (
-    <JobTileWrapper style={{ backgroundColor: jobData.job_name === '' ? '#f1ceced6' : '#f3ecda' }}>
+    <JobTileWrapper style={{ backgroundColor: jobNameValid === false ? '#f1ceced6' : '#f3ecda' }}>
       <JobName
         style={
-          ({ backgroundColor: jobData.job_name === '' ? '#f1ceced6' : '#f3ecda' },
+          ({ backgroundColor: jobNameValid === false ? '#f1ceced6' : '#f3ecda' },
           { color: jobData.job_name.includes('untitled') ? 'grey' : '#20315b' })
         }
         type="text"
@@ -116,7 +139,7 @@ const JobTitle = ({ jobData, idx }) => {
       ></JobName>
       <JobNameLabel>
         {jobData.job_name === ''
-          ? 'Please enter the job name!!!'
+          ? 'Please enter the job name.'
           : 'Job Name (Only accepts English letters, numbers, and underscores.)'}
       </JobNameLabel>
       <FocusBackground />
