@@ -3,7 +3,7 @@
   <img alt="GitHub" src="https://img.shields.io/github/license/tzutingspace/functionflow">
   <img src="https://img.shields.io/github/languages/count/tzutingspace/functionflow">
   <img src="https://img.shields.io/github/languages/top/tzutingspace/functionflow">
-  <img src="https://img.shields.io/badge/Node.js-v18.13-blue">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/tzutingspace/functionflow">
   <img alt="GitHub watchers" src="https://img.shields.io/github/watchers/tzutingspace/functionflow?style=social">
 </div>
 <br>
