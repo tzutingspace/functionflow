@@ -6,6 +6,9 @@ import 'react-confirm-alert/src/react-confirm-alert.css'; // Optional CSS
 import { AuthContext } from '../../../contexts/authContext';
 import API from '../../../utils/api';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Wrapper = styled.div`
   flex: 1;
   background-color: #fff;
@@ -57,6 +60,15 @@ const MainContent = () => {
       console.log('userData axios回來的data', data);
       setAccountData(data);
       setRecords(data);
+      if (data.length === 0) {
+        toast.info('You have not provided any authorization app yet.', {
+          position: 'top-center',
+          hideProgressBar: true,
+          closeOnClick: true,
+          theme: 'dark',
+          autoClose: false,
+        });
+      }
     };
 
     if (isLogin) {

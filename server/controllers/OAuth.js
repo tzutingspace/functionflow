@@ -47,7 +47,7 @@ export const OAuth = async (req, res) => {
     await conn.query('START TRANSACTION');
     const appInfo = {
       userId: req.user.id,
-      appName: 'discord',
+      appName: 'Discord',
       appIdentity: userResponse.data.email,
       appInformation: response.data.scope,
     };

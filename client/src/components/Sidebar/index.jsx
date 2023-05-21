@@ -174,7 +174,7 @@ const Sidebar = () => {
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>
-        <ItemWrapper to="/workflows">
+        <ItemWrapper to="https://github.com/tzutingspace/functionflow" target="_blank">
           <IconDiv>
             <BsBookIcon></BsBookIcon>
           </IconDiv>
