@@ -35,11 +35,27 @@ const API = {
   },
 
   // OAuth2
-  async getDiscordChannel(code) {
+  async getDiscordChannel(code, jwt) {
     console.log('@getDiscordChannel', code);
-    const res = await axios.get(`${this.hostname}/oauth2/token?code=${code}`);
+    const res = await axios.get(`${this.hostname}/oauth2/token?code=${code}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     console.log('res', res);
     return res.data.data.systemChannelId;
+  },
+
+  // 取得目前授權app accounts
+  async getAppAccounts(jwt) {
+    const res = await axios.get(`${this.hostname}/app-accounts`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    console.log('res', res);
+    return res.data;
   },
 
   // 新增或更新workflow and Job

@@ -1,11 +1,11 @@
 import { Router } from 'express';
-
 import wrapAsync from '../utils/wrapAsync.js';
 import { verifyJWT } from '../middlewares/verifyJWT.js';
-import { OAuth } from '../controllers/OAuth.js';
+
+import { getAppAccount } from '../controllers/appAccounts.js';
 
 const router = Router();
 
-router.get('/token', verifyJWT, wrapAsync(OAuth));
+router.get('/app-accounts', verifyJWT, wrapAsync(getAppAccount));
 
 export { router };

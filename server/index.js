@@ -17,6 +17,7 @@ import { router as tool } from './routers/tool.js';
 import { router as trigger } from './routers/trigger.js';
 import { router as admin } from './routers/admin.js';
 import { router as OAuth } from './routers/OAuth.js';
+import { router as appAccount } from './routers/appAccount.js';
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.use('/api', job);
 app.use('/api', tool);
 app.use('/api', trigger);
 app.use('/api', instance);
+app.use('/api', appAccount);
 app.use('/api/oauth2', OAuth);
 
 // Not Found

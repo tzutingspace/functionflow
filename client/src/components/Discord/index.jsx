@@ -1,6 +1,8 @@
 import styled from 'styled-components/macro';
-import { useState, useCallback } from 'react';
+import { useState, useContext, useCallback } from 'react';
+
 import api from '../../utils/api';
+import { AuthContext } from '../../contexts/authContext';
 
 import discordLogo from './discord-logo.png';
 
@@ -55,6 +57,8 @@ const Discord = ({ item, setInput }) => {
   // const [channelId, setChannelId] = useState('');
   const [getChannel, setChannel] = useState(false);
 
+  const { jwtToken } = useContext(AuthContext);
+
   // 點擊授權按鈕
   const handleAuthorizeClick = () => {
     const width = 500;
@@ -74,7 +78,7 @@ const Discord = ({ item, setInput }) => {
 
   // handleResponse
   const handleDiscordResponse = useCallback(async (code) => {
-    const systemChannelId = await api.getDiscordChannel(code);
+    const systemChannelId = await api.getDiscordChannel(code, jwtToken);
     // setChannelId(systemChannelId);
     let newObj = {};
     console.log(item);

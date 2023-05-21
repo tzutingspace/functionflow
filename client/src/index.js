@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Edit from './pages/Edit';
 import Workflows from './pages/Workflows';
 import Instances from './pages/Instances';
+import AppAccounts from './pages/AppAccounts';
 import Oauth2 from './pages/Oauth2';
 
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
@@ -24,6 +25,7 @@ root.render(
         <Route path="edit" element={<Edit />} />
         <Route path="workflows" element={<Workflows />} />
         <Route path="instances/:atUsername/:workflowName/:workflowid" element={<Instances />} />
+        <Route path="accounts" element={<AppAccounts />} />
         <Route path="oauth2/redirect" element={<Oauth2 />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

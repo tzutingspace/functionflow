@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
@@ -144,6 +144,7 @@ const Sidebar = () => {
   useEffect(() => {
     console.log('你在哪裡', location.pathname);
     const firstPath = location.pathname.split('/')[1];
+    console.log('你在哪裡', firstPath);
     setCurrentPage(firstPath);
   }, [location]);
 
@@ -157,17 +158,19 @@ const Sidebar = () => {
           <IconDiv>
             <FcWorkflowIcon></FcWorkflowIcon>
           </IconDiv>
-          <ItemSpan className={currentPage === '/workflows' || '/instances' ? 'active' : ''}>
+          <ItemSpan
+            className={currentPage === 'workflows' || currentPage === 'instances' ? 'active' : ''}
+          >
             Workflows
           </ItemSpan>
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>
-        <ItemWrapper to="/workflows">
+        <ItemWrapper to="/accounts">
           <IconDiv>
             <MdManageAccountsIcon></MdManageAccountsIcon>
           </IconDiv>
-          <ItemSpan className={currentPage === '/accounts' ? 'active' : ''}>Accounts</ItemSpan>
+          <ItemSpan className={currentPage === 'accounts' ? 'active' : ''}>Accounts</ItemSpan>
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>
@@ -175,7 +178,7 @@ const Sidebar = () => {
           <IconDiv>
             <BsBookIcon></BsBookIcon>
           </IconDiv>
-          <ItemSpan className={currentPage === '/help' ? 'active' : ''}>Help & Docs</ItemSpan>
+          <ItemSpan className={currentPage === 'help' ? 'active' : ''}>Help & Docs</ItemSpan>
         </ItemWrapper>
       </ItemGroup>
       <ItemGroup>

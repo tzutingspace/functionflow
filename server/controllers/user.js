@@ -68,7 +68,6 @@ export const signup = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  console.debug('@controller login request Body: ', req.body);
   if (!req.is('application/json')) {
     return next(new BadRequestError('Please use the correct content-type.'));
   }
