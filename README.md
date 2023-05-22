@@ -32,13 +32,13 @@ This projects contains two repositories:
 - Provided keyword crawling feature for PTT, AWS blog and weather information by an open API.
 - Integrated a notification system with Discord and enabled email service using MailerSend.
 
-Click the image below to watch a brief demo on YouTube.  
+Click the image below to watch a brief demo on `YouTube`.  
 [![Create a Workflow](https://img.youtube.com/vi/30GcBc9nyIo/0.jpg)](https://www.youtube.com/watch?v=30GcBc9nyIo)  
 
 ### Manual trigger a workflow 
 - Incorporated a manual trigger feature for workflows, leveraging AWS Lambda for execution, and combined a real-time notification system through Socket.IO.
 
-Click the image below to watch a brief demo on YouTube.
+Click the image below to watch a brief demo on `YouTube`.
 [![Manual Trigger Workflow](https://img.youtube.com/vi/T-Qi4uiRfh4/0.jpg)](https://www.youtube.com/watch?v=T-Qi4uiRfh4)
 
 ### Management page for all workflows
