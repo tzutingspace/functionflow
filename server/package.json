@@ -2,11 +2,11 @@
   "name": "functionflow",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "test": "jest --coverage --detectOpenHandles",
-    "start": "nodemon index.js"
+    "start": "nodemon server.js"
   },
   "author": "tzuting",
   "license": "ISC",
